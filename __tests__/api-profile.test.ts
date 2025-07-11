@@ -59,6 +59,20 @@ describe("API /api/profile", () => {
     );
   });
 
+  it("should return 400 if email format is invalid", async () => {
+    const invalidData = { ...getValidProfileData(), email: "invalid-email" };
+    const req = {
+      json: () => Promise.resolve(invalidData),
+    } as Request;
+    await PUT(req);
+    expect(NextResponse.json).toHaveBeenCalledWith(
+      {
+        message: "Validation failed",
+      },
+      { status: 400 }
+    );
+  });
+
   it("should return 200 on valid data", async () => {
     const validData = getValidProfileData();
     const req = {
@@ -68,6 +82,20 @@ describe("API /api/profile", () => {
     expect(NextResponse.json).toHaveBeenCalledWith({
       success: true,
     });
+  });
+
+  it("should return 200 if profile is updated successfully", async () => {
+    const validData = getValidProfileData();
+    const req = {
+      json: () => Promise.resolve(validData),
+    } as Request;
+    await PUT(req);
+    expect(NextResponse.json).toHaveBeenCalledWith(
+      {
+        message: "Profile updated successfully.",
+      },
+      { status: 200 }
+    );
   });
 
   it("should return an error if bio exceeds 160 characters", async () => {
