@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-type ProfileData = {
+export type ProfileData = {
   username: string;
   fullName: string;
   email: string;

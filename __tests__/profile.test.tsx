@@ -42,6 +42,32 @@ describe("ProfilePage", () => {
     expect(screen.getByText(/Phone must be 10-15 digits/i)).toBeInTheDocument();
   });
 
+  it("shows validation error if bio exceeds 160 characters", async () => {
+    render(<ProfilePage />);
+    fireEvent.change(screen.getByLabelText(/Bio/i), {
+      target: { value: "a".repeat(161) },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Update/i }));
+
+    expect(
+      await screen.findByText(/Bio must be 160 characters or less/i)
+    ).toBeInTheDocument();
+  });
+
+  it("shows validation error if birth date is in the future", async () => {
+    render(<ProfilePage />);
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 1);
+    fireEvent.change(screen.getByLabelText(/Birth Date/i), {
+      target: { value: futureDate.toISOString().split("T")[0] },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Update/i }));
+
+    expect(
+      await screen.findByText(/Birth date cannot be in the future/i)
+    ).toBeInTheDocument();
+  });
+
   it("submits valid form and shows success message", async () => {
     render(<ProfilePage />);
     fireEvent.change(screen.getByLabelText(/Username/i), {

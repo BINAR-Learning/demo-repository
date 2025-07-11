@@ -1,11 +1,12 @@
-import { PUT } from "@/app/api/profile/route";
+import { PUT, ProfileData } from "@/app/api/profile/route";
 import { NextResponse } from "next/server";
 
 jest.mock("next/server", () => ({
   NextResponse: {
-    json: jest.fn((data) => ({
+    json: jest.fn((data, options) => ({
       ...data,
       json: () => Promise.resolve(data),
+      status: options?.status,
     })),
   },
 }));
@@ -16,6 +17,12 @@ const getValidProfileData = () => ({
   email: "valid@email.com",
   phone: "1234567890",
 });
+
+const mockRequest = (data: Partial<ProfileData>) => {
+  return {
+    json: async () => data,
+  } as Request;
+};
 
 describe("API /api/profile", () => {
   beforeEach(() => {
@@ -61,5 +68,24 @@ describe("API /api/profile", () => {
     expect(NextResponse.json).toHaveBeenCalledWith({
       success: true,
     });
+  });
+
+  it("should return an error if bio exceeds 160 characters", async () => {
+    const request = mockRequest({
+      username: "testuser",
+      fullName: "Test User",
+      email: "test@example.com",
+      phone: "1234567890",
+      birthDate: "2000-01-01",
+      bio: "a".repeat(161),
+    });
+
+    const response = await PUT(request);
+    const result = await response.json();
+
+    console.log(response)
+
+    expect(response.status).toBe(400);
+    expect(result.errors.bio).toBe("Bio must be 160 characters or less.");
   });
 });
