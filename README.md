@@ -1,3 +1,7 @@
+## Code Coverage
+
+[![Codecov](https://codecov.io/gh/BINAR-Learning/demo-repository/graph/badge.svg?token=A9U236VZ3Q)](https://codecov.io/gh/BINAR-Learning/demo-repository)
+
 # Update-Profile: A Fullstack Next.js Project
 
 ## Project Description
