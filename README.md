@@ -69,9 +69,9 @@ touch .env.local
 
    ```bash
    git clone <repository-url>
+   cd demo-repository
    git fetch
    git checkout Module-5
-   cd demo-repository
    ```
 
 2. **Install dependencies**
