@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -10,6 +12,15 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
+  const { user, loading, login, requireGuest } = useAuth();
+  const router = useRouter();
+
+  // Bad practice: checking auth on every render
+  useEffect(() => {
+    if (!loading) {
+      requireGuest("/users");
+    }
+  }, [loading, user, requireGuest]);
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -31,22 +42,42 @@ export default function LoginPage() {
 
     const toastId = toast.loading("Logging in...");
 
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      toast.success("Login successful!", { id: toastId });
-    } else {
-      toast.error(data.message || "An error occurred.", { id: toastId });
+      if (response.ok) {
+        // Bad practice: storing token without proper validation
+        login(data.token, data.user);
+        toast.success("Login successful!", { id: toastId });
+        // Redirect to users page after successful login
+        router.push("/users");
+      } else {
+        toast.error(data.message || "An error occurred.", { id: toastId });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Network error occurred.", { id: toastId });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -127,6 +158,13 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        <div className="mt-6 p-4 bg-blue-50 rounded-md">
+          <p className="text-sm text-blue-800">
+            <strong>Demo Credentials:</strong> Use any seeded user email with
+            password: <code>User123@</code>
+          </p>
+        </div>
       </div>
     </div>
   );
