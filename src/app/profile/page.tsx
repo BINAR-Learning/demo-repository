@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
+import { TokenExpirationWarning } from "@/components/TokenExpirationWarning";
+import { SessionTimer } from "@/components/SessionTimer";
 
 type ProfileErrors = {
   username?: string;
@@ -169,9 +171,13 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
+      <TokenExpirationWarning />
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold text-center">Update Profile</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold">Update Profile</h1>
+            <SessionTimer />
+          </div>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label

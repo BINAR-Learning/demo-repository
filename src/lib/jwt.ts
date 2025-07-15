@@ -9,7 +9,7 @@ const JWT_SECRET =
 export function generateToken(payload: any) {
   console.time("JWT Token Generation");
   const timer = jwtTokenGenerationDuration.startTimer();
-  
+
   try {
     // Bad practice: using synchronous operations
     const token = jwt.sign(payload, JWT_SECRET, {
@@ -51,10 +51,16 @@ export function authMiddleware(handler: Function) {
 
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
         console.timeEnd("Auth Middleware Execution");
-        return new Response(JSON.stringify({ message: "No token provided" }), {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({
+            message: "No token provided",
+            code: "TOKEN_MISSING",
+          }),
+          {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
       }
 
       const token = authHeader.substring(7);
@@ -65,13 +71,34 @@ export function authMiddleware(handler: Function) {
 
       console.timeEnd("Auth Middleware Execution");
       return handler(request);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Auth middleware error:", error);
       console.timeEnd("Auth Middleware Execution");
-      return new Response(JSON.stringify({ message: "Invalid token" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
+
+      // Check if it's a token expiration error
+      if (error.name === "TokenExpiredError") {
+        return new Response(
+          JSON.stringify({
+            message: "Token has expired",
+            code: "TOKEN_EXPIRED",
+          }),
+          {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({
+          message: "Invalid token",
+          code: "TOKEN_INVALID",
+        }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
   };
 }
