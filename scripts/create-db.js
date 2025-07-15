@@ -1,6 +1,17 @@
 const { Pool } = require("pg");
 const crypto = require("crypto");
 
+// Load environment variables from .env.local
+require("dotenv").config({ path: ".env.local" });
+
+// Log database configuration for debugging
+console.log("🔧 Database Configuration:");
+console.log("Host:", process.env.DB_HOST || "localhost");
+console.log("Port:", process.env.DB_PORT || "5432");
+console.log("User:", process.env.DB_USER || "postgres");
+console.log("Database:", process.env.DB_NAME || "workshop_db");
+console.log("Password:", process.env.DB_PASSWORD ? "***" : "admin123");
+
 // Database configuration for initial connection (without specific database)
 const initialPool = new Pool({
   user: process.env.DB_USER || "postgres",

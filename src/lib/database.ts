@@ -13,6 +13,16 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
+// Log database configuration for debugging (only in development)
+if (process.env.NODE_ENV === "development") {
+  console.log("🔧 Database Configuration:");
+  console.log("Host:", process.env.DB_HOST || "localhost");
+  console.log("Port:", process.env.DB_PORT || "5432");
+  console.log("User:", process.env.DB_USER || "postgres");
+  console.log("Database:", process.env.DB_NAME || "workshop_db");
+  console.log("Password:", process.env.DB_PASSWORD ? "***" : "admin123");
+}
+
 // Bad practice: raw SQL queries without proper error handling
 export async function executeQuery(query: string, params: any[] = []) {
   console.time("Database Query Execution");

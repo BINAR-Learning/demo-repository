@@ -10,7 +10,8 @@
     "test": "jest",
     "db-create": "node scripts/create-db.js",
     "db-drop": "node scripts/drop-db.js",
-    "db-reset": "npm run db-drop && npm run db-create"
+    "db-reset": "npm run db-drop && npm run db-create",
+    "db-test": "node scripts/test-db-connection.js"
   },
   "dependencies": {
     "@primer/css": "17.0.1",
