@@ -1,6 +1,9 @@
 const { Pool } = require("pg");
 const crypto = require("crypto");
 
+// Load environment variables
+require("dotenv").config({ path: ".env.local" });
+
 // Database configuration for initial connection (without specific database)
 const initialPool = new Pool({
   user: process.env.DB_USER || "postgres",
