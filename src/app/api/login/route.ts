@@ -2,8 +2,12 @@ import { NextResponse } from "next/server";
 import { comparePassword } from "@/lib/crypto";
 import { executeQuery } from "@/lib/database";
 import { generateToken } from "@/lib/jwt";
+import { withMetrics } from "@/lib/metrics-middleware";
 
-export async function POST(request: Request) {
+// Force Node.js runtime for prom-client compatibility
+export const runtime = 'nodejs';
+
+const loginHandler = async (request: Request) => {
   console.time("Login API Execution");
 
   try {
@@ -121,4 +125,6 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+};
+
+export const POST = withMetrics(loginHandler);

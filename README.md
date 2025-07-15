@@ -18,12 +18,16 @@ A Next.js application demonstrating JWT authentication, database integration, an
 - **User Profile Management**: Complete profile with address, phone, birth date
 - **Division Filtering**: Real-time filtering by division with poor performance
 - **Enhanced User List**: Display address and division information
+- **Prometheus Metrics**: Real-time monitoring with custom metrics
+- **Grafana Cloud Integration**: Remote write to Grafana Cloud for monitoring
 
 ## 📋 Prerequisites
 
 - Node.js 18+
 - PostgreSQL 12+
 - npm or yarn
+- Prometheus (for monitoring)
+- Grafana Cloud account (for dashboard)
 
 ## 🔧 Environment Variables
 
@@ -345,7 +349,16 @@ WHERE user_divisions.division_name = 'Marketing'
 
 ## 🔍 Performance Monitoring
 
-The application includes performance tracking for refactoring practice:
+The application includes comprehensive monitoring with Prometheus metrics and Grafana Cloud integration.
+
+### Prometheus Metrics
+
+The application exposes custom metrics at `/api/metrics`:
+
+- **HTTP Metrics**: Request count, duration, status codes
+- **Database Metrics**: Query duration, connection stats
+- **JWT Metrics**: Token generation time
+- **System Metrics**: CPU, memory, heap usage
 
 ### Console Timing
 
@@ -360,6 +373,37 @@ The application includes performance tracking for refactoring practice:
 2. **Frontend Logic**: Inefficient filtering, sorting, state management
 3. **API Design**: No pagination, no caching, no optimization
 4. **Component Structure**: Poor separation of concerns
+
+## 📊 Monitoring Setup
+
+### Quick Start
+
+1. **Start the application**
+   ```bash
+   npm run dev
+   ```
+
+2. **Setup Prometheus**
+   - Download from https://prometheus.io/download/
+   - Copy `prometheus.yml.template` to Prometheus folder
+   - Update with your Grafana Cloud credentials
+   - Run: `prometheus.exe --config.file=prometheus.yml`
+
+3. **View metrics**
+   - Local: http://localhost:3000/api/metrics
+   - Prometheus UI: http://localhost:9090
+   - Grafana Cloud: Your workspace dashboard
+
+### Available Metrics
+
+- `http_requests_total` - Total HTTP requests
+- `http_request_duration_seconds` - Request duration
+- `database_query_duration_seconds` - Database query time
+- `jwt_token_generation_duration_seconds` - JWT generation time
+- `process_cpu_seconds_total` - CPU usage
+- `process_resident_memory_bytes` - Memory usage
+
+For detailed setup instructions, see [PROMETHEUS_SETUP.md](./PROMETHEUS_SETUP.md).
 
 ## 🧪 Testing
 

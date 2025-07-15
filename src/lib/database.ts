@@ -1,4 +1,5 @@
 import { Pool } from "pg";
+import { databaseQueryDuration } from "./metrics";
 
 // Database configuration - intentionally unoptimized for workshop
 const pool = new Pool({
@@ -16,15 +17,19 @@ const pool = new Pool({
 // Bad practice: raw SQL queries without proper error handling
 export async function executeQuery(query: string, params: any[] = []) {
   console.time("Database Query Execution");
+  const timer = databaseQueryDuration.startTimer({ query_type: 'general' });
+  
   try {
     const client = await pool.connect();
     const result = await client.query(query, params);
     client.release();
     console.timeEnd("Database Query Execution");
+    timer();
     return result;
   } catch (error) {
     console.error("Database error:", error);
     console.timeEnd("Database Query Execution");
+    timer();
     throw error;
   }
 }

@@ -1,0 +1,51 @@
+# Prometheus configuration template for Next.js app
+# Copy this file to your Prometheus installation folder and rename to prometheus.yml
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# Scrape configuration
+scrape_configs:
+  # Self monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Next.js application metrics
+  - job_name: 'nextjs-app'
+    metrics_path: /api/metrics
+    static_configs:
+      - targets: ['localhost:3000']
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+# Remote write configuration for Grafana Cloud
+remote_write:
+  - url: https://prometheus-blocks-prod-us-central1.grafana.net/api/prom/push
+    basic_auth:
+      username: YOUR_INSTANCE_ID
+      password: YOUR_API_KEY
+    remote_write_relabel_configs:
+      - source_labels: [__name__]
+        regex: '.*'
+        action: keep
+
+# Remote read configuration (optional)
+# remote_read:
+#   - url: https://prometheus-blocks-prod-us-central1.grafana.net/api/prom/read
+#     basic_auth:
+#       username: YOUR_INSTANCE_ID
+#       password: YOUR_API_KEY 

@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { jwtTokenGenerationDuration } from "./metrics";
 
 // Bad practice: hardcoded secret key
 const JWT_SECRET =
@@ -7,16 +8,20 @@ const JWT_SECRET =
 // Bad practice: no token expiration management
 export function generateToken(payload: any) {
   console.time("JWT Token Generation");
+  const timer = jwtTokenGenerationDuration.startTimer();
+  
   try {
     // Bad practice: using synchronous operations
     const token = jwt.sign(payload, JWT_SECRET, {
       expiresIn: "24h", // Bad practice: long expiration for demo
     });
     console.timeEnd("JWT Token Generation");
+    timer();
     return token;
   } catch (error) {
     console.error("JWT generation error:", error);
     console.timeEnd("JWT Token Generation");
+    timer();
     throw error;
   }
 }
