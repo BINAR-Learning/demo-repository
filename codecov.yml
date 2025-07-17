@@ -47,17 +47,6 @@ coverage:
       # Block merges if coverage is below threshold
       informational: false
 
-    # Project coverage status (overall project)
-    project:
-      # Require 90% coverage for overall project
-      target: 90%
-      # Allow coverage to drop by 1% before failing
-      threshold: 1%
-      # Check coverage on all branches
-      only_pulls: false
-      # Block merges if coverage is below threshold
-      informational: false
-
 # Comment configuration
 comment:
   # Enable automatic comments on PRs
@@ -174,16 +163,16 @@ carryforward: true
 comparison:
   # Compare against base branch
   base: auto
-  
+
   # Compare against project coverage
   project: auto
-  
+
   # Compare against patch coverage
   patch: auto
-  
+
   # Compare against changes coverage
   changes: auto
-  
+
   # Enable regression detection
   regression:
     # Detect coverage regression
@@ -194,6 +183,15 @@ comparison:
     fail: true
     # Post comments on regression
     comment: true
+
+# Status check names (important for branch protection)
+status:
+  # Project coverage status
+  project: "codecov/project"
+  # Patch coverage status
+  patch: "codecov/patch"
+  # Changes coverage status
+  changes: "codecov/changes"
 
 # Coverage reports
 reports:
@@ -244,12 +242,15 @@ notifications:
 github_checks:
   # Enable GitHub status checks
   annotations: true
-  
+
   # Always post status checks
   require_changes: false
   require_base: false
   require_head: false
-  
+
+  # Force status checks to be required
+  required: true
+
   # Status check configuration
   status:
     # Project coverage status check
@@ -260,7 +261,9 @@ github_checks:
       informational: false
       # Require this check to pass
       required: true
-    
+      # Force this check to be required
+      strict: true
+
     # Patch coverage status check
     patch:
       # Enable patch status check
@@ -269,7 +272,9 @@ github_checks:
       informational: false
       # Require this check to pass
       required: true
-    
+      # Force this check to be required
+      strict: true
+
     # Changes coverage status check
     changes:
       # Enable changes status check
@@ -278,6 +283,8 @@ github_checks:
       informational: false
       # Require this check to pass
       required: true
+      # Force this check to be required
+      strict: true
 
   # Coverage annotations
   coverage_annotations:
