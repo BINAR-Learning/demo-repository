@@ -580,34 +580,34 @@ coverage:
       target: 90%
       threshold: 1%
     patch:
-      target: 80%        # More realistic for new code
-      threshold: 1%      # Strict threshold for regression detection
+      target: 80% # More realistic for new code
+      threshold: 1% # Strict threshold for regression detection
       informational: false # Blocks PRs
 
 # Comment configuration
 comment:
-  require_changes: false  # Always post comments
-  require_base: false     # Don't require base coverage
-  require_head: false     # Don't require head coverage
+  require_changes: false # Always post comments
+  require_base: false # Don't require base coverage
+  require_head: false # Don't require head coverage
 
 # Coverage comparison and regression detection
 comparison:
-  base: auto             # Compare against base branch
+  base: auto # Compare against base branch
   regression:
-    enabled: true        # Detect coverage regression
-    threshold: 0%        # Any drop blocks merge
-    fail: true           # Block merges on regression
-    comment: true        # Post comments on regression
+    enabled: true # Detect coverage regression
+    threshold: 0% # Any drop blocks merge
+    fail: true # Block merges on regression
+    comment: true # Post comments on regression
 
 # GitHub status checks
 github_checks:
   status:
     project:
-      required: true     # Must pass to merge
+      required: true # Must pass to merge
     patch:
-      required: true     # Must pass to merge
+      required: true # Must pass to merge
     changes:
-      required: true     # Must pass to merge
+      required: true # Must pass to merge
 
 # Smart exclusions
 ignore:
@@ -699,6 +699,418 @@ npm run test:coverage:view
 - **Performance Tests**: Coverage for performance-critical code
 
 For more information about Codecov features and configuration, visit [Codecov Documentation](https://docs.codecov.io/).
+
+## 📊 Monitoring & Observability
+
+### Prometheus & Grafana Setup
+
+This project includes comprehensive monitoring with Prometheus and Grafana Cloud integration for real-time performance tracking.
+
+#### **Features**
+
+- **API Response Time Monitoring**: Track API endpoint performance
+- **React Component Render Time**: Monitor frontend component performance
+- **Request Rate Monitoring**: Track API usage patterns
+- **Memory & CPU Usage**: System resource monitoring
+- **Custom Metrics**: Application-specific performance indicators
+
+#### **Architecture**
+
+```
+Application → Prometheus → Grafana Cloud → Dashboard
+```
+
+### 🚀 Quick Start Monitoring
+
+#### **1. Start Application**
+
+```bash
+npm run dev
+```
+
+#### **2. Start Prometheus**
+
+```bash
+# Using the provided config
+prometheus --config.file=prometheus.yml
+```
+
+#### **3. Access Monitoring**
+
+- **Application**: http://localhost:3000
+- **Prometheus**: http://localhost:9090
+- **Metrics Endpoint**: http://localhost:3000/api/metrics
+- **Grafana Dashboard**: Your Grafana Cloud URL
+
+### 📈 Available Metrics
+
+#### **API Metrics**
+
+- `api_response_duration_seconds` - API response time
+- `api_requests_total` - Total API requests
+- `http_request_duration_seconds` - HTTP request duration
+- `http_requests_total` - Total HTTP requests
+
+#### **React Component Metrics**
+
+- `react_component_render_duration_seconds` - Component render time
+- Component names: `UsersPage`, `UserCard`
+- Pages: `users`, `login`, `profile`
+
+#### **System Metrics**
+
+- `process_cpu_seconds_total` - CPU usage
+- `process_resident_memory_bytes` - Memory usage
+- `nodejs_heap_size_total_bytes` - Heap size
+
+### 🎯 Grafana Dashboard Panels
+
+#### **1. React Component Average Render Time**
+
+```promql
+rate(react_component_render_duration_seconds_sum[5m]) / rate(react_component_render_duration_seconds_count[5m])
+```
+
+#### **2. React Component Render Count**
+
+```promql
+rate(react_component_render_duration_seconds_count[5m])
+```
+
+#### **3. React Component 95th Percentile**
+
+```promql
+histogram_quantile(0.95, rate(react_component_render_duration_seconds_bucket[5m]))
+```
+
+#### **4. API Average Response Time**
+
+```promql
+rate(api_response_duration_seconds_sum[5m]) / rate(api_response_duration_seconds_count[5m])
+```
+
+#### **5. API 95th Percentile Response Time**
+
+```promql
+histogram_quantile(0.95, rate(api_response_duration_seconds_bucket[5m]))
+```
+
+### 🔧 Configuration Files
+
+#### **Prometheus Configuration** (`prometheus.yml`)
+
+```yaml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "update-profile"
+    static_configs:
+      - targets: ["localhost:3000"]
+    metrics_path: "/api/metrics"
+```
+
+#### **Grafana Configuration** (`grafana-config.json`)
+
+```json
+{
+  "dashboard": {
+    "title": "Workshop Update Profile Project",
+    "panels": [
+      {
+        "title": "React Component Average Render Time",
+        "type": "timeseries"
+      }
+    ]
+  }
+}
+```
+
+### 📊 Generating Test Data
+
+#### **React Component Metrics**
+
+```bash
+# Generate consistent React metrics data
+node scripts/generate-consistent-react-data.js
+```
+
+#### **API Metrics**
+
+```bash
+# Generate API load for testing
+node scripts/test-performance.js
+```
+
+### 🎨 Dashboard Customization
+
+#### **Legend Format**
+
+Since custom legend format is not available in all Grafana versions, use query comments:
+
+```promql
+# For UsersPage component
+rate(react_component_render_duration_seconds_count{component_name="UsersPage"}[5m]) # UsersPage (users)
+
+# For UserCard component
+rate(react_component_render_duration_seconds_count{component_name="UserCard"}[5m]) # UserCard (users)
+```
+
+#### **Panel Settings**
+
+- **Time Range**: Last 1 hour or Last 6 hours
+- **Refresh**: 10s for real-time updates
+- **Legend**: Auto mode
+- **Tooltip**: All series visible
+
+### 🔍 Troubleshooting
+
+#### **No Data in Grafana**
+
+1. **Check Prometheus Targets**: http://localhost:9090/targets
+2. **Verify Metrics Endpoint**: http://localhost:3000/api/metrics
+3. **Generate Test Data**: Run test scripts
+4. **Check Time Range**: Ensure sufficient time range
+
+#### **React Metrics Not Appearing**
+
+1. **Verify Hook Implementation**: Check `usePerformanceMonitor` usage
+2. **Check Network Requests**: Browser DevTools → Network tab
+3. **Test Metrics Endpoint**: Direct API calls to `/api/metrics/record`
+4. **Generate Data**: Run React metrics test script
+
+#### **Query Issues**
+
+1. **Basic Query Test**: `react_component_render_duration_seconds`
+2. **Check Labels**: Verify component_name and page labels
+3. **Time Range**: Ensure data exists in selected time range
+4. **Prometheus Direct**: Test queries in Prometheus UI
+
+### 🧪 Testing & Quality Assurance
+
+### Test Structure
+
+```
+├── __tests__/                    # Jest Unit Tests
+│   ├── api-stability.test.ts     # API stability (100 requests)
+│   ├── api-login.test.ts         # Login API tests
+│   ├── api-profile.test.ts       # Profile API tests
+│   ├── login.test.tsx            # Login component tests
+│   ├── profile.test.tsx          # Profile component tests
+│   └── update-password.test.tsx  # Password update tests
+├── e2e/                          # Playwright E2E Tests
+│   └── users-stability-performance.spec.ts  # Performance testing (20 iterations)
+└── scripts/
+    └── run-api-stability-test.js # Test runner script
+```
+
+### 🚀 Quick Test Commands
+
+```bash
+# Run all unit tests
+npm test
+
+# Run all E2E tests
+npm run test:e2e
+
+# Run specific test suites
+npm run test:api-stability        # API stability (Jest)
+npm run test:e2e:performance      # Performance testing (Playwright)
+
+# Run with verbose output
+npm run test:api-stability:run    # With detailed logging
+```
+
+### 📊 Test Coverage
+
+#### **API Testing**
+
+- ✅ Login endpoint validation
+- ✅ Profile CRUD operations
+- ✅ Users list with filtering
+- ✅ API stability under load (100 requests)
+- ✅ Response structure validation
+
+#### **Component Testing**
+
+- ✅ Login form functionality
+- ✅ Profile update forms
+- ✅ Password change forms
+- ✅ User list rendering
+
+#### **Performance Testing**
+
+- ✅ Page load time measurement
+- ✅ Before/after refactoring comparison
+- ✅ Stability validation (20 iterations)
+- ✅ Performance classification
+
+### 🎯 API Stability Testing
+
+#### **Test Features**
+
+- **Response Stability**: Ensures all requests return status 200
+- **Data Consistency**: Validates response data consistency across requests
+- **Performance Metrics**: Measures response times and identifies bottlenecks
+- **Concurrent Handling**: Tests multiple simultaneous requests
+- **Error Handling**: Monitors and reports any failures
+
+#### **Test Configuration**
+
+- **Total Requests**: 100 consecutive requests
+- **Concurrent Requests**: 10 simultaneous requests
+- **Timeout**: 5 minutes for main test, 1 minute for concurrent test
+- **Success Rate Threshold**: 90% minimum success rate
+- **Response Time Limit**: 10 seconds maximum per request
+
+#### **Expected Results**
+
+```
+📊 Test Results Summary:
+📈 Success Rate: 100/100 (100.00%)
+❌ Failed Requests: 0
+⏱️  Response Time Statistics:
+   - Average: 245.32ms
+   - Min: 180ms
+   - Max: 320ms
+📊 Data Length Statistics:
+   - Average: 15.00 users
+   - Min: 15 users
+   - Max: 15 users
+```
+
+### 📈 Performance Metrics
+
+The E2E performance test provides:
+
+- **Load Time Statistics**: Average, min, max
+- **Success Rate**: Percentage of successful iterations
+- **Performance Classification**:
+  - ✅ Excellent (< 5s average)
+  - ⚠️ Moderate (5-15s average)
+  - ❌ Poor (> 15s average)
+
+### 🔧 Test Configuration
+
+#### **Jest Configuration**
+
+- **Test Environment**: jsdom
+- **Coverage**: Enabled with multiple reporters
+- **Timeout**: 30 seconds default
+
+#### **Playwright Configuration**
+
+- **Browser**: Chromium (with Chrome fallback)
+- **Timeout**: 1 hour for performance tests
+- **Base URL**: http://localhost:3000
+- **Auto-start**: Next.js dev server
+
+## 🔐 Token Expiration & Auto-Logout
+
+### Features
+
+#### **Token Expiration Monitoring**
+
+- ✅ Monitor token expiration secara real-time
+- ✅ Warning 5 menit sebelum expired
+- ✅ Auto logout ketika token expired
+- ✅ Countdown timer untuk user
+
+#### **Components**
+
+- **`TokenExpirationWarning.tsx`**: Modal warning dengan countdown timer
+- **`SessionTimer.tsx`**: Display session time remaining dengan color coding
+- **`useTokenExpiration.ts`**: Hook untuk monitor token expiration
+
+### Implementation
+
+#### **Token Monitoring**
+
+```typescript
+const { timeRemaining, isExpired, showWarningModal } = useTokenExpiration({
+  warningThreshold: 300, // 5 menit
+  checkInterval: 10000, // 10 detik
+  autoLogout: true,
+});
+```
+
+#### **User Experience**
+
+- **Timer Hijau**: Session masih lama
+- **Timer Kuning**: Session akan expired dalam 15 menit
+- **Timer Merah**: Session akan expired dalam 5 menit
+- **Warning Modal**: Muncul 5 menit sebelum expired dengan countdown 60 detik
+
+#### **Security Features**
+
+- **Token Validation**: Check expiration time setiap request
+- **Auto Cleanup**: Clear localStorage dan sessionStorage
+- **API Protection**: 401 responses dengan specific error codes
+
+## ☁️ Render Database Setup
+
+### Environment Variables untuk Render
+
+```bash
+# Render Database Configuration
+DB_HOST=your-render-db-host.render.com
+DB_PORT=5432
+DB_USER=your-render-db-user
+DB_PASSWORD=your-render-db-password
+DB_NAME=your-render-db-name
+
+# JWT Configuration
+JWT_SECRET=super-secret-key-for-workshop-demo-only
+```
+
+### Commands untuk Render
+
+```bash
+# Create Database di Render
+npm run db-create-render
+
+# Test Connection
+npm run db-test
+```
+
+### Cara Dapatkan Render Database Credentials
+
+1. **Buka Render Dashboard**: https://dashboard.render.com
+2. **Copy Connection String**: External Database URL
+3. **Parse ke Environment Variables**:
+   ```bash
+   # Dari: postgres://user:password@host:port/database
+   # Ke .env.local:
+   DB_HOST=host
+   DB_PORT=port
+   DB_USER=user
+   DB_PASSWORD=password
+   DB_NAME=database
+   ```
+
+### Render Database Limitations
+
+- **Tidak Bisa Create Database**: Render database sudah pre-created
+- **Connection Limits**: Free tier: 1 connection, Paid tier: multiple connections
+- **Data Size**: Free tier: 1GB, Paid tier: lebih besar
+- **Script Differences**: 100 users (reduced dari 1000) untuk Render
+
+### Troubleshooting Render
+
+#### **SSL Error**
+
+```bash
+# Error: SSL/TLS required
+# Solution: Script sudah diupdate dengan SSL config
+npm run db-create-render
+```
+
+#### **Connection Issues**
+
+- Check database status di Render dashboard
+- Verify host dan port
+- Check firewall settings
+- Verify username dan password
 
 ## 📚 Workshop Materials
 
