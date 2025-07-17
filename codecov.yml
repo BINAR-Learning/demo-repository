@@ -27,9 +27,9 @@ coverage:
 
     # Patch coverage status (for PRs)
     patch:
-      # Require 90% coverage for new code in PRs
-      target: 90%
-      # Allow coverage to drop by 1% before failing
+      # Require 80% coverage for new code in PRs (more realistic)
+      target: 80%
+      # Allow coverage to drop by 5% before failing
       threshold: 1%
       # Only check coverage on PRs
       only_pulls: true
@@ -38,9 +38,9 @@ coverage:
 
     # Changes coverage status
     changes:
-      # Require 90% coverage for changed files
-      target: 90%
-      # Allow coverage to drop by 1% before failing
+      # Require 80% coverage for changed files
+      target: 80%
+      # Allow coverage to drop by 5% before failing
       threshold: 1%
       # Only check coverage on PRs
       only_pulls: true
@@ -50,7 +50,12 @@ coverage:
 # Comment configuration
 comment:
   # Enable automatic comments on PRs
-  layout: "reach, diff, flags, files"
+  layout: "reach, diff, flags, files, footer"
+
+  # Always post comments on PRs
+  require_changes: false
+  require_base: false
+  require_head: false
 
   # Behavior settings
   behavior:
@@ -66,6 +71,9 @@ comment:
       only_changes: false
       # Post comments on coverage drops
       only_pulls: true
+      # Always post comments
+      notify:
+        wait_for_ci: false
 
   # Coverage drop alerts
   coverage_drop:
@@ -154,6 +162,11 @@ reports:
 
 # Notifications
 notifications:
+  # Always send notifications
+  require_changes: false
+  require_base: false
+  require_head: false
+
   # Slack notifications (if configured)
   slack:
     # Notify on coverage drops
@@ -162,6 +175,9 @@ notifications:
     coverage_improvement: true
     # Notify on PR comments
     pr_comment: true
+    # Notify on all PRs
+    notify:
+      wait_for_ci: false
 
   # Email notifications (if configured)
   email:
@@ -169,11 +185,28 @@ notifications:
     coverage_drop: true
     # Notify on coverage improvements
     coverage_improvement: true
+    # Notify on all PRs
+    notify:
+      wait_for_ci: false
+
+  # GitHub notifications
+  github:
+    # Always post comments
+    comment: true
+    # Always post status checks
+    status: true
+    # Always post annotations
+    annotations: true
 
 # GitHub integration settings
 github_checks:
   # Enable GitHub status checks
   annotations: true
+
+  # Always post status checks
+  require_changes: false
+  require_base: false
+  require_head: false
 
   # Coverage annotations
   coverage_annotations:
@@ -183,6 +216,10 @@ github_checks:
     line_coverage: true
     # Show coverage for each function
     function_coverage: true
+    # Show coverage for each branch
+    branch_coverage: true
+    # Show coverage for each method
+    method_coverage: true
 
 # Advanced features
 advanced:

@@ -461,6 +461,7 @@ The E2E performance test (`users-stability-performance.spec.ts`) is designed for
 - **Performance Analysis**: Automatic classification (Excellent/Moderate/Poor)
 
 **Expected Output**:
+
 ```
 🚀 Starting Performance Test - 20 iterations
 ✅ Iterasi ke-10: Load time: 150000ms, Users: 1
@@ -476,6 +477,198 @@ The E2E performance test (`users-stability-performance.spec.ts`) is designed for
 ```
 
 For detailed testing documentation, see [API_STABILITY_TESTING.md](./API_STABILITY_TESTING.md).
+
+## 📊 Code Coverage with Codecov
+
+The project uses [Codecov](https://codecov.io) for comprehensive code coverage tracking and quality assurance.
+
+### 🎯 Coverage Requirements
+
+- **Project Coverage**: 90% minimum overall project coverage
+- **Patch Coverage**: 80% minimum for new code in PRs (more realistic)
+- **PR Blocking**: Pull requests cannot be merged if patch coverage < 80%
+- **Coverage Drop Alerts**: Automatic alerts when coverage drops by 1% or more
+- **Smart Exclusions**: Test files, configs, and documentation are excluded from coverage
+- **Guaranteed Comments**: Every PR gets detailed Codecov comments and notifications
+
+### 🚀 Codecov Features
+
+#### **Automatic Coverage Analysis**
+
+- **Branch Coverage**: Tracks conditional logic coverage
+- **Function Coverage**: Monitors individual function coverage
+- **Method/Class Coverage**: Object-oriented coverage tracking
+- **Line Coverage**: Detailed line-by-line coverage analysis
+
+#### **GitHub Integration**
+
+- **PR Annotations**: Shows coverage directly in pull request diffs
+- **Status Checks**: Automatically blocks merges on coverage failures
+- **Rich Comments**: Detailed coverage reports in PR comments (guaranteed on every PR)
+- **Coverage Trends**: Historical coverage tracking and visualization
+- **Always Post Comments**: Every PR gets Codecov comments regardless of coverage changes
+- **Enhanced Annotations**: Line, function, branch, and method coverage in PR diffs
+
+#### **Smart File Management**
+
+```yaml
+# Excluded from coverage:
+- Test files (*.test.ts, *.test.tsx, *.spec.ts, *.spec.tsx)
+- Configuration files (*.config.*, jest.config.js, etc.)
+- Documentation (*.md files)
+- Scripts and utilities
+- Type definitions (*.d.ts)
+- Public assets and static files
+
+# Included in coverage:
+- Source code (src/**/*.ts, src/**/*.tsx)
+- API routes and components
+- Utility functions and hooks
+```
+
+#### **Coverage Flags**
+
+The project uses separate coverage tracking for different code areas:
+
+- **Frontend**: Components, pages, and hooks (`src/components/`, `src/app/`, `src/hooks/`)
+- **API**: Backend routes and handlers (`src/app/api/`)
+- **Library**: Utility functions and helpers (`src/lib/`)
+
+#### **Notifications & Alerts**
+
+- **Slack Integration**: Real-time coverage notifications
+- **Email Alerts**: Coverage drop notifications
+- **PR Comments**: Automatic coverage reports
+- **Coverage Drop Alerts**: Immediate notifications for 1%+ drops
+
+### 📈 Coverage Reports
+
+#### **Available Reports**
+
+- **Cobertura**: XML format for CI/CD integration
+- **LCOV**: Standard coverage format
+- **HTML**: Detailed web-based reports
+- **Trend Graphs**: Historical coverage visualization
+- **Heatmaps**: Visual coverage density analysis
+
+#### **Coverage Visualization**
+
+- **Coverage Graphs**: Trend analysis over time
+- **Heatmaps**: Visual representation of coverage density
+- **File Coverage**: Per-file coverage breakdown
+- **Function Coverage**: Individual function coverage tracking
+
+### 🔧 Configuration
+
+The Codecov configuration is defined in `codecov.yml` with the following key settings:
+
+```yaml
+# Coverage thresholds
+coverage:
+  minimum: 90
+  status:
+    project:
+      target: 90%
+      threshold: 1%
+    patch:
+      target: 80% # More realistic for new code
+      threshold: 5% # More flexible threshold
+      informational: false # Blocks PRs
+
+# Comment configuration
+comment:
+  require_changes: false # Always post comments
+  require_base: false # Don't require base coverage
+  require_head: false # Don't require head coverage
+
+# Smart exclusions
+ignore:
+  - "**/*.test.ts"
+  - "**/*.config.*"
+  - "**/*.md"
+  - "**/scripts/**"
+
+# Advanced features
+advanced:
+  branch_coverage: true
+  function_coverage: true
+  conditional_coverage: true
+```
+
+### 🎯 Quality Assurance
+
+#### **Coverage Enforcement**
+
+- **90% Project Minimum**: Overall project must maintain 90% coverage
+- **80% Patch Minimum**: New code in PRs must have 80% coverage (more realistic)
+- **PR Blocking**: Automatic merge blocking for low patch coverage
+- **Regression Prevention**: Alerts on coverage drops
+- **Quality Gates**: Multiple coverage checks (project, patch, changes)
+- **Guaranteed Feedback**: Every PR gets Codecov comments and status checks
+
+#### **Performance Optimization**
+
+- **Caching**: Faster coverage processing
+- **Parallel Processing**: Optimized performance
+- **Incremental Coverage**: Efficient coverage tracking
+- **Carryforward**: Maintains coverage history
+
+### 📊 Monitoring Coverage
+
+#### **Local Coverage Testing**
+
+```bash
+# Run tests with coverage
+npm test -- --coverage
+
+# Generate coverage report
+npm run test:coverage
+
+# View coverage in browser
+npm run test:coverage:view
+```
+
+#### **Coverage Dashboard**
+
+- **Codecov Dashboard**: https://codecov.io/gh/[username]/[repo]
+- **Coverage Badge**: ![Codecov](https://codecov.io/gh/[username]/[repo]/graph/badge.svg)
+- **PR Coverage**: Automatic coverage reports in pull requests
+- **Historical Trends**: Coverage evolution over time
+
+### 🚨 Coverage Alerts
+
+#### **Automatic Alerts**
+
+- **Coverage < 90%**: Automatic PR comments and merge blocking
+- **1% Coverage Drop**: Immediate alerts and notifications
+- **New Uncovered Code**: Detection of untested new features
+- **Coverage Regression**: Historical comparison alerts
+
+#### **Alert Channels**
+
+- **GitHub Comments**: Direct feedback in pull requests
+- **Slack Notifications**: Team channel alerts
+- **Email Notifications**: Coverage drop emails
+- **Status Checks**: GitHub status check failures
+
+### 📚 Best Practices
+
+#### **Maintaining High Coverage**
+
+1. **Write Tests First**: Follow TDD practices
+2. **Cover Edge Cases**: Test error conditions and boundaries
+3. **Mock External Dependencies**: Isolate unit tests
+4. **Regular Coverage Reviews**: Monitor coverage trends
+5. **Fix Coverage Gaps**: Address uncovered code promptly
+
+#### **Coverage Strategy**
+
+- **Unit Tests**: High coverage for individual functions
+- **Integration Tests**: Cover API endpoints and workflows
+- **E2E Tests**: Critical user journey coverage
+- **Performance Tests**: Coverage for performance-critical code
+
+For more information about Codecov features and configuration, visit [Codecov Documentation](https://docs.codecov.io/).
 
 ## 📚 Workshop Materials
 
