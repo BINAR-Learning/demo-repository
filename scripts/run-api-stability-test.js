@@ -5,7 +5,7 @@ const path = require("path");
 
 console.log("🚀 Starting API Stability Test Suite");
 console.log("=".repeat(60));
-console.log("This test will simulate 100 requests to /api/users");
+console.log("This test will simulate 20 requests to /api/users");
 console.log("and validate response stability and performance.");
 console.log("=".repeat(60));
 

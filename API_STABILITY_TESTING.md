@@ -28,6 +28,9 @@ This project includes automated testing to validate the stability and performanc
 ```bash
 # Run the complete API stability test suite
 npm run test:api-stability:run
+
+# Run E2E performance test (20 iterations)
+npm run test:e2e:performance
 ```
 
 ### Individual Test Commands
@@ -36,19 +39,31 @@ npm run test:api-stability:run
 # Run only the API stability tests
 npm run test:api-stability
 
+# Run E2E performance tests
+npm run test:e2e:performance
+
 # Run all tests including API stability
 npm test
 ```
 
 ### Test Configuration
 
-The tests are configured in `__tests__/api-stability.test.ts` with the following parameters:
+The tests are configured with the following parameters:
+
+**Jest API Tests** (`__tests__/api-stability.test.ts`):
 
 - **Total Requests**: 100 consecutive requests
 - **Concurrent Requests**: 10 simultaneous requests
 - **Timeout**: 5 minutes for the main test, 1 minute for concurrent test
 - **Success Rate Threshold**: 90% minimum success rate
 - **Response Time Limit**: 10 seconds maximum per request
+
+**Playwright E2E Tests** (`e2e/users-stability-performance.spec.ts`):
+
+- **Total Iterations**: 20 page loads
+- **Timeout**: 1 hour for the entire test
+- **Performance Metrics**: Load time measurement
+- **Validation**: Page content verification
 
 ## Test Scenarios
 

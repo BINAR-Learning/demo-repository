@@ -20,6 +20,7 @@ A Next.js application demonstrating JWT authentication, database integration, an
 - **Enhanced User List**: Display address and division information
 - **Prometheus Metrics**: Real-time monitoring with custom metrics
 - **Grafana Cloud Integration**: Remote write to Grafana Cloud for monitoring
+- **Automated Testing**: Jest unit tests and Playwright E2E performance tests
 
 ## 📋 Prerequisites
 
@@ -413,14 +414,68 @@ For detailed setup instructions, see [PROMETHEUS_SETUP.md](./PROMETHEUS_SETUP.md
 
 ## 🧪 Testing
 
+The project includes comprehensive automated testing with Jest (unit tests) and Playwright (E2E tests).
+
+### Unit Tests (Jest)
+
 ```bash
-# Run all tests
+# Run all unit tests
 npm test
 
 # Run specific test files
 npm test -- --testPathPattern=api-login.test.ts
 npm test -- --testPathPattern=profile.test.tsx
+
+# Run API stability tests
+npm run test:api-stability
+npm run test:api-stability:run
 ```
+
+### E2E Tests (Playwright)
+
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run performance tests (20 iterations)
+npm run test:e2e:performance
+
+# Run with specific browser
+npx playwright test --project=chromium
+```
+
+### Test Coverage
+
+- **API Tests**: Login, profile, users endpoints
+- **Component Tests**: Login form, profile page, user list
+- **Performance Tests**: Load time measurement for before/after refactoring
+- **Stability Tests**: 100 consecutive API calls validation
+
+### Performance Testing
+
+The E2E performance test (`users-stability-performance.spec.ts`) is designed for:
+
+- **Before/After Comparison**: Measure performance before and after refactoring
+- **Load Testing**: 20 iterations to validate stability
+- **Metrics Collection**: Average, min, max load times
+- **Performance Analysis**: Automatic classification (Excellent/Moderate/Poor)
+
+**Expected Output**:
+```
+🚀 Starting Performance Test - 20 iterations
+✅ Iterasi ke-10: Load time: 150000ms, Users: 1
+✅ Iterasi ke-20: Load time: 145000ms, Users: 1
+📊 Performance Test Results:
+📈 Success Rate: 20/20 (100.0%)
+⏱️  Load Time Statistics:
+   - Average: 148000ms
+   - Min: 120000ms
+   - Max: 200000ms
+🎯 Performance Analysis:
+   - ❌ Poor performance (> 15s average) - requires refactoring
+```
+
+For detailed testing documentation, see [API_STABILITY_TESTING.md](./API_STABILITY_TESTING.md).
 
 ## 📚 Workshop Materials
 
