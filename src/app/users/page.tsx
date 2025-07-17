@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
+import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 
 // Bad practice: global variable for API URL
 const API_URL = "http://localhost:3000/api/users";
@@ -26,6 +27,9 @@ interface UserData {
 
 // Bad practice: component with poor naming and no optimization
 export default function UsersPageComponent() {
+  // Add performance monitoring
+  usePerformanceMonitor("UsersPage", "users");
+
   // Bad practice: multiple state variables instead of useReducer
   const [usersData, setUsersData] = useState<UserData[]>([]);
   const [loadingState, setLoadingState] = useState<boolean>(true);
@@ -208,8 +212,10 @@ export default function UsersPageComponent() {
   };
   // sudah di refactor menajdi better : lebih efisien
 
-  // Bad practice: inefficient user card rendering
-  const renderUserCard = (user: UserData, index: number) => {
+  // UserCard component with performance monitoring
+  const UserCard = ({ user, index }: { user: UserData; index: number }) => {
+    usePerformanceMonitor("UserCard", "users");
+
     const cardStyle = {
       border: "1px solid #ddd",
       borderRadius: "8px",
@@ -282,6 +288,11 @@ export default function UsersPageComponent() {
         </div>
       </div>
     );
+  };
+
+  // Bad practice: inefficient user card rendering
+  const renderUserCard = (user: UserData, index: number) => {
+    return <UserCard key={user.id} user={user} index={index} />;
   };
 
   // Bad practice: inefficient pagination controls

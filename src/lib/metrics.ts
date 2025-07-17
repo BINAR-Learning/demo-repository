@@ -9,7 +9,7 @@ import {
 // Enable default metrics collection
 collectDefaultMetrics();
 
-// Custom metrics
+// Legacy metrics (keeping for backward compatibility)
 export const httpRequestsTotal = new Counter({
   name: "http_requests_total",
   help: "Total number of HTTP requests",
@@ -23,6 +23,29 @@ export const httpRequestDuration = new Histogram({
   buckets: [0.1, 0.5, 1, 2, 5, 10, 30, 60, 120, 300],
 });
 
+// Enhanced API metrics
+export const apiResponseTime = new Histogram({
+  name: "api_response_duration_seconds",
+  help: "API endpoint response duration in seconds",
+  labelNames: ["method", "route", "status_code", "endpoint_type"],
+  buckets: [0.1, 0.5, 1, 2, 5, 10, 30, 60, 120, 300],
+});
+
+export const apiRequestsTotal = new Counter({
+  name: "api_requests_total",
+  help: "Total number of API requests",
+  labelNames: ["method", "route", "status_code", "endpoint_type"],
+});
+
+// React Component metrics
+export const reactComponentRenderTime = new Histogram({
+  name: "react_component_render_duration_seconds",
+  help: "React component render duration in seconds",
+  labelNames: ["component_name", "page"],
+  buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 2, 5, 10, 30, 60, 120, 300],
+});
+
+// Other metrics
 export const activeUsers = new Gauge({
   name: "active_users_total",
   help: "Total number of active users",
