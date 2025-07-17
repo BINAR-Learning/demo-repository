@@ -437,7 +437,7 @@ npm run test:api-stability:run
 # Run all E2E tests
 npm run test:e2e
 
-# Run performance tests (20 iterations)
+# Run performance tests with metrics to Prometheus/Grafana
 npm run test:e2e:performance
 
 # Run with specific browser
@@ -457,8 +457,14 @@ The E2E performance test (`users-stability-performance.spec.ts`) is designed for
 
 - **Before/After Comparison**: Measure performance before and after refactoring
 - **Load Testing**: 20 iterations to validate stability
-- **Metrics Collection**: Average, min, max load times
-- **Performance Analysis**: Automatic classification (Excellent/Moderate/Poor)
+- **Metrics to Prometheus**: Sends metrics to `/api/metrics/record`
+- **Grafana Dashboard Updates**: Real-time metrics in dashboard
+- **Metrics Generated**:
+  - `e2e_page_load_duration_seconds` - Page load time
+  - `e2e_user_count` - Number of users loaded
+  - `e2e_test_iteration_total` - Test iteration count
+  - `e2e_test_summary_*` - Summary statistics
+- **Output**: Console logs + Prometheus/Grafana metrics
 
 **Expected Output**:
 
@@ -763,6 +769,16 @@ prometheus --config.file=prometheus.yml
 - `process_resident_memory_bytes` - Memory usage
 - `nodejs_heap_size_total_bytes` - Heap size
 
+#### **E2E Test Metrics**
+
+- `e2e_page_load_duration_seconds` - Page load time in E2E tests
+- `e2e_user_count` - Number of users loaded in E2E tests
+- `e2e_test_iteration_total` - Total E2E test iterations
+- `e2e_test_summary_avg_load_time_seconds` - Average load time summary
+- `e2e_test_summary_min_load_time_seconds` - Minimum load time summary
+- `e2e_test_summary_max_load_time_seconds` - Maximum load time summary
+- `e2e_test_summary_success_rate` - E2E test success rate percentage
+
 ### 🎯 Grafana Dashboard Panels
 
 #### **1. React Component Average Render Time**
@@ -793,6 +809,24 @@ rate(api_response_duration_seconds_sum[5m]) / rate(api_response_duration_seconds
 
 ```promql
 histogram_quantile(0.95, rate(api_response_duration_seconds_bucket[5m]))
+```
+
+#### **6. E2E Page Load Time**
+
+```promql
+e2e_page_load_duration_seconds{test_type="playwright"}
+```
+
+#### **7. E2E Test Success Rate**
+
+```promql
+rate(e2e_test_iteration_total{test_type="playwright", status="success"}[5m]) / rate(e2e_test_iteration_total{test_type="playwright"}[5m]) * 100
+```
+
+#### **8. E2E User Count**
+
+```promql
+e2e_user_count{test_type="playwright"}
 ```
 
 ### 🔧 Configuration Files
@@ -838,17 +872,40 @@ node scripts/generate-consistent-react-data.js
 #### **API Metrics**
 
 ```bash
-# Generate API load for testing
-node scripts/test-performance.js
+# Generate API metrics for Prometheus/Grafana
+node scripts/generate-api-metrics.js
 ```
 
-**Script Features:**
+#### **E2E Test Metrics**
 
-- Tests multiple endpoints: `/api/users`, `/api/profile`, `/api/metrics`
-- 20 total requests with 5 concurrent requests per batch
-- Measures response times and success rates
-- Provides performance classification (Excellent/Moderate/Poor)
-- Detailed error reporting and statistics
+```bash
+# E2E test with metrics to Prometheus/Grafana
+npm run test:e2e:performance
+```
+
+**Script Differences:**
+
+**`generate-api-metrics.js` (API Metrics Generation):**
+
+- Tests public endpoints: `/api/users`, `/api/metrics`
+- 20 total requests with 3 concurrent requests per batch
+- Sends metrics to `/api/metrics/record` endpoint
+- Generates `api_response_duration_seconds` and `api_requests_total` metrics
+- **Updates Prometheus/Grafana dashboard**
+- Note: `/api/profile` excluded (requires authentication)
+
+**E2E Test with Metrics:**
+
+**`users-stability-performance.spec.ts` (E2E with Metrics):**
+
+- 20 iterations of loading `/users` page
+- Sends metrics to `/api/metrics/record` endpoint
+- Generates E2E-specific metrics:
+  - `e2e_page_load_duration_seconds` - Page load time
+  - `e2e_user_count` - Number of users loaded
+  - `e2e_test_iteration_total` - Test iteration count
+  - `e2e_test_summary_*` - Summary statistics
+- **Updates Prometheus/Grafana dashboard**
 
 ### 🎨 Dashboard Customization
 

@@ -1,10 +1,35 @@
 import { test, expect } from "@playwright/test";
 
-test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
+async function sendMetric(
+  baseUrl: string,
+  metricName: string,
+  value: number,
+  labels: Record<string, string> = {}
+) {
+  try {
+    const response = await fetch(`${baseUrl}/api/metrics/record`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        metric: metricName,
+        value: value,
+        labels: labels,
+      }),
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error(`Error sending metric ${metricName}:`, error);
+    return false;
+  }
+}
+
+test("Performance Test with Metrics: buka halaman /users 20x dan kirim metrics ke Prometheus", async ({
   page,
 }) => {
   test.setTimeout(3600000); // 1 jam
 
+  const baseUrl = "http://localhost:3000";
   const results: Array<{
     iteration: number;
     loadTime: number;
@@ -13,7 +38,8 @@ test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
     error?: string;
   }> = [];
 
-  console.log("🚀 Starting Performance Test - 20 iterations");
+  console.log("🚀 Starting Performance Test with Metrics - 20 iterations");
+  console.log("📊 Metrics will be sent to Prometheus/Grafana");
   console.log("=".repeat(60));
 
   for (let i = 1; i <= 20; i++) {
@@ -31,7 +57,6 @@ test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
       const loadTime = Date.now() - startTime;
 
       // Tunggu sampai ada konten users di halaman
-      // Coba berbagai selector yang mungkin ada
       const selectors = [
         "table tbody tr", // Table rows
         '[data-testid="user-item"]', // Test ID
@@ -71,10 +96,43 @@ test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
         }
       }
 
+      // Send metrics to Prometheus
+      const loadTimeSeconds = loadTime / 1000; // Convert to seconds
+
+      // Send page load time metric
+      await sendMetric(
+        baseUrl,
+        "e2e_page_load_duration_seconds",
+        loadTimeSeconds,
+        {
+          page: "users",
+          test_type: "playwright",
+          iteration: i.toString(),
+        }
+      );
+
+      // Send user count metric
+      await sendMetric(baseUrl, "e2e_user_count", userElements, {
+        page: "users",
+        test_type: "playwright",
+        iteration: i.toString(),
+      });
+
+      // Send test iteration metric
+      await sendMetric(baseUrl, "e2e_test_iteration_total", 1, {
+        page: "users",
+        test_type: "playwright",
+        status: "success",
+      });
+
       // Log progress setiap 10 iterasi
       if (i % 10 === 0) {
         console.log(
-          `✅ Iterasi ke-${i}: Load time: ${loadTime}ms, Users: ${userElements} (selector: ${usedSelector})`
+          `✅ Iterasi ke-${i}: Load time: ${loadTime}ms, Users: ${userElements} (selector: ${usedSelector}) - Metrics sent to Prometheus`
+        );
+      } else {
+        console.log(
+          `✅ Iterasi ke-${i}: Load time: ${loadTime}ms, Users: ${userElements} - Metrics sent`
         );
       }
 
@@ -95,8 +153,30 @@ test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
 
+      // Send error metrics
+      const loadTimeSeconds = loadTime / 1000;
+
+      await sendMetric(
+        baseUrl,
+        "e2e_page_load_duration_seconds",
+        loadTimeSeconds,
+        {
+          page: "users",
+          test_type: "playwright",
+          iteration: i.toString(),
+          status: "error",
+        }
+      );
+
+      await sendMetric(baseUrl, "e2e_test_iteration_total", 1, {
+        page: "users",
+        test_type: "playwright",
+        status: "error",
+        error: errorMessage,
+      });
+
       console.log(
-        `❌ Iterasi ke-${i}: Error after ${loadTime}ms - ${errorMessage}`
+        `❌ Iterasi ke-${i}: Error after ${loadTime}ms - ${errorMessage} - Error metrics sent`
       );
 
       results.push({
@@ -124,6 +204,51 @@ test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
     const avgLoadTime = loadTimes.reduce((a, b) => a + b, 0) / loadTimes.length;
     const minLoadTime = Math.min(...loadTimes);
     const maxLoadTime = Math.max(...loadTimes);
+
+    // Send summary metrics
+    await sendMetric(
+      baseUrl,
+      "e2e_test_summary_avg_load_time_seconds",
+      avgLoadTime / 1000,
+      {
+        page: "users",
+        test_type: "playwright",
+        metric_type: "average",
+      }
+    );
+
+    await sendMetric(
+      baseUrl,
+      "e2e_test_summary_min_load_time_seconds",
+      minLoadTime / 1000,
+      {
+        page: "users",
+        test_type: "playwright",
+        metric_type: "minimum",
+      }
+    );
+
+    await sendMetric(
+      baseUrl,
+      "e2e_test_summary_max_load_time_seconds",
+      maxLoadTime / 1000,
+      {
+        page: "users",
+        test_type: "playwright",
+        metric_type: "maximum",
+      }
+    );
+
+    await sendMetric(
+      baseUrl,
+      "e2e_test_summary_success_rate",
+      (successfulResults.length / 20) * 100,
+      {
+        page: "users",
+        test_type: "playwright",
+        metric_type: "success_rate",
+      }
+    );
 
     console.log(
       `📈 Success Rate: ${successfulResults.length}/20 (${(
@@ -159,8 +284,13 @@ test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
   }
 
   console.log("=".repeat(60));
-  console.log("🎉 Performance test completed!");
-  console.log("💡 Use these metrics to compare before/after refactoring");
+  console.log("🎉 Performance test with metrics completed!");
+  console.log("📊 Metrics sent to Prometheus/Grafana:");
+  console.log("   - e2e_page_load_duration_seconds");
+  console.log("   - e2e_user_count");
+  console.log("   - e2e_test_iteration_total");
+  console.log("   - e2e_test_summary_*");
+  console.log("💡 Check Grafana dashboard for E2E test metrics");
 
   // Test assertions
   expect(successfulResults.length).toBeGreaterThan(0);
