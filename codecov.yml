@@ -29,7 +29,7 @@ coverage:
     patch:
       # Require 80% coverage for new code in PRs (more realistic)
       target: 80%
-      # Allow coverage to drop by 5% before failing
+      # Allow coverage to drop by 1% before failing
       threshold: 1%
       # Only check coverage on PRs
       only_pulls: true
@@ -40,10 +40,21 @@ coverage:
     changes:
       # Require 80% coverage for changed files
       target: 80%
-      # Allow coverage to drop by 5% before failing
+      # Allow coverage to drop by 1% before failing
       threshold: 1%
       # Only check coverage on PRs
       only_pulls: true
+      # Block merges if coverage is below threshold
+      informational: false
+
+    # Project coverage status (overall project)
+    project:
+      # Require 90% coverage for overall project
+      target: 90%
+      # Allow coverage to drop by 1% before failing
+      threshold: 1%
+      # Check coverage on all branches
+      only_pulls: false
       # Block merges if coverage is below threshold
       informational: false
 
@@ -83,6 +94,12 @@ comment:
     comment: true
     # Block merges on coverage drops
     fail: true
+    # Compare against base branch
+    base: auto
+    # Compare against project coverage
+    project: auto
+    # Compare against patch coverage
+    patch: auto
 
 # File exclusions and inclusions
 ignore:
@@ -153,6 +170,31 @@ flags:
 # Carry forward coverage from previous commits
 carryforward: true
 
+# Coverage comparison and regression detection
+comparison:
+  # Compare against base branch
+  base: auto
+  
+  # Compare against project coverage
+  project: auto
+  
+  # Compare against patch coverage
+  patch: auto
+  
+  # Compare against changes coverage
+  changes: auto
+  
+  # Enable regression detection
+  regression:
+    # Detect coverage regression
+    enabled: true
+    # Alert on any coverage drop
+    threshold: 0%
+    # Block merges on regression
+    fail: true
+    # Post comments on regression
+    comment: true
+
 # Coverage reports
 reports:
   # Enable coverage reports
@@ -202,11 +244,40 @@ notifications:
 github_checks:
   # Enable GitHub status checks
   annotations: true
-
+  
   # Always post status checks
   require_changes: false
   require_base: false
   require_head: false
+  
+  # Status check configuration
+  status:
+    # Project coverage status check
+    project:
+      # Enable project status check
+      enabled: true
+      # Block merges on failure
+      informational: false
+      # Require this check to pass
+      required: true
+    
+    # Patch coverage status check
+    patch:
+      # Enable patch status check
+      enabled: true
+      # Block merges on failure
+      informational: false
+      # Require this check to pass
+      required: true
+    
+    # Changes coverage status check
+    changes:
+      # Enable changes status check
+      enabled: true
+      # Block merges on failure
+      informational: false
+      # Require this check to pass
+      required: true
 
   # Coverage annotations
   coverage_annotations:

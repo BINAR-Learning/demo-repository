@@ -486,8 +486,13 @@ The project uses [Codecov](https://codecov.io) for comprehensive code coverage t
 
 - **Project Coverage**: 90% minimum overall project coverage
 - **Patch Coverage**: 80% minimum for new code in PRs (more realistic)
-- **PR Blocking**: Pull requests cannot be merged if patch coverage < 80%
-- **Coverage Drop Alerts**: Automatic alerts when coverage drops by 1% or more
+- **Strict PR Blocking**: Pull requests cannot be merged if:
+  - Overall project coverage drops below 90%
+  - New code coverage is below 80%
+  - Coverage drops more than 1% from base branch
+  - Any coverage regression is detected
+- **Coverage Regression Detection**: Automatic blocking when coverage drops by 1% or more
+- **Base Branch Comparison**: Compares against main/master branch to prevent regression
 - **Smart Exclusions**: Test files, configs, and documentation are excluded from coverage
 - **Guaranteed Comments**: Every PR gets detailed Codecov comments and notifications
 
@@ -503,11 +508,13 @@ The project uses [Codecov](https://codecov.io) for comprehensive code coverage t
 #### **GitHub Integration**
 
 - **PR Annotations**: Shows coverage directly in pull request diffs
-- **Status Checks**: Automatically blocks merges on coverage failures
+- **Required Status Checks**: Automatically blocks merges on coverage failures (required: true)
 - **Rich Comments**: Detailed coverage reports in PR comments (guaranteed on every PR)
 - **Coverage Trends**: Historical coverage tracking and visualization
 - **Always Post Comments**: Every PR gets Codecov comments regardless of coverage changes
 - **Enhanced Annotations**: Line, function, branch, and method coverage in PR diffs
+- **Coverage Regression Comments**: Explains why PRs are blocked due to coverage drops
+- **Base Branch Comparison**: Shows coverage difference from main/master branch
 
 #### **Smart File Management**
 
@@ -540,6 +547,8 @@ The project uses separate coverage tracking for different code areas:
 - **Email Alerts**: Coverage drop notifications
 - **PR Comments**: Automatic coverage reports
 - **Coverage Drop Alerts**: Immediate notifications for 1%+ drops
+- **Coverage Regression Alerts**: Automatic blocking and comments for any coverage drop
+- **Base Branch Comparison Alerts**: Notifications when coverage drops below base branch
 
 ### 📈 Coverage Reports
 
@@ -571,15 +580,34 @@ coverage:
       target: 90%
       threshold: 1%
     patch:
-      target: 80% # More realistic for new code
-      threshold: 5% # More flexible threshold
+      target: 80%        # More realistic for new code
+      threshold: 1%      # Strict threshold for regression detection
       informational: false # Blocks PRs
 
 # Comment configuration
 comment:
-  require_changes: false # Always post comments
-  require_base: false # Don't require base coverage
-  require_head: false # Don't require head coverage
+  require_changes: false  # Always post comments
+  require_base: false     # Don't require base coverage
+  require_head: false     # Don't require head coverage
+
+# Coverage comparison and regression detection
+comparison:
+  base: auto             # Compare against base branch
+  regression:
+    enabled: true        # Detect coverage regression
+    threshold: 0%        # Any drop blocks merge
+    fail: true           # Block merges on regression
+    comment: true        # Post comments on regression
+
+# GitHub status checks
+github_checks:
+  status:
+    project:
+      required: true     # Must pass to merge
+    patch:
+      required: true     # Must pass to merge
+    changes:
+      required: true     # Must pass to merge
 
 # Smart exclusions
 ignore:
@@ -601,8 +629,10 @@ advanced:
 
 - **90% Project Minimum**: Overall project must maintain 90% coverage
 - **80% Patch Minimum**: New code in PRs must have 80% coverage (more realistic)
-- **PR Blocking**: Automatic merge blocking for low patch coverage
-- **Regression Prevention**: Alerts on coverage drops
+- **Strict PR Blocking**: Automatic merge blocking for any coverage regression
+- **1% Drop Detection**: Blocks PRs when coverage drops by 1% or more
+- **Base Branch Comparison**: Prevents coverage regression from main/master
+- **Required Status Checks**: All coverage checks must pass to merge PR
 - **Quality Gates**: Multiple coverage checks (project, patch, changes)
 - **Guaranteed Feedback**: Every PR gets Codecov comments and status checks
 
