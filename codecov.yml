@@ -1,0 +1,235 @@
+# Codecov Configuration File
+# Comprehensive coverage rules and features
+
+# Coverage thresholds and rules
+coverage:
+  # Minimum coverage percentage required
+  minimum: 90
+
+  # Precision for coverage calculations (number of decimal places)
+  precision: 2
+
+  # Round coverage to nearest value
+  round: down
+
+  # Coverage status checks
+  status:
+    # Project coverage status
+    project:
+      # Require 90% coverage for project to pass
+      target: 90%
+      # Allow coverage to drop by 1% before failing
+      threshold: 1%
+      # Only check coverage on default branch
+      only_pulls: false
+      # Informational status (won't block merges)
+      informational: false
+
+    # Patch coverage status (for PRs)
+    patch:
+      # Require 90% coverage for new code in PRs
+      target: 90%
+      # Allow coverage to drop by 1% before failing
+      threshold: 1%
+      # Only check coverage on PRs
+      only_pulls: true
+      # Block merges if coverage is below threshold
+      informational: false
+
+    # Changes coverage status
+    changes:
+      # Require 90% coverage for changed files
+      target: 90%
+      # Allow coverage to drop by 1% before failing
+      threshold: 1%
+      # Only check coverage on PRs
+      only_pulls: true
+      # Block merges if coverage is below threshold
+      informational: false
+
+# Comment configuration
+comment:
+  # Enable automatic comments on PRs
+  layout: "reach, diff, flags, files"
+
+  # Behavior settings
+  behavior:
+    # Default behavior for comments
+    default:
+      # Post comments on PRs
+      target: auto
+      # Post comments on commits
+      base: auto
+      # Post comments on status checks
+      informational: true
+      # Post comments on coverage changes
+      only_changes: false
+      # Post comments on coverage drops
+      only_pulls: true
+
+  # Coverage drop alerts
+  coverage_drop:
+    # Alert when coverage drops by 1% or more
+    threshold: 1%
+    # Post alert comments
+    comment: true
+    # Block merges on coverage drops
+    fail: true
+
+# File exclusions and inclusions
+ignore:
+  # Ignore test files from coverage
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/__tests__/**"
+  - "**/e2e/**"
+  - "**/test-results/**"
+  - "**/playwright-report/**"
+
+  # Ignore configuration files
+  - "**/*.config.*"
+  - "**/*.config.js"
+  - "**/*.config.ts"
+  - "**/*.config.mjs"
+  - "jest.config.js"
+  - "jest.setup.js"
+  - "playwright.config.ts"
+  - "next.config.ts"
+  - "postcss.config.mjs"
+  - "eslint.config.mjs"
+  - "tsconfig.json"
+  - "codecov.yml"
+  - "prometheus.yml"
+  - "prometheus.yml.template"
+  - "grafana-config.json"
+
+  # Ignore documentation and scripts
+  - "**/*.md"
+  - "**/scripts/**"
+  - "**/public/**"
+  - "**/env.example"
+  - "**/index.html"
+
+  # Ignore type definitions
+  - "**/*.d.ts"
+
+# Include specific files/directories
+include:
+  - "src/**/*.ts"
+  - "src/**/*.tsx"
+
+# Flags for different types of coverage
+flags:
+  # Frontend coverage
+  frontend:
+    paths:
+      - "src/components/**"
+      - "src/app/**"
+      - "src/hooks/**"
+    carryforward: true
+
+  # API coverage
+  api:
+    paths:
+      - "src/app/api/**"
+    carryforward: true
+
+  # Library coverage
+  lib:
+    paths:
+      - "src/lib/**"
+    carryforward: true
+
+# Carry forward coverage from previous commits
+carryforward: true
+
+# Coverage reports
+reports:
+  # Enable coverage reports
+  - "cobertura"
+  - "lcov"
+  - "html"
+
+# Notifications
+notifications:
+  # Slack notifications (if configured)
+  slack:
+    # Notify on coverage drops
+    coverage_drop: true
+    # Notify on coverage improvements
+    coverage_improvement: true
+    # Notify on PR comments
+    pr_comment: true
+
+  # Email notifications (if configured)
+  email:
+    # Notify on coverage drops
+    coverage_drop: true
+    # Notify on coverage improvements
+    coverage_improvement: true
+
+# GitHub integration settings
+github_checks:
+  # Enable GitHub status checks
+  annotations: true
+
+  # Coverage annotations
+  coverage_annotations:
+    # Show coverage annotations in PR diff
+    enabled: true
+    # Show coverage for each line
+    line_coverage: true
+    # Show coverage for each function
+    function_coverage: true
+
+# Advanced features
+advanced:
+  # Enable branch coverage
+  branch_coverage: true
+
+  # Enable function coverage
+  function_coverage: true
+
+  # Enable line coverage
+  line_coverage: true
+
+  # Enable conditional coverage
+  conditional_coverage: true
+
+  # Enable method coverage
+  method_coverage: true
+
+  # Enable class coverage
+  class_coverage: true
+
+# Coverage visualization
+visualization:
+  # Enable coverage graphs
+  graphs: true
+
+  # Enable coverage heatmaps
+  heatmaps: true
+
+  # Enable coverage trends
+  trends: true
+
+# Security and privacy
+security:
+  # Hide coverage data from public access
+  public_access: false
+
+  # Require authentication for coverage data
+  require_auth: true
+
+# Performance optimization
+performance:
+  # Enable caching
+  cache: true
+
+  # Enable parallel processing
+  parallel: true
+
+  # Enable incremental coverage
+  incremental: true
