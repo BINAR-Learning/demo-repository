@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 interface User {
@@ -15,35 +15,48 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    // Bad practice: checking token on every render without memoization
-    const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          // Bad practice: decoding JWT without proper verification
-          const payload = JSON.parse(atob(token.split(".")[1]));
-          setUser({
-            userId: payload.userId,
-            username: payload.username,
-            email: payload.email,
-            fullName: payload.fullName,
-          });
-        } catch (error) {
-          console.error("Token decode error:", error);
-          localStorage.removeItem("token");
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    };
+  // Memoized token validation function
+  const validateToken = useCallback((token: string): User | null => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
 
-    checkAuth();
+      // Check if token is expired
+      if (payload.exp && payload.exp < currentTime) {
+        localStorage.removeItem("token");
+        return null;
+      }
+
+      return {
+        userId: payload.userId,
+        username: payload.username,
+        email: payload.email,
+        fullName: payload.fullName,
+      };
+    } catch (error) {
+      console.error("Token decode error:", error);
+      localStorage.removeItem("token");
+      return null;
+    }
   }, []);
 
-  const login = (token: string, userData: any) => {
+  // Memoized auth check to prevent unnecessary re-computations
+  const checkAuth = useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const userData = validateToken(token);
+      setUser(userData);
+    } else {
+      setUser(null);
+    }
+    setLoading(false);
+  }, [validateToken]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  const login = useCallback((token: string, userData: any) => {
     localStorage.setItem("token", token);
     setUser({
       userId: userData.id,
@@ -51,36 +64,48 @@ export function useAuth() {
       email: userData.email,
       fullName: userData.fullName,
     });
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem("token");
     setUser(null);
     router.push("/login");
-  };
+  }, [router]);
 
-  const requireAuth = (redirectTo = "/login") => {
-    if (!loading && !user) {
-      router.push(redirectTo);
-      return false;
-    }
-    return true;
-  };
+  const requireAuth = useCallback(
+    (redirectTo = "/login") => {
+      if (!loading && !user) {
+        router.push(redirectTo);
+        return false;
+      }
+      return true;
+    },
+    [loading, user, router]
+  );
 
-  const requireGuest = (redirectTo = "/users") => {
-    if (!loading && user) {
-      router.push(redirectTo);
-      return false;
-    }
-    return true;
-  };
+  const requireGuest = useCallback(
+    (redirectTo = "/users") => {
+      if (!loading && user) {
+        router.push(redirectTo);
+        return false;
+      }
+      return true;
+    },
+    [loading, user, router]
+  );
 
-  return {
-    user,
-    loading,
-    login,
-    logout,
-    requireAuth,
-    requireGuest,
-  };
+  // Memoized return value to prevent unnecessary re-renders
+  const authValue = useMemo(
+    () => ({
+      user,
+      loading,
+      login,
+      logout,
+      requireAuth,
+      requireGuest,
+    }),
+    [user, loading, login, logout, requireAuth, requireGuest]
+  );
+
+  return authValue;
 }

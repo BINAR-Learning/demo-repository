@@ -1,189 +1,222 @@
-# 🚀 Prometheus & Grafana Cloud Setup
+# Prometheus & Grafana Setup Guide
 
-Panduan lengkap untuk menghubungkan aplikasi Next.js dengan Prometheus lokal dan Grafana Cloud menggunakan remote write.
+## Masalah: Metrics berhasil dikirim tapi tidak muncul di Grafana
 
-## 📋 Prerequisites
+### Langkah 1: Setup Prometheus
 
-1. **Node.js & npm** - untuk menjalankan aplikasi
-2. **Prometheus** - untuk scraping metrics lokal
-3. **Grafana Cloud Account** - untuk monitoring dan dashboard
+1. **Download Prometheus**
 
-## 🔧 Setup Aplikasi
+   ```bash
+   # Download dari https://prometheus.io/download/
+   # Extract ke folder, misalnya C:\prometheus
+   ```
 
-### 1. Install Dependencies
-```bash
-npm install
-```
+2. **Buat file prometheus.yml**
 
-### 2. Jalankan Aplikasi
-```bash
-npm run dev
-```
+   ```yaml
+   global:
+     scrape_interval: 15s
+     evaluation_interval: 15s
 
-Aplikasi akan berjalan di `http://localhost:3000` dengan endpoint metrics di `/api/metrics`.
+   scrape_configs:
+     - job_name: "prometheus"
+       static_configs:
+         - targets: ["localhost:9090"]
 
-## 📊 Metrics yang Tersedia
+     - job_name: "nextjs-app"
+       metrics_path: /api/metrics
+       static_configs:
+         - targets: ["localhost:3000"]
+       scrape_interval: 15s
+       scrape_timeout: 10s
 
-### HTTP Metrics
-- `http_requests_total` - Total HTTP requests
-- `http_request_duration_seconds` - Request duration
+   # Remote write untuk Grafana Cloud
+   remote_write:
+     - url: https://prometheus-blocks-prod-us-central1.grafana.net/api/prom/push
+       basic_auth:
+         username: YOUR_INSTANCE_ID # Ganti dengan Instance ID dari Grafana Cloud
+         password: YOUR_API_KEY # Ganti dengan API Key dari Grafana Cloud
+       remote_write_relabel_configs:
+         - source_labels: [__name__]
+           regex: ".*"
+           action: keep
+   ```
 
-### Database Metrics
-- `database_query_duration_seconds` - Query execution time
+3. **Jalankan Prometheus**
+   ```bash
+   cd C:\prometheus
+   prometheus.exe --config.file=prometheus.yml
+   ```
 
-### JWT Metrics
-- `jwt_token_generation_duration_seconds` - Token generation time
+### Langkah 2: Setup Grafana Cloud
 
-### System Metrics
-- `process_cpu_seconds_total` - CPU usage
-- `process_resident_memory_bytes` - Memory usage
-- `nodejs_heap_size_total_bytes` - Heap size
+1. **Buat akun Grafana Cloud** di https://grafana.com/
+2. **Dapatkan credentials**:
 
-## 🔧 Setup Prometheus Lokal
+   - Buka Grafana Cloud Dashboard
+   - Pilih Stack → Connections → Prometheus → Remote Write
+   - Copy Instance ID dan API Key
 
-### 1. Download Prometheus
-- Download dari: https://prometheus.io/download/
-- Pilih sesuai OS kamu (Windows, Linux, Mac)
-- Ekstrak ke folder, misal: `C:\prometheus`
+3. **Update prometheus.yml** dengan credentials yang benar
 
-### 2. Konfigurasi Prometheus
-Buat file `prometheus.yml` di folder Prometheus:
+### Langkah 3: Verifikasi Metrics
 
-```yaml
-global:
-  scrape_interval: 15s
+1. **Cek Prometheus UI** (http://localhost:9090):
 
-scrape_configs:
-  - job_name: 'nextjs-app'
-    metrics_path: /api/metrics
-    static_configs:
-      - targets: ['localhost:3000']
+   - Status → Targets → pastikan nextjs-app UP
+   - Graph → cari metrics seperti `http_requests_total`
 
-remote_write:
-  - url: https://prometheus-blocks-prod-us-central1.grafana.net/api/prom/push
-    basic_auth:
-      username: <instance_id>
-      password: <api_key>
-```
+2. **Cek Remote Write**:
+   - Status → Configuration → Remote Write
+   - Pastikan status "UP"
 
-**Ganti `<instance_id>` dan `<api_key>` dengan data dari Grafana Cloud:**
-1. Login ke Grafana Cloud
-2. Buka **Connections** → **Prometheus** → **Prometheus remote write**
-3. Copy URL, username (instance id), dan API key
+### Langkah 4: Buat Dashboard di Grafana
 
-### 3. Jalankan Prometheus
-```bash
-cd C:\prometheus
-prometheus.exe --config.file=prometheus.yml
-```
+1. **Buka Grafana Cloud** → Dashboards → New Dashboard
+2. **Tambah Panel** dengan query berikut:
 
-### 4. Verifikasi Prometheus
-- Buka browser ke: http://localhost:9090
-- Cek menu **Status** → **Targets**
-- Pastikan `nextjs-app` statusnya **UP**
+#### Panel 1: HTTP Request Rate
 
-## 🔗 Setup Grafana Cloud
-
-### 1. Login ke Grafana Cloud
-- Buka https://grafana.com/
-- Login ke account kamu
-
-### 2. Cek Data Source
-- Buka **Connections** → **Data Sources**
-- Cari data source Prometheus kamu
-- Klik **Test** untuk memastikan koneksi OK
-
-### 3. Buat Dashboard
-1. Klik **Dashboards** di sidebar
-2. Klik **New** → **New Dashboard**
-3. Klik **Add visualization**
-
-## 📈 Contoh Dashboard Queries
-
-### Request Rate
 ```
 rate(http_requests_total[5m])
 ```
 
-### 95th Percentile Response Time
+#### Panel 2: HTTP Request Duration (95th percentile)
+
 ```
 histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
 ```
 
-### Database Query Duration
+#### Panel 3: Database Query Duration
+
 ```
 rate(database_query_duration_seconds_sum[5m]) / rate(database_query_duration_seconds_count[5m])
 ```
 
-### Memory Usage
+#### Panel 4: Memory Usage
+
 ```
 process_resident_memory_bytes
 ```
 
-### CPU Usage
+#### Panel 5: CPU Usage
+
 ```
 rate(process_cpu_seconds_total[5m])
 ```
 
-## 🎯 Dashboard Panel Types
+### Langkah 5: Troubleshooting
 
-### Graph Panel
-- Untuk time series data
-- Contoh: Request rate, response time
+#### Jika metrics tidak muncul:
 
-### Stat Panel
-- Untuk single value
-- Contoh: Total requests, memory usage
+1. **Cek Prometheus targets**:
 
-### Table Panel
-- Untuk detailed metrics
-- Contoh: Top endpoints, error rates
+   - Buka http://localhost:9090/targets
+   - Pastikan nextjs-app status UP
 
-## 🔍 Troubleshooting
+2. **Cek metrics endpoint**:
 
-### Prometheus Target DOWN
-1. Pastikan aplikasi Next.js berjalan di port 3000
-2. Cek endpoint `/api/metrics` di browser
-3. Pastikan `metrics_path: /api/metrics` ada di config
+   - Buka http://localhost:3000/api/metrics
+   - Pastikan mengembalikan metrics dalam format Prometheus
 
-### Data Tidak Muncul di Grafana Cloud
-1. Cek log Prometheus untuk error remote write
-2. Pastikan API key dan instance ID benar
-3. Cek firewall/antivirus tidak memblokir koneksi keluar
+3. **Cek remote write logs**:
 
-### Metrics Endpoint Error
-1. Pastikan aplikasi berjalan dengan benar
-2. Cek console untuk error Edge Runtime
-3. Restart aplikasi jika perlu
+   - Lihat console Prometheus untuk error messages
+   - Pastikan credentials Grafana Cloud benar
 
-## 📝 Architecture
+4. **Cek Grafana Cloud**:
+   - Buka Grafana Cloud → Explore
+   - Pilih Prometheus data source
+   - Test query: `up`
 
+#### Jika masih bermasalah:
+
+1. **Restart Prometheus** setelah update config
+2. **Clear browser cache** untuk Grafana
+3. **Check firewall** - pastikan port 9090 tidak diblokir
+4. **Verify timezone** - pastikan timezone konsisten
+
+### Langkah 6: Monitoring Script
+
+Buat script untuk monitoring otomatis:
+
+```javascript
+// scripts/monitor-metrics.js
+const axios = require("axios");
+
+async function checkMetrics() {
+  try {
+    // Check Next.js metrics
+    const metrics = await axios.get("http://localhost:3000/api/metrics");
+    console.log("✅ Next.js metrics endpoint OK");
+
+    // Check Prometheus targets
+    const targets = await axios.get("http://localhost:9090/api/v1/targets");
+    const nextjsTarget = targets.data.data.activeTargets.find(
+      (t) => t.labels.job === "nextjs-app"
+    );
+
+    if (nextjsTarget && nextjsTarget.health === "up") {
+      console.log("✅ Prometheus target UP");
+    } else {
+      console.log("❌ Prometheus target DOWN");
+    }
+  } catch (error) {
+    console.error("❌ Error checking metrics:", error.message);
+  }
+}
+
+// Run every 30 seconds
+setInterval(checkMetrics, 30000);
+checkMetrics();
 ```
-Next.js App (localhost:3000)
-    ↓ /api/metrics
-Prometheus Local (localhost:9090)
-    ↓ remote_write
-Grafana Cloud
+
+### Langkah 7: Otomatisasi Setup
+
+Buat script untuk setup otomatis:
+
+```bash
+# scripts/setup-monitoring.bat
+@echo off
+echo Setting up Prometheus and Grafana monitoring...
+
+REM Download Prometheus if not exists
+if not exist "C:\prometheus\prometheus.exe" (
+    echo Downloading Prometheus...
+    powershell -Command "Invoke-WebRequest -Uri 'https://github.com/prometheus/prometheus/releases/download/v2.45.0/prometheus-2.45.0.windows-amd64.zip' -OutFile 'prometheus.zip'"
+    powershell -Command "Expand-Archive -Path 'prometheus.zip' -DestinationPath 'C:\'"
+    move "C:\prometheus-2.45.0.windows-amd64\*" "C:\prometheus\"
+    rmdir "C:\prometheus-2.45.0.windows-amd64"
+    del prometheus.zip
+)
+
+REM Copy config
+copy prometheus.yml C:\prometheus\prometheus.yml
+
+REM Start Prometheus
+echo Starting Prometheus...
+start "Prometheus" C:\prometheus\prometheus.exe --config.file=C:\prometheus\prometheus.yml
+
+echo Setup complete! Check http://localhost:9090
 ```
 
-## 🎉 Keuntungan Setup Ini
+### Troubleshooting Checklist:
 
-✅ **Lebih reliable** - tidak ada masalah URL berubah  
-✅ **Lebih aman** - tidak expose endpoint ke internet  
-✅ **Lebih cepat** - koneksi lokal  
-✅ **Lebih sederhana** - tidak perlu ngrok  
-✅ **Real-time monitoring** - data langsung masuk ke Grafana Cloud  
+- [ ] Prometheus berjalan di port 9090
+- [ ] Next.js app berjalan di port 3000
+- [ ] Metrics endpoint `/api/metrics` accessible
+- [ ] Prometheus target status UP
+- [ ] Grafana Cloud credentials benar
+- [ ] Remote write status UP
+- [ ] Dashboard query menggunakan data source yang benar
+- [ ] Time range di Grafana sesuai (last 1 hour/6 hours)
+- [ ] Metrics memiliki data (tidak kosong)
 
-## 🚀 Next Steps
+### Metrics yang Harus Muncul:
 
-1. **Setup Alerting** - Buat alert untuk threshold tertentu
-2. **Custom Dashboard** - Buat dashboard sesuai kebutuhan
-3. **Performance Optimization** - Monitor dan optimize berdasarkan metrics
-4. **Log Integration** - Tambahkan log monitoring dengan Loki
-
-## 📚 Referensi
-
-- [Prometheus Documentation](https://prometheus.io/docs/)
-- [Grafana Cloud Documentation](https://grafana.com/docs/grafana-cloud/)
-- [Prometheus Remote Write](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write)
-- [Grafana Cloud Remote Write](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/prometheus/remote-write/) 
+1. `http_requests_total` - Total HTTP requests
+2. `http_request_duration_seconds` - Request duration
+3. `database_query_duration_seconds` - Database query time
+4. `process_resident_memory_bytes` - Memory usage
+5. `process_cpu_seconds_total` - CPU usage
+6. `active_users_total` - Active users count

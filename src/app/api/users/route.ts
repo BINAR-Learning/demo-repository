@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
 import { executeQuery } from "@/lib/database";
+import {
+  httpRequestsTotal,
+  httpRequestDuration,
+  databaseQueryDuration,
+} from "@/lib/metrics";
 
 export async function GET(request: Request) {
   console.time("Users API Execution");
+  const start = Date.now();
+  const method = request.method;
+  const route = "/api/users";
 
   try {
     // Bad practice: extract query params manually without proper parsing
@@ -75,7 +83,10 @@ export async function GET(request: Request) {
 
     query += ` ORDER BY u.created_at DESC`;
 
+    const dbStart = Date.now();
     const result = await executeQuery(query);
+    const dbDuration = (Date.now() - dbStart) / 1000;
+    databaseQueryDuration.observe({ query_type: "users_query" }, dbDuration);
 
     // Bad practice: processing all data in memory with complex transformations
     const users = result.rows.map((user: any) => {
@@ -149,29 +160,62 @@ export async function GET(request: Request) {
     });
 
     // Bad practice: additional processing after mapping
-    const activeUsers = users.filter((u) => u.isActive);
-    const seniorUsers = users.filter((u) => u.isSenior);
-    const usersWithCompleteProfiles = users.filter(
-      (u) => u.profileCompleteness > 75
+    // const activeUsers = users.filter((u) => u.isActive);
+    // const seniorUsers = users.filter((u) => u.isSenior);
+    // const usersWithCompleteProfiles = users.filter(
+    //   (u) => u.profileCompleteness > 75
+    // );
+    // const usersByDivision = users.reduce((acc, user) => {
+    //   acc[user.division] = (acc[user.division] || 0) + 1;
+    //   return acc;
+    // }, {} as Record<string, number>);
+
+    // [Imam] - refactored simplify processing
+    const summary = users.reduce(
+      (acc, user) => {
+        if (user.isActive) acc.activeUsers++;
+        if (user.isSenior) acc.seniorUsers++;
+        if (user.profileCompleteness > 75) acc.usersWithCompleteProfiles++;
+        acc.usersByDivision[user.division] =
+          (acc.usersByDivision[user.division] || 0) + 1;
+        return acc;
+      },
+      {
+        activeUsers: 0,
+        seniorUsers: 0,
+        usersWithCompleteProfiles: 0,
+        usersByDivision: {} as Record<string, number>,
+      }
     );
-    const usersByDivision = users.reduce((acc, user) => {
-      acc[user.division] = (acc[user.division] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+
+    const {
+      activeUsers: activeUserCount,
+      seniorUsers: seniorUserCount,
+      usersWithCompleteProfiles: usersWithCompleteProfileCount,
+      usersByDivision: summarizedUsersByDivision,
+    } = summary;
+
+    const duration = (Date.now() - start) / 1000;
+    httpRequestDuration.observe({ method, route }, duration);
+    httpRequestsTotal.inc({ method, route, status: "200" });
 
     console.timeEnd("Users API Execution");
     return NextResponse.json({
       users,
       total: users.length,
-      activeUsers: activeUsers.length,
-      seniorUsers: seniorUsers.length,
-      usersWithCompleteProfiles: usersWithCompleteProfiles.length,
-      usersByDivision,
+      activeUsers: activeUserCount,
+      seniorUsers: seniorUserCount,
+      usersWithCompleteProfiles: usersWithCompleteProfileCount,
+      usersByDivision: summarizedUsersByDivision,
       filteredBy: divisionFilter || "all",
       message: "Users retrieved successfully",
     });
   } catch (error) {
     console.error("Users API error:", error);
+    const duration = (Date.now() - start) / 1000;
+    httpRequestDuration.observe({ method, route }, duration);
+    httpRequestsTotal.inc({ method, route, status: "500" });
+
     console.timeEnd("Users API Execution");
     return NextResponse.json(
       { message: "Internal server error." },

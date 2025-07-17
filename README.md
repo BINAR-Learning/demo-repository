@@ -124,8 +124,12 @@ touch .env.local
 
    - Create the `workshop_db` database if it doesn't exist
    - Create all required tables with proper schema
-   - Seed 1000 Indonesian users with realistic data
-   - All users have password: `User123@`
+   - Seed 10,000 Indonesian users with realistic data using faker
+   - Create 3 fixed accounts for testing:
+     - aku123@gmail.com / password123
+     - kamu123@yopmail.com / password123
+     - user123@test.com / password123
+   - All other users have password: `User123@`
 
 ## 🗂️ Database Structure
 
@@ -240,7 +244,7 @@ GET /api/users?division=Marketing
 GET /api/users?division=HR
 ```
 
-**Available Divisions**: Tech, QA, HR, Marketing, Finance, Sales, Operations, Legal, Design, Product
+**Available Divisions**: HR, Tech, Finance, Ops
 
 #### Profile API Response
 
@@ -379,11 +383,13 @@ The application exposes custom metrics at `/api/metrics`:
 ### Quick Start
 
 1. **Start the application**
+
    ```bash
    npm run dev
    ```
 
 2. **Setup Prometheus**
+
    - Download from https://prometheus.io/download/
    - Copy `prometheus.yml.template` to Prometheus folder
    - Update with your Grafana Cloud credentials

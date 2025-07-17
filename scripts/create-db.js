@@ -1,5 +1,6 @@
 const { Pool } = require("pg");
 const crypto = require("crypto");
+const { faker } = require("@faker-js/faker");
 
 // Load environment variables
 require("dotenv").config({ path: ".env.local" });
@@ -41,262 +42,7 @@ function hashPassword(password) {
   return crypto.createHash("sha256").update(password).digest("hex");
 }
 
-// Indonesian names and data for realistic user generation
-const indonesianNames = {
-  male: [
-    "Ahmad",
-    "Budi",
-    "Candra",
-    "Dedi",
-    "Eko",
-    "Fajar",
-    "Gunawan",
-    "Hadi",
-    "Indra",
-    "Joko",
-    "Kusuma",
-    "Lukman",
-    "Maman",
-    "Nugroho",
-    "Oscar",
-    "Prabowo",
-    "Rudi",
-    "Sukarno",
-    "Tono",
-    "Ujang",
-    "Wahyu",
-    "Yanto",
-    "Zainal",
-    "Ade",
-    "Bambang",
-    "Cecep",
-    "Darmawan",
-    "Edy",
-    "Firman",
-    "Gatot",
-    "Hendra",
-    "Iwan",
-    "Jaya",
-    "Kartika",
-    "Lukas",
-    "Mulyadi",
-    "Nugraha",
-    "Oki",
-    "Purnama",
-    "Rahmat",
-    "Samsul",
-    "Taufik",
-    "Udin",
-    "Wawan",
-    "Yusuf",
-    "Asep",
-    "Bakti",
-    "Cahya",
-    "Doni",
-    "Erik",
-  ],
-  female: [
-    "Siti",
-    "Rina",
-    "Dewi",
-    "Nina",
-    "Yuni",
-    "Sari",
-    "Maya",
-    "Lina",
-    "Dina",
-    "Eka",
-    "Fitri",
-    "Gita",
-    "Hani",
-    "Indah",
-    "Juli",
-    "Kartika",
-    "Lusi",
-    "Mira",
-    "Nia",
-    "Oki",
-    "Putri",
-    "Rini",
-    "Sukiyem",
-    "Tika",
-    "Umi",
-    "Vina",
-    "Wati",
-    "Yani",
-    "Zahra",
-    "Aisyah",
-    "Bunga",
-    "Citra",
-    "Dinda",
-    "Eva",
-    "Fina",
-    "Gadis",
-    "Hilda",
-    "Indri",
-    "Juwita",
-    "Kartini",
-    "Lestari",
-    "Murni",
-    "Nurul",
-    "Oktavia",
-    "Puspita",
-    "Ratna",
-    "Saminem",
-    "Tuti",
-    "Uswah",
-    "Vivi",
-    "Widya",
-    "Yulia",
-    "Zahira",
-    "Aida",
-    "Bella",
-    "Cinta",
-    "Dara",
-    "Elsa",
-    "Fika",
-    "Gina",
-  ],
-  surnames: [
-    "Saputra",
-    "Wijaya",
-    "Purnama",
-    "Kusuma",
-    "Nugraha",
-    "Rahmat",
-    "Surya",
-    "Pratama",
-    "Hidayat",
-    "Wibowo",
-    "Siregar",
-    "Nasution",
-    "Lubis",
-    "Harahap",
-    "Siregar",
-    "Nasution",
-    "Lubis",
-    "Harahap",
-    "Siregar",
-    "Nasution",
-    "Ginting",
-    "Tarigan",
-    "Sembiring",
-    "Sinaga",
-    "Sitepu",
-    "Purba",
-    "Saragih",
-    "Sianturi",
-    "Manurung",
-    "Sitorus",
-    "Simanjuntak",
-    "Sihombing",
-    "Panggabean",
-    "Silitonga",
-    "Sihotang",
-    "Samosir",
-    "Situmorang",
-    "Sibagariang",
-    "Siboro",
-    "Sihite",
-    "Siahaan",
-    "Simatupang",
-    "Siregar",
-    "Nasution",
-    "Lubis",
-    "Harahap",
-    "Siregar",
-    "Nasution",
-    "Lubis",
-    "Harahap",
-  ],
-};
-
-const indonesianBios = [
-  "Suka ngopi di warung kopi tradisional",
-  "Pecinta kuliner Indonesia",
-  "Hobi main badminton di lapangan dekat rumah",
-  "Suka nonton wayang kulit",
-  "Pecinta musik dangdut",
-  "Hobi berkebun di halaman rumah",
-  "Suka masak rendang dan sate",
-  "Pecinta batik dan budaya tradisional",
-  "Hobi main catur di warung kopi",
-  "Suka jalan-jalan ke pasar tradisional",
-  "Pecinta kerajinan tangan",
-  "Hobi memancing di sungai",
-  "Suka nonton sinetron Indonesia",
-  "Pecinta makanan pedas",
-  "Hobi berkumpul dengan keluarga besar",
-  "Suka main gitar dan nyanyi lagu daerah",
-  "Pecinta tanaman hias",
-  "Hobi memasak untuk keluarga",
-  "Suka nonton pertandingan sepak bola",
-  "Pecinta wisata kuliner",
-  "Hobi berkebun sayuran",
-  "Suka main kartu dengan tetangga",
-  "Pecinta lagu-lagu lawas Indonesia",
-  "Hobi membuat kerajinan dari bambu",
-  "Suka nonton wayang golek",
-  "Pecinta makanan tradisional",
-  "Hobi berkumpul di pos ronda",
-  "Suka main domino dengan teman",
-  "Pecinta budaya Sunda",
-  "Hobi membuat batik tulis",
-  "Suka nonton pertunjukan wayang",
-  "Pecinta makanan Betawi",
-  "Hobi berkebun bunga",
-  "Suka main angklung",
-  "Pecinta lagu-lagu keroncong",
-  "Hobi membuat kerajinan dari kayu",
-  "Suka nonton pertunjukan tari tradisional",
-  "Pecinta makanan Padang",
-  "Hobi berkumpul di masjid",
-  "Suka main gamelan",
-  "Pecinta budaya Jawa",
-  "Hobi membuat kerajinan dari tanah liat",
-  "Suka nonton pertunjukan ludruk",
-  "Pecinta makanan Manado",
-  "Hobi berkebun buah-buahan",
-  "Suka main kendang",
-  "Pecinta lagu-lagu daerah",
-  "Hobi membuat kerajinan dari rotan",
-  "Suka nonton pertunjukan lenong",
-  "Pecinta makanan Aceh",
-  "Hobi berkumpul di balai desa",
-  "Suka main suling",
-  "Pecinta budaya Minang",
-  "Hobi membuat kerajinan dari kulit",
-];
-
-// Long bio templates for complex data
-const longBioTemplates = [
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.",
-  "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.",
-  "Nulla facilisi. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida. Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a nunc. Nam nec tellus a odio tincidunt auctor a ornare odio. Sed non mauris vitae erat consequat auctor eu in elit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris in erat justo. Nullam ac urna eu felis dapibus condimentum sit amet a augue. Sed non neque elit. Sed ut imperdiet nisi. Proin condimentum fermentum nunc. Etiam pharetra, erat sed fermentum feugiat, velit mauris egestas quam, ut aliquam massa nisl quis neque. Suspendisse in orci enim.",
-  "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Proin eget tortor risus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Curabitur aliquet quam id dui posuere blandit. Nulla quis lorem ut libero malesuada feugiat. Nulla quis lorem ut libero malesuada feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Proin eget tortor risus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Curabitur aliquet quam id dui posuere blandit. Nulla quis lorem ut libero malesuada feugiat. Nulla quis lorem ut libero malesuada feugiat.",
-  "Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquet quam id dui posuere blandit. Nulla quis lorem ut libero malesuada feugiat. Nulla quis lorem ut libero malesuada feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Proin eget tortor risus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Curabitur aliquet quam id dui posuere blandit. Nulla quis lorem ut libero malesuada feugiat. Nulla quis lorem ut libero malesuada feugiat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.",
-];
-
-const domains = [
-  "gmail.com",
-  "yahoo.com",
-  "hotmail.com",
-  "outlook.com",
-  "yandex.com",
-];
-
-const divisions = [
-  "Tech",
-  "QA",
-  "HR",
-  "Marketing",
-  "Finance",
-  "Sales",
-  "Operations",
-  "Legal",
-  "Design",
-  "Product",
-];
+const divisions = ["HR", "Tech", "Finance", "Ops"];
 
 const roles = ["admin", "user", "moderator", "editor", "viewer"];
 
@@ -316,142 +62,150 @@ function generateRandomDate(start, end) {
   );
 }
 
-function generateLongBio() {
-  const template =
-    longBioTemplates[Math.floor(Math.random() * longBioTemplates.length)];
-  // Add some variation to make it more realistic
-  const variations = [
-    " Selain itu, saya juga suka berkebun dan memasak.",
-    " Di waktu luang, saya sering membaca buku dan menonton film.",
-    " Saya aktif di komunitas lokal dan sering mengikuti kegiatan sosial.",
-    " Hobi saya adalah traveling dan fotografi.",
-    " Saya suka belajar hal-hal baru dan mengikuti perkembangan teknologi.",
-  ];
-  return template + variations[Math.floor(Math.random() * variations.length)];
-}
+function generateIndonesianUserWithFaker(index) {
+  // Generate realistic Indonesian user data with faker
+  const fullName = faker.person.fullName();
+  const baseUsername = faker.internet.username({
+    firstName: fullName.split(" ")[0],
+  });
+  const username = `${baseUsername}_${index}`;
 
-function generateProfileJson() {
-  const profileTypes = [
-    {
-      social_media: {
-        instagram: `user_${Math.floor(Math.random() * 9999)}`,
-        twitter: `@user_${Math.floor(Math.random() * 9999)}`,
-        linkedin: `user-${Math.floor(Math.random() * 9999)}`,
-      },
-      preferences: {
-        theme: Math.random() > 0.5 ? "dark" : "light",
-        language: "id",
-        notifications: Math.random() > 0.5,
-      },
-      skills: ["JavaScript", "React", "Node.js", "PostgreSQL"],
-      interests: ["Technology", "Music", "Sports", "Travel"],
-    },
-    {
-      contact_info: {
-        emergency_contact: `+62${
-          Math.floor(Math.random() * 900000000) + 100000000
-        }`,
-        address: {
-          street: `Jl. ${
-            ["Mangga", "Jeruk", "Apel", "Pisang"][Math.floor(Math.random() * 4)]
-          } No. ${Math.floor(Math.random() * 100) + 1}`,
-          city: ["Jakarta", "Bandung", "Surabaya", "Medan", "Semarang"][
-            Math.floor(Math.random() * 5)
-          ],
-          postal_code: Math.floor(Math.random() * 90000) + 10000,
-        },
-      },
-      work_info: {
-        department: divisions[Math.floor(Math.random() * divisions.length)],
-        position: ["Junior", "Senior", "Lead", "Manager"][
-          Math.floor(Math.random() * 4)
-        ],
-        join_date: generateRandomDate(new Date(2015, 0, 1), new Date())
-          .toISOString()
-          .split("T")[0],
-      },
-    },
-    {
-      personal_data: {
-        nationality: "Indonesian",
-        religion: ["Islam", "Kristen", "Katolik", "Hindu", "Buddha"][
-          Math.floor(Math.random() * 5)
-        ],
-        marital_status: Math.random() > 0.5 ? "single" : "married",
-        children: Math.floor(Math.random() * 4),
-      },
-      education: {
-        degree: ["S1", "S2", "S3", "D3"][Math.floor(Math.random() * 4)],
-        major: ["Computer Science", "Engineering", "Business", "Arts"][
-          Math.floor(Math.random() * 4)
-        ],
-        university: ["UI", "ITB", "UGM", "IPB", "ITS"][
-          Math.floor(Math.random() * 5)
-        ],
-      },
-    },
-  ];
-
-  return profileTypes[Math.floor(Math.random() * profileTypes.length)];
-}
-
-function generateIndonesianUser(index) {
-  const isMale = Math.random() > 0.5;
-  const firstName = isMale
-    ? indonesianNames.male[
-        Math.floor(Math.random() * indonesianNames.male.length)
-      ]
-    : indonesianNames.female[
-        Math.floor(Math.random() * indonesianNames.female.length)
-      ];
-
-  const lastName =
-    indonesianNames.surnames[
-      Math.floor(Math.random() * indonesianNames.surnames.length)
-    ];
-  const fullName = `${firstName} ${lastName}`;
-
-  // Make username more unique by adding index and random number
-  const username = `${firstName.toLowerCase()}${index}${Math.floor(
-    Math.random() * 9999
-  )}`;
-  const email = `${username}@${
-    domains[Math.floor(Math.random() * domains.length)]
-  }`;
+  // Generate a base email username and domain
+  const baseEmailUser = baseUsername.toLowerCase();
+  const domain = faker.helpers.arrayElement([
+    "gmail.com",
+    "yahoo.com",
+    "hotmail.com",
+    "outlook.com",
+    "yandex.com",
+  ]);
+  const email = `${baseEmailUser}.${index}@${domain}`;
 
   // All users have password: User123@
   const password = "User123@";
 
-  const birthDate = generateRandomDate(
-    new Date(1960, 0, 1),
-    new Date(2005, 11, 31)
-  );
+  const birthDate = faker.date.birthdate({ min: 18, max: 65, mode: "age" });
 
-  const bio = indonesianBios[Math.floor(Math.random() * indonesianBios.length)];
-  const longBio = generateLongBio();
-  const profileJson = generateProfileJson();
+  // Generate realistic Indonesian bio
+  const bio = faker.lorem.sentence({ min: 10, max: 20 });
+  const longBio = faker.lorem.paragraphs({ min: 2, max: 4 });
 
-  // Generate phone number
-  const phoneNumber = `+62${Math.floor(Math.random() * 900000000) + 100000000}`;
+  // Generate comprehensive profile JSON
+  const profileJson = {
+    social_media: {
+      instagram: faker.internet.username(),
+      twitter: `@${faker.internet.username()}`,
+      linkedin: faker.internet.username(),
+    },
+    preferences: {
+      theme: faker.helpers.arrayElement(["light", "dark"]),
+      language: "id",
+      notifications: faker.datatype.boolean(),
+    },
+    skills: faker.helpers.arrayElements(
+      [
+        "JavaScript",
+        "React",
+        "Node.js",
+        "PostgreSQL",
+        "Python",
+        "Java",
+        "TypeScript",
+        "Vue.js",
+        "Angular",
+        "MongoDB",
+        "MySQL",
+        "Docker",
+        "Kubernetes",
+        "AWS",
+        "Azure",
+        "Git",
+        "Docker",
+        "Jenkins",
+        "Jira",
+      ],
+      { min: 3, max: 6 }
+    ),
+    interests: faker.helpers.arrayElements(
+      [
+        "Technology",
+        "Music",
+        "Sports",
+        "Travel",
+        "Cooking",
+        "Reading",
+        "Photography",
+        "Gaming",
+        "Fitness",
+        "Art",
+        "Movies",
+        "Nature",
+      ],
+      { min: 2, max: 4 }
+    ),
+    personal_data: {
+      nationality: "Indonesian",
+      religion: faker.helpers.arrayElement([
+        "Islam",
+        "Kristen",
+        "Katolik",
+        "Hindu",
+        "Buddha",
+      ]),
+      marital_status: faker.helpers.arrayElement([
+        "single",
+        "married",
+        "divorced",
+      ]),
+      children: faker.number.int({ min: 0, max: 4 }),
+    },
+    education: {
+      degree: faker.helpers.arrayElement(["S1", "S2", "S3", "D3"]),
+      major: faker.helpers.arrayElement([
+        "Computer Science",
+        "Engineering",
+        "Business",
+        "Arts",
+        "Medicine",
+        "Law",
+      ]),
+      university: faker.helpers.arrayElement([
+        "UI",
+        "ITB",
+        "UGM",
+        "IPB",
+        "ITS",
+        "UNPAD",
+        "UNDIP",
+        "UNS",
+      ]),
+    },
+    work_info: {
+      department: faker.helpers.arrayElement(divisions),
+      position: faker.helpers.arrayElement([
+        "Junior",
+        "Senior",
+        "Lead",
+        "Manager",
+        "Director",
+      ]),
+      join_date: faker.date.past({ years: 5 }).toISOString().split("T")[0],
+    },
+  };
 
-  // Generate address
-  const cities = [
-    "Jakarta",
-    "Bandung",
-    "Surabaya",
-    "Medan",
-    "Semarang",
-    "Yogyakarta",
-    "Malang",
-    "Palembang",
-  ];
-  const address = `Jl. ${
-    ["Mangga", "Jeruk", "Apel", "Pisang", "Anggur", "Nanas"][
-      Math.floor(Math.random() * 6)
-    ]
-  } No. ${Math.floor(Math.random() * 100) + 1}, ${
-    cities[Math.floor(Math.random() * cities.length)]
-  }`;
+  // Generate Indonesian phone number (ensure it fits in VARCHAR(20))
+  const phoneNumber = `+62${faker.number.int({
+    min: 800000000,
+    max: 899999999,
+  })}`;
+
+  // Generate Indonesian address
+  const address =
+    faker.location.streetAddress({ useFullAddress: true }) +
+    ", " +
+    faker.location.city() +
+    ", " +
+    faker.location.state();
 
   return {
     username,
@@ -491,7 +245,7 @@ async function createDatabase() {
         await initialPool.query("CREATE DATABASE workshop_db");
         console.log("✅ Database workshop_db created successfully");
       }
-    } catch (error) {
+    } catch {
       console.log("📝 Creating database workshop_db...");
       await initialPool.query("CREATE DATABASE workshop_db");
       console.log("✅ Database workshop_db created successfully");
@@ -583,11 +337,98 @@ async function createDatabase() {
     await workshopPool.query("DELETE FROM auth");
     console.log("✅ Cleared existing data");
 
-    // Step 8: Generate and insert 1000 users
-    console.log("👥 Generating 1000 Indonesian users...");
+    // Step 8: Generate and insert 10,000 users + 3 fixed accounts
+    console.log("👥 Generating 10,000 Indonesian users with faker...");
     const users = [];
-    for (let i = 0; i < 1000; i++) {
-      users.push(generateIndonesianUser(i));
+
+    // Add 3 fixed accounts first
+    const fixedAccounts = [
+      {
+        username: "aku123",
+        fullName: "Aku User",
+        email: "aku123@gmail.com",
+        password: "password123",
+        birthDate: "1990-01-01",
+        bio: "Fixed account for testing",
+        longBio:
+          "This is a fixed account created for testing purposes. User with email aku123@gmail.com and password password123.",
+        profileJson: {
+          social_media: {
+            instagram: "aku123",
+            twitter: "@aku123",
+            linkedin: "aku123",
+          },
+          preferences: {
+            theme: "light",
+            language: "id",
+            notifications: true,
+          },
+          skills: ["Testing", "Development"],
+          interests: ["Technology", "Testing"],
+        },
+        phoneNumber: "+6281234567890",
+        address: "Jl. Testing No. 123, Jakarta",
+      },
+      {
+        username: "kamu123",
+        fullName: "Kamu User",
+        email: "kamu123@yopmail.com",
+        password: "password123",
+        birthDate: "1992-05-15",
+        bio: "Fixed account for testing",
+        longBio:
+          "This is a fixed account created for testing purposes. User with email kamu123@yopmail.com and password password123.",
+        profileJson: {
+          social_media: {
+            instagram: "kamu123",
+            twitter: "@kamu123",
+            linkedin: "kamu123",
+          },
+          preferences: {
+            theme: "dark",
+            language: "id",
+            notifications: false,
+          },
+          skills: ["Testing", "QA"],
+          interests: ["Quality Assurance", "Testing"],
+        },
+        phoneNumber: "+6281234567891",
+        address: "Jl. Testing No. 456, Bandung",
+      },
+      {
+        username: "user123",
+        fullName: "User Test",
+        email: "user123@test.com",
+        password: "password123",
+        birthDate: "1988-12-20",
+        bio: "Fixed account for testing",
+        longBio:
+          "This is a fixed account created for testing purposes. User with email user123@test.com and password password123.",
+        profileJson: {
+          social_media: {
+            instagram: "user123",
+            twitter: "@user123",
+            linkedin: "user123",
+          },
+          preferences: {
+            theme: "light",
+            language: "id",
+            notifications: true,
+          },
+          skills: ["Development", "Testing"],
+          interests: ["Programming", "Technology"],
+        },
+        phoneNumber: "+6281234567892",
+        address: "Jl. Testing No. 789, Surabaya",
+      },
+    ];
+
+    // Add fixed accounts to users array
+    users.push(...fixedAccounts);
+
+    // Generate 10,000 users with faker
+    for (let i = 0; i < 10000; i++) {
+      users.push(generateIndonesianUserWithFaker(i));
     }
 
     // Step 9: Insert auth records first
@@ -698,8 +539,14 @@ async function createDatabase() {
       }
     }
 
-    console.log(`✅ Successfully seeded ${users.length} Indonesian users`);
+    console.log(
+      `✅ Successfully seeded ${users.length} users (10,000 faker + 3 fixed accounts)`
+    );
     console.log("✅ All users have password: User123@");
+    console.log("✅ Fixed accounts created:");
+    console.log("   - aku123@gmail.com / password123");
+    console.log("   - kamu123@yopmail.com / password123");
+    console.log("   - user123@test.com / password123");
     console.log("✅ Database structure updated for sessions 11 & 12");
     console.log("✅ Added NULL and DUPLICATE variations for testing");
     console.log("✅ Database setup completed successfully!");
