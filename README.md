@@ -842,6 +842,14 @@ node scripts/generate-consistent-react-data.js
 node scripts/test-performance.js
 ```
 
+**Script Features:**
+
+- Tests multiple endpoints: `/api/users`, `/api/profile`, `/api/metrics`
+- 20 total requests with 5 concurrent requests per batch
+- Measures response times and success rates
+- Provides performance classification (Excellent/Moderate/Poor)
+- Detailed error reporting and statistics
+
 ### 🎨 Dashboard Customization
 
 #### **Legend Format**
