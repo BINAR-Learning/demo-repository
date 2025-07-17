@@ -11,6 +11,13 @@ const initialPool = new Pool({
   database: "postgres", // Connect to default postgres database first
   password: process.env.DB_PASSWORD || "admin123",
   port: parseInt(process.env.DB_PORT || "5432"),
+  ssl:
+    process.env.DB_HOST && process.env.DB_HOST !== "localhost"
+      ? {
+          rejectUnauthorized: false,
+          require: true,
+        }
+      : false,
 });
 
 // Database configuration for workshop_db
@@ -20,6 +27,13 @@ const workshopPool = new Pool({
   database: process.env.DB_NAME || "workshop_db",
   password: process.env.DB_PASSWORD || "admin123",
   port: parseInt(process.env.DB_PORT || "5432"),
+  ssl:
+    process.env.DB_HOST && process.env.DB_HOST !== "localhost"
+      ? {
+          rejectUnauthorized: false,
+          require: true,
+        }
+      : false,
 });
 
 // Simple hash function to replace bcrypt
