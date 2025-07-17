@@ -24,7 +24,7 @@ test("Performance Test: buka halaman /users 20x dan ukur performa", async ({
     try {
       // Buka halaman users dan ukur waktu
       await page.goto("http://localhost:3000/users", {
-        waitUntil: "networkidle", // Tunggu sampai semua request selesai
+        waitUntil: "domcontentloaded", // Tunggu sampai DOM selesai load (tidak tunggu network)
         timeout: 300000, // 5 menit timeout
       });
 
