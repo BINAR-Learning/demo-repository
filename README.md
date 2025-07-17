@@ -779,6 +779,12 @@ prometheus --config.file=prometheus.yml
 - `e2e_test_summary_max_load_time_seconds` - Maximum load time summary
 - `e2e_test_summary_success_rate` - E2E test success rate percentage
 
+#### **Database Metrics**
+
+- `database_query_duration_seconds` - Database query execution time
+- Query types: `users_query` (for /api/users endpoint)
+- Labels: `query_type` for specific query identification
+
 ### 🎯 Grafana Dashboard Panels
 
 #### **1. React Component Average Render Time**
@@ -829,6 +835,27 @@ rate(e2e_test_iteration_total{test_type="playwright", status="success"}[5m]) / r
 e2e_user_count{test_type="playwright"}
 ```
 
+#### **9. Database Query Duration - /api/users**
+
+```promql
+# Average database query duration for /api/users
+rate(database_query_duration_seconds_sum{query_type="users_query"}[5m]) / rate(database_query_duration_seconds_count{query_type="users_query"}[5m])
+```
+
+#### **10. Database Query 95th Percentile - /api/users**
+
+```promql
+# 95th percentile database query duration for /api/users
+histogram_quantile(0.95, rate(database_query_duration_seconds_bucket{query_type="users_query"}[5m]))
+```
+
+#### **11. Database Query Count - /api/users**
+
+```promql
+# Total database queries for /api/users
+rate(database_query_duration_seconds_count{query_type="users_query"}[5m])
+```
+
 ### 🔧 Configuration Files
 
 #### **Prometheus Configuration** (`prometheus.yml`)
@@ -876,6 +903,13 @@ node scripts/generate-consistent-react-data.js
 node scripts/generate-api-metrics.js
 ```
 
+#### **Database Query Metrics**
+
+```bash
+# Generate database query metrics for /api/users
+node scripts/generate-database-metrics.js
+```
+
 #### **E2E Test Metrics**
 
 ```bash
@@ -894,6 +928,15 @@ npm run test:e2e:performance
 - **Updates Prometheus/Grafana dashboard**
 - Note: `/api/profile` excluded (requires authentication)
 
+**`generate-database-metrics.js` (Database Query Metrics):**
+
+- Tests `/api/users` endpoint specifically for database performance
+- 20 total requests with 3 concurrent requests per batch
+- Sends metrics to `/api/metrics/record` endpoint
+- Generates `database_query_duration_seconds` with `query_type="users_query"`
+- **Updates Prometheus/Grafana dashboard** with database-specific panels
+- Simulates database query timing (80% of API response time)
+
 **E2E Test with Metrics:**
 
 **`users-stability-performance.spec.ts` (E2E with Metrics):**
@@ -908,6 +951,44 @@ npm run test:e2e:performance
 - **Updates Prometheus/Grafana dashboard**
 
 ### 🎨 Dashboard Customization
+
+#### **Adding Database Query Panels**
+
+To add database query performance panels to your Grafana dashboard:
+
+1. **Add New Panel** → **Time series**
+2. **Query Editor** → **PromQL**
+3. **Use these queries:**
+
+**Panel 1: Database Query Average Duration**
+
+```promql
+rate(database_query_duration_seconds_sum{query_type="users_query"}[5m]) / rate(database_query_duration_seconds_count{query_type="users_query"}[5m])
+```
+
+- **Title**: "Database Query Duration - /api/users"
+- **Unit**: seconds
+- **Legend**: "{{query_type}}"
+
+**Panel 2: Database Query 95th Percentile**
+
+```promql
+histogram_quantile(0.95, rate(database_query_duration_seconds_bucket{query_type="users_query"}[5m]))
+```
+
+- **Title**: "Database Query 95th Percentile - /api/users"
+- **Unit**: seconds
+- **Legend**: "95th percentile"
+
+**Panel 3: Database Query Count**
+
+```promql
+rate(database_query_duration_seconds_count{query_type="users_query"}[5m])
+```
+
+- **Title**: "Database Query Count - /api/users"
+- **Unit**: queries/sec
+- **Legend**: "Queries per second"
 
 #### **Legend Format**
 
