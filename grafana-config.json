@@ -73,8 +73,8 @@
           "type": "graph",
           "targets": [
             {
-              "expr": "rate(process_cpu_seconds_total[5m])",
-              "legendFormat": "CPU Usage"
+              "expr": "rate(process_cpu_seconds_total[5m]) * 100",
+              "legendFormat": "CPU Usage (%)"
             }
           ]
         }

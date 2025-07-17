@@ -765,9 +765,9 @@ prometheus --config.file=prometheus.yml
 
 #### **System Metrics**
 
-- `process_cpu_seconds_total` - CPU usage
-- `process_resident_memory_bytes` - Memory usage
-- `nodejs_heap_size_total_bytes` - Heap size
+- `process_cpu_seconds_total` - CPU usage (seconds)
+- `process_resident_memory_bytes` - Memory usage (bytes)
+- `nodejs_heap_size_total_bytes` - Heap size (bytes)
 
 #### **E2E Test Metrics**
 
@@ -854,6 +854,20 @@ histogram_quantile(0.95, rate(database_query_duration_seconds_bucket{query_type=
 ```promql
 # Total database queries for /api/users
 rate(database_query_duration_seconds_count{query_type="users_query"}[5m])
+```
+
+#### **12. CPU Usage (Corrected)**
+
+```promql
+# CPU usage as percentage
+rate(process_cpu_seconds_total[5m]) * 100
+```
+
+#### **13. Memory Usage (MB)**
+
+```promql
+# Memory usage in megabytes
+process_resident_memory_bytes / 1024 / 1024
 ```
 
 ### 🔧 Configuration Files
@@ -989,6 +1003,26 @@ rate(database_query_duration_seconds_count{query_type="users_query"}[5m])
 - **Title**: "Database Query Count - /api/users"
 - **Unit**: queries/sec
 - **Legend**: "Queries per second"
+
+**Panel 4: CPU Usage (Corrected)**
+
+```promql
+rate(process_cpu_seconds_total[5m]) * 100
+```
+
+- **Title**: "CPU Usage"
+- **Unit**: percent (0-100)
+- **Legend**: "CPU Usage (%)"
+
+**Panel 5: Memory Usage (MB)**
+
+```promql
+process_resident_memory_bytes / 1024 / 1024
+```
+
+- **Title**: "Memory Usage"
+- **Unit**: megabytes
+- **Legend**: "Memory (MB)"
 
 #### **Legend Format**
 
