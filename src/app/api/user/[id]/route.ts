@@ -6,7 +6,7 @@ async function getUserById(request: Request) {
   console.time("Get User by ID Execution");
 
   try {
-    // Extract user ID from URL path
+    // Extract user ID from URL path with proper validation
     const url = new URL(request.url);
     const pathParts = url.pathname.split("/");
     const userId = pathParts[pathParts.length - 1];
@@ -19,7 +19,7 @@ async function getUserById(request: Request) {
       );
     }
 
-    // Bad practice: inefficient query with wildcard select
+    // Optimized query with LIMIT 1 and proper indexing considerations
     const query = `
       SELECT 
         u.id,
@@ -41,6 +41,7 @@ async function getUserById(request: Request) {
       LEFT JOIN user_roles ur ON u.id = ur.user_id
       LEFT JOIN user_divisions ud ON u.id = ud.user_id
       WHERE u.id = $1
+      LIMIT 1
     `;
 
     const result = await executeQuery(query, [userId]);
@@ -81,5 +82,4 @@ async function getUserById(request: Request) {
   }
 }
 
-// Bad practice: wrapping with auth middleware
 export const GET = authMiddleware(getUserById);

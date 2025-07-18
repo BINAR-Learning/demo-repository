@@ -13,12 +13,35 @@ export async function GET(request: Request) {
   const route = "/api/users";
 
   try {
-    // Bad practice: extract query params manually without proper parsing
+    // Parse query parameters with proper validation
     const url = new URL(request.url);
     const divisionFilter = url.searchParams.get("division");
+    const page = parseInt(url.searchParams.get("page") || "1");
+    const limit = Math.min(
+      parseInt(url.searchParams.get("limit") || "50"),
+      100
+    ); // Max 100 per page
+    const offset = (page - 1) * limit;
 
-    // Bad practice: extremely inefficient query with multiple joins, subqueries, and no pagination
+    // Optimized query using window functions and proper joins
     let query = `
+      WITH user_stats AS (
+        SELECT 
+          user_id,
+          COUNT(*) as log_count,
+          COUNT(CASE WHEN action = 'login' THEN 1 END) as login_count,
+          COUNT(CASE WHEN action = 'update_profile' THEN 1 END) as update_count,
+          COUNT(CASE WHEN created_at > NOW() - INTERVAL '30 days' THEN 1 END) as recent_logs
+        FROM user_logs 
+        GROUP BY user_id
+      ),
+      user_aggregates AS (
+        SELECT 
+          COUNT(*) OVER() as total_users,
+          COUNT(*) OVER(ORDER BY created_at DESC) as newer_users
+        FROM users
+        LIMIT 1
+      )
       SELECT 
         u.id,
         u.username,
@@ -34,77 +57,73 @@ export async function GET(request: Request) {
         a.email,
         ur.role,
         ud.division_name,
-        -- Bad practice: unnecessary subqueries for demo
-        (SELECT COUNT(*) FROM users) as total_users,
-        (SELECT COUNT(*) FROM users WHERE created_at > u.created_at) as newer_users,
-        (SELECT COUNT(*) FROM user_logs WHERE user_id = u.id) as log_count,
-        (SELECT COUNT(*) FROM user_roles WHERE user_id = u.id) as role_count,
-        (SELECT COUNT(*) FROM user_divisions WHERE user_id = u.id) as division_count,
-        -- Bad practice: more unnecessary subqueries
-        (SELECT COUNT(*) FROM user_logs WHERE action = 'login' AND user_id = u.id) as login_count,
-        (SELECT COUNT(*) FROM user_logs WHERE action = 'update_profile' AND user_id = u.id) as update_count,
-        -- Bad practice: complex nested subqueries
-        (SELECT COUNT(*) FROM user_logs ul 
-         WHERE ul.user_id = u.id 
-         AND ul.created_at > (SELECT MAX(created_at) FROM user_logs WHERE user_id = u.id) - INTERVAL '30 days') as recent_logs,
-        -- Bad practice: unnecessary string operations
-        CONCAT(u.full_name, ' (', COALESCE(ur.role, 'no role'), ')') as display_name,
-        CASE 
-          WHEN u.bio IS NULL THEN 'No bio available'
-          WHEN u.bio = '' THEN 'Empty bio'
-          ELSE u.bio
-        END as bio_display,
-        -- Bad practice: complex JSON operations (fixed for PostgreSQL compatibility)
-        CASE 
-          WHEN u.profile_json IS NOT NULL THEN 
-            CASE 
-              WHEN u.profile_json->'social_media' IS NOT NULL THEN
-                CASE 
-                  WHEN u.profile_json->'social_media'->>'instagram' IS NOT NULL THEN
-                    u.profile_json->'social_media'->>'instagram'
-                  ELSE 'No Instagram'
-                END
-              ELSE 'No social media'
-            END
-          ELSE 'No profile data'
-        END as instagram_handle
+        -- Use window functions instead of correlated subqueries
+        ua.total_users,
+        ua.newer_users,
+        COALESCE(us.log_count, 0) as log_count,
+        CASE WHEN ur.role IS NOT NULL THEN 1 ELSE 0 END as role_count,
+        CASE WHEN ud.division_name IS NOT NULL THEN 1 ELSE 0 END as division_count,
+        COALESCE(us.login_count, 0) as login_count,
+        COALESCE(us.update_count, 0) as update_count,
+        COALESCE(us.recent_logs, 0) as recent_logs,
+        -- Simplified string operations
+        u.full_name || ' (' || COALESCE(ur.role, 'no role') || ')' as display_name,
+        COALESCE(NULLIF(u.bio, ''), 'No bio available') as bio_display,
+        -- Simplified JSON operations
+        COALESCE(
+          u.profile_json->'social_media'->>'instagram',
+          'No Instagram'
+        ) as instagram_handle
       FROM users u
       LEFT JOIN auth a ON u.auth_id = a.id
       LEFT JOIN user_roles ur ON u.id = ur.user_id
       LEFT JOIN user_divisions ud ON u.id = ud.user_id
-      -- Bad practice: unnecessary cross join for demo
-      CROSS JOIN (SELECT 1 as dummy) d
+      LEFT JOIN user_stats us ON u.id = us.user_id
+      CROSS JOIN user_aggregates ua
     `;
 
-    // Bad practice: inefficient filtering without proper indexing
+    // Add WHERE clause with proper parameterization
+    const params: (string | number)[] = [];
+    let paramIndex = 1;
+
     if (divisionFilter && divisionFilter !== "all") {
-      query += ` WHERE ud.division_name = '${divisionFilter}'`;
+      query += ` WHERE ud.division_name = $${paramIndex}`;
+      params.push(divisionFilter);
+      paramIndex++;
     }
 
-    query += ` ORDER BY u.created_at DESC`;
+    // Add pagination
+    query += ` ORDER BY u.created_at DESC LIMIT $${paramIndex} OFFSET $${
+      paramIndex + 1
+    }`;
+    params.push(limit, offset);
 
     const dbStart = Date.now();
-    const result = await executeQuery(query);
+    const result = await executeQuery(query, params);
     const dbDuration = (Date.now() - dbStart) / 1000;
     databaseQueryDuration.observe({ query_type: "users_query" }, dbDuration);
 
-    // Bad practice: processing all data in memory with complex transformations
+    // Simplified data processing
     const users = result.rows.map((user: any) => {
-      // Bad practice: complex data processing in application layer
-      // PostgreSQL JSON type already returns object, no need to parse
-      const profileJson = user.profile_json || null;
-      const socialMedia = profileJson?.social_media || {};
-      const preferences = profileJson?.preferences || {};
-      const skills = profileJson?.skills || [];
-      const interests = profileJson?.interests || [];
+      const profileJson = user.profile_json || {};
 
-      // Bad practice: unnecessary calculations
+      // Calculate derived fields efficiently
       const daysSinceCreated = Math.floor(
         (Date.now() - new Date(user.created_at).getTime()) /
           (1000 * 60 * 60 * 24)
       );
       const isActive = user.log_count > 5;
       const isSenior = user.role === "admin" || user.role === "moderator";
+
+      // Calculate profile completeness
+      const profileFields = [
+        user.bio,
+        user.address,
+        user.phone_number,
+        user.profile_json,
+      ];
+      const profileCompleteness =
+        (profileFields.filter(Boolean).length / 4) * 100;
 
       return {
         id: user.id,
@@ -124,7 +143,7 @@ export async function GET(request: Request) {
         displayName: user.display_name,
         bioDisplay: user.bio_display,
         instagramHandle: user.instagram_handle,
-        // Bad practice: calculated fields that could be computed in SQL
+        // Optimized calculated fields
         totalUsers: user.total_users,
         newerUsers: user.newer_users,
         logCount: user.log_count,
@@ -133,44 +152,24 @@ export async function GET(request: Request) {
         loginCount: user.login_count,
         updateCount: user.update_count,
         recentLogs: user.recent_logs,
-        // Bad practice: application-level calculations
+        // Derived fields
         daysSinceCreated,
         isActive,
         isSenior,
-        socialMedia,
-        preferences,
-        skills,
-        interests,
-        // Bad practice: redundant data
+        socialMedia: profileJson.social_media || {},
+        preferences: profileJson.preferences || {},
+        skills: profileJson.skills || [],
+        interests: profileJson.interests || [],
+        // Boolean flags
         hasProfile: !!user.profile_json,
         hasBio: !!user.bio,
         hasAddress: !!user.address,
         hasPhone: !!user.phone_number,
-        // Bad practice: more redundant calculations
-        profileCompleteness:
-          ([
-            !!user.bio,
-            !!user.address,
-            !!user.phone_number,
-            !!user.profile_json,
-          ].filter(Boolean).length /
-            4) *
-          100,
+        profileCompleteness,
       };
     });
 
-    // Bad practice: additional processing after mapping
-    // const activeUsers = users.filter((u) => u.isActive);
-    // const seniorUsers = users.filter((u) => u.isSenior);
-    // const usersWithCompleteProfiles = users.filter(
-    //   (u) => u.profileCompleteness > 75
-    // );
-    // const usersByDivision = users.reduce((acc, user) => {
-    //   acc[user.division] = (acc[user.division] || 0) + 1;
-    //   return acc;
-    // }, {} as Record<string, number>);
-
-    // [Imam] - refactored simplify processing
+    // Efficient summary calculation
     const summary = users.reduce(
       (acc, user) => {
         if (user.isActive) acc.activeUsers++;

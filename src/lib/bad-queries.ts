@@ -254,7 +254,7 @@ export const processUserDataWithNestedLogic = (user: any) => {
     id: user.id,
     username: user.username,
     fullName: user.full_name,
-    processedData: {},
+    processedData: {} as any,
   };
 
   // Bad practice: deeply nested if-else statements

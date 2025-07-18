@@ -3,124 +3,52 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Navbar from "@/components/Navbar";
+import ProfileForm from "@/components/ProfileForm";
 import { useAuth } from "@/hooks/useAuth";
 import { TokenExpirationWarning } from "@/components/TokenExpirationWarning";
 import { SessionTimer } from "@/components/SessionTimer";
-
-type ProfileErrors = {
-  username?: string;
-  fullName?: string;
-  email?: string;
-  phone?: string;
-  birthDate?: string;
-  bio?: string;
-  longBio?: string;
-  address?: string;
-};
+import { User, ProfileData } from "@/lib/types";
 
 export default function ProfilePage() {
-  const [username, setUsername] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [bio, setBio] = useState("");
-  const [longBio, setLongBio] = useState("");
-  const [address, setAddress] = useState("");
-  const [errors, setErrors] = useState<ProfileErrors>({});
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { user, requireAuth } = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [mode, setMode] = useState<"view" | "edit">("view");
+  const { requireAuth } = useAuth();
 
-  // Bad practice: checking auth on every render
   useEffect(() => {
     requireAuth("/login");
   }, [requireAuth]);
 
-  // Bad practice: fetching user data on every render
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!user) return;
-
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`/api/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const userData = data.user;
-
-          // Bad practice: setting state without validation
-          setUsername(userData.username || "");
-          setFullName(userData.fullName || "");
-          setEmail(userData.email || "");
-          setPhone(userData.phoneNumber || "");
-          // Fix birth date format for input field
-          setBirthDate(
-            userData.birthDate ? userData.birthDate.split("T")[0] : ""
-          );
-          setBio(userData.bio || "");
-          setLongBio(userData.longBio || "");
-          setAddress(userData.address || "");
-        } else {
-          toast.error("Failed to load user data");
-        }
-      } catch (error) {
-        console.error("Fetch user data error:", error);
-        toast.error("Failed to load user data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserData();
-  }, [user]);
+  }, []);
 
-  const validate = () => {
-    const newErrors: ProfileErrors = {};
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    if (username.length < 6) {
-      newErrors.username = "Username must be at least 6 characters.";
-    }
-    if (!fullName) {
-      newErrors.fullName = "Full name is required.";
-    }
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      newErrors.email = "Must be a valid email format.";
-    }
-    if (!/^\d{10,15}$/.test(phone)) {
-      newErrors.phone = "Phone must be 10-15 digits.";
-    }
-    if (birthDate) {
-      const date = new Date(birthDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (date > today) {
-        newErrors.birthDate = "Birth date cannot be in the future.";
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+      } else {
+        toast.error("Failed to load user data");
       }
+    } catch (error) {
+      console.error("Fetch user data error:", error);
+      toast.error("Failed to load user data");
+    } finally {
+      setLoading(false);
     }
-    if (bio.length > 160) {
-      newErrors.bio = "Bio must be 160 characters or less.";
-    }
-    if (longBio.length > 2000) {
-      newErrors.longBio = "Long bio must be 2000 characters or less.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!validate()) {
-      return;
-    }
-
-    const toastId = toast.loading("Updating profile...");
-
+  const handleSubmit = async (formData: ProfileData) => {
+    setSaving(true);
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("/api/profile", {
@@ -129,28 +57,41 @@ export default function ProfilePage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          username,
-          fullName,
-          email,
-          phone,
-          birthDate,
-          bio,
-          longBio,
-          address,
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("Profile updated successfully!", { id: toastId });
+        setUser(data.user);
+        setMode("view");
+        toast.success("Profile updated successfully!");
       } else {
-        toast.error(data.message || "An error occurred.", { id: toastId });
+        if (data.errors) {
+          // Handle validation errors
+          Object.values(data.errors).forEach((error: any) => {
+            toast.error(error);
+          });
+        } else {
+          toast.error(data.message || "An error occurred.");
+        }
+        throw new Error(data.message || "Update failed");
       }
     } catch (error) {
       console.error("Update profile error:", error);
-      toast.error("Network error occurred.", { id: toastId });
+      if (!error.message?.includes("Update failed")) {
+        toast.error("Network error occurred.");
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (mode === "edit") {
+      setMode("view");
+    } else {
+      setMode("edit");
     }
   };
 
@@ -168,179 +109,121 @@ export default function ProfilePage() {
     );
   }
 
+  if (!user) {
+    return (
+      <>
+        <Navbar />
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+          <div className="text-center">
+            <p className="text-gray-600">Failed to load user data</p>
+            <button
+              onClick={fetchUserData}
+              className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
       <TokenExpirationWarning />
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold">Update Profile</h1>
-            <SessionTimer />
+      <div className="min-h-screen bg-gray-100 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  👤 User Profile
+                </h1>
+                <p className="mt-2 text-gray-600">
+                  Manage your profile information and preferences
+                </p>
+              </div>
+              <SessionTimer />
+            </div>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Username
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              {errors.username && (
-                <p className="mt-2 text-sm text-red-600">{errors.username}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="fullName"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Full Name
-              </label>
-              <input
-                id="fullName"
-                type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              {errors.fullName && (
-                <p className="mt-2 text-sm text-red-600">{errors.fullName}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              {errors.email && (
-                <p className="mt-2 text-sm text-red-600">{errors.email}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Phone
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              {errors.phone && (
-                <p className="mt-2 text-sm text-red-600">{errors.phone}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="birthDate"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Birth Date
-              </label>
-              <input
-                id="birthDate"
-                type="date"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-              {errors.birthDate && (
-                <p className="mt-2 text-sm text-red-600">{errors.birthDate}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="address"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Address
-              </label>
-              <textarea
-                id="address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows={3}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Enter your full address"
-              />
-              {errors.address && (
-                <p className="mt-2 text-sm text-red-600">{errors.address}</p>
-              )}
-            </div>
-            <div>
-              <label
-                htmlFor="bio"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Bio (Short)
-              </label>
-              <textarea
-                id="bio"
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                rows={3}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Tell us about yourself (max 160 characters)"
-                maxLength={160}
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                {bio.length}/160 characters
+
+          {/* Profile Form */}
+          <ProfileForm
+            user={user}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            isLoading={saving}
+            mode={mode}
+          />
+
+          {/* Profile History Section */}
+          <div className="mt-8">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                📋 Profile Update History
+              </h3>
+              <p className="text-gray-600">
+                Track your profile changes and maintain a complete audit trail
+                of all updates.
               </p>
-              {errors.bio && (
-                <p className="mt-2 text-sm text-red-600">{errors.bio}</p>
-              )}
+              <div className="mt-4">
+                <button
+                  onClick={() => window.open("/api/profile/history", "_blank")}
+                  className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  View Update History
+                </button>
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor="longBio"
-                className="block text-sm font-medium text-gray-900"
-              >
-                Long Bio (For Sesi 12 Practice)
-              </label>
-              <textarea
-                id="longBio"
-                value={longBio}
-                onChange={(e) => setLongBio(e.target.value)}
-                rows={6}
-                className="block w-full px-3 py-2 mt-1 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Detailed bio for ETL practice (max 2000 characters)"
-                maxLength={2000}
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                {longBio.length}/2000 characters
+          </div>
+
+          {/* Quick Actions */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                📝 Todos
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Manage your tasks and stay organized
               </p>
-              {errors.longBio && (
-                <p className="mt-2 text-sm text-red-600">{errors.longBio}</p>
-              )}
+              <a
+                href="/todos"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors inline-block"
+              >
+                View Todos
+              </a>
             </div>
-            <button
-              type="submit"
-              className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Update Profile
-            </button>
-          </form>
+
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                👥 Users
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Browse and manage user accounts
+              </p>
+              <a
+                href="/users"
+                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors inline-block"
+              >
+                View Users
+              </a>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                🏠 Dashboard
+              </h3>
+              <p className="text-gray-600 mb-4">Return to the main dashboard</p>
+              <a
+                href="/"
+                className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors inline-block"
+              >
+                Go to Dashboard
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </>
