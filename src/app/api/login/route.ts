@@ -5,7 +5,7 @@ import { generateToken } from "@/lib/jwt";
 import { withMetrics } from "@/lib/metrics-middleware";
 
 // Force Node.js runtime for prom-client compatibility
-export const runtime = 'nodejs';
+export const runtime = "nodejs";
 
 const loginHandler = async (request: Request) => {
   console.time("Login API Execution");
@@ -83,6 +83,8 @@ const loginHandler = async (request: Request) => {
       userId: user.user_id,
       email: user.email,
       role: user.role,
+      username: user.username,
+      fullName: user.full_name,
     };
 
     const token = generateToken(tokenPayload);
