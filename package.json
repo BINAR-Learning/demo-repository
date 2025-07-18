@@ -16,7 +16,10 @@
     "db-create-render": "node scripts/create-db-render.js",
     "db-drop": "node scripts/drop-db.js",
     "db-reset": "npm run db-drop && npm run db-create",
-    "dev-with-metrics": "npm run dev"
+    "dev-with-metrics": "npm run dev",
+    "generate-react-data": "node scripts/generate-consistent-react-data.js",
+    "generate-db-metrics": "node scripts/generate-database-metrics.js",
+    "generate-api-metrics": "node scripts/generate-api-metrics.js"
   },
   "dependencies": {
     "@faker-js/faker": "^9.9.0",

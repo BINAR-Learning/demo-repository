@@ -1,4 +1,5 @@
-const fetch = require("node-fetch");
+// Using built-in fetch (available in Node.js 18+)
+// No need to import fetch as it's globally available
 
 async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -110,14 +111,5 @@ async function generateConsistentReactData() {
   console.log(`- Metrics: ${baseUrl}/api/metrics`);
 }
 
-// Check if node-fetch is available
-try {
-  require("node-fetch");
-  generateConsistentReactData();
-} catch (error) {
-  console.log("📦 Installing node-fetch...");
-  const { execSync } = require("child_process");
-  execSync("npm install node-fetch@2", { stdio: "inherit" });
-  console.log("✅ node-fetch installed, running data generation...");
-  generateConsistentReactData();
-}
+// Run the data generation
+generateConsistentReactData().catch(console.error);
