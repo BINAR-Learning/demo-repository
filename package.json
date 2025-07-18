@@ -24,7 +24,7 @@
     "db-clean-users": "node scripts/clean-users.js",
     "db-cleanup": "node scripts/database-cleanup-pipeline.js",
     "db-etl": "node scripts/etl-pipeline.js",
-    "setup-hooks": "bash scripts/setup-git-hooks.sh",
+    "setup-hooks": "powershell -ExecutionPolicy Bypass -File scripts/setup-git-hooks.ps1",
     "db-analyze": "node scripts/database-cleanup-pipeline.js analyze",
     "db-backup": "node scripts/database-cleanup-pipeline.js backup",
     "db-optimize": "node scripts/database-cleanup-pipeline.js optimize"

@@ -118,7 +118,7 @@ class DatabaseCleanupPipeline {
     try {
       const timestamp = new Date()
         .toISOString()
-        .replace(/[:.]/g, "-")
+        .replace(/[:.-]/g, "_")
         .slice(0, 19);
 
       // Backup critical tables
@@ -551,12 +551,12 @@ class DatabaseCleanupPipeline {
       for (const backup of oldBackups.rows) {
         const tableName = backup.table_name;
         const dateMatch = tableName.match(
-          /_backup_(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})/
+          /_backup_(\d{4}_\d{2}_\d{2}T\d{2}_\d{2}_\d{2})/
         );
 
         if (dateMatch) {
           const backupDate = new Date(
-            dateMatch[1].replace(/-/g, ":").replace("T", " ")
+            dateMatch[1].replace(/_/g, ":").replace("T", " ")
           );
 
           if (backupDate < cutoffDate) {
@@ -619,7 +619,7 @@ class DatabaseCleanupPipeline {
       `cleanup-report-${new Date()
         .toISOString()
         .slice(0, 19)
-        .replace(/[:.]/g, "-")}.json`
+        .replace(/[:.-]/g, "_")}.json`
     );
     await fs.writeFile(reportFile, JSON.stringify(report, null, 2));
 

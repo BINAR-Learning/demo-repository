@@ -121,7 +121,7 @@ class ETLPipeline {
     try {
       const timestamp = new Date()
         .toISOString()
-        .replace(/[:.]/g, "-")
+        .replace(/[:.-]/g, "_")
         .slice(0, 19);
       const backupTables = [
         "users",
@@ -692,7 +692,7 @@ class ETLPipeline {
       `etl-report-${new Date()
         .toISOString()
         .slice(0, 19)
-        .replace(/[:.]/g, "-")}.json`
+        .replace(/[:.-]/g, "_")}.json`
     );
     await fs.writeFile(reportFile, JSON.stringify(report, null, 2));
 
