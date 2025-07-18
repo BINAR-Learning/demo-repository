@@ -442,7 +442,42 @@ npm run test:e2e:performance
 
 # Run with specific browser
 npx playwright test --project=chromium
+
+# Run with browser visible (like Cypress)
+npx playwright test --headed
+
+# Run with interactive UI mode (recommended for development)
+npx playwright test --ui
+
+# Debug specific test
+npx playwright test --debug
+
+# Run specific test file
+npx playwright test e2e/login.spec.ts
+npx playwright test e2e/users-stability-performance.spec.ts
 ```
+
+### Playwright Test Modes
+
+| Mode         | Command                        | Description                                 |
+| ------------ | ------------------------------ | ------------------------------------------- |
+| **Headless** | `npm run test:e2e`             | Browser runs in background (fastest)        |
+| **Headed**   | `npx playwright test --headed` | Browser visible, automated execution        |
+| **UI Mode**  | `npx playwright test --ui`     | Interactive mode like Cypress (recommended) |
+| **Debug**    | `npx playwright test --debug`  | Step-by-step debugging with browser         |
+
+### Available E2E Tests
+
+1. **`login.spec.ts`** - Authentication flow testing
+
+   - Valid login with demo credentials
+   - Invalid login rejection
+   - Redirect validation
+
+2. **`users-stability-performance.spec.ts`** - Performance testing
+   - 20 iterations of /users page loading
+   - Metrics sent to Prometheus/Grafana
+   - Performance analysis and reporting
 
 ### Test Coverage
 
@@ -450,6 +485,136 @@ npx playwright test --project=chromium
 - **Component Tests**: Login form, profile page, user list
 - **Performance Tests**: Load time measurement for before/after refactoring
 - **Stability Tests**: 100 consecutive API calls validation
+
+## 📊 Performance Monitoring Scripts
+
+The project includes dedicated scripts for continuous performance monitoring and load testing.
+
+### Available Performance Scripts
+
+```bash
+# React Component Performance Monitoring
+npm run generate-react-data
+
+# Database Performance Testing
+npm run generate-db-metrics
+
+# API Performance Testing
+npm run generate-api-metrics
+```
+
+### 1. React Component Performance Monitoring
+
+**Script**: `scripts/generate-consistent-react-data.js`
+
+**Purpose**: Monitor React component render performance over time
+
+**Features**:
+
+- **Duration**: 30 minutes continuous monitoring
+- **Interval**: Metrics sent every 5 seconds
+- **Components**: UsersPage and UserCard components
+- **Metrics**: `react_component_render_duration_seconds`
+- **Realistic Data**: Simulated render times (0.01-0.06s)
+
+**Usage**:
+
+```bash
+npm run generate-react-data
+```
+
+**Output**:
+
+```
+🚀 Generating Consistent React Metrics Data...
+📊 Will generate data for 30 minutes
+⏱️  Sending metrics every 5 seconds
+🎯 Target components: UsersPage, UserCard
+[14:30:15] Sent 3 metrics (UsersPage: 0.045s, 2 UserCards: ~0.025s each)
+```
+
+### 2. Database Performance Testing
+
+**Script**: `scripts/generate-database-metrics.js`
+
+**Purpose**: Test database performance through API endpoints
+
+**Features**:
+
+- **Load**: 20 requests with 3 concurrent requests per batch
+- **Endpoint**: `/api/users` (database-heavy endpoint)
+- **Metrics**:
+  - `api_response_duration_seconds`
+  - `api_requests_total`
+  - `database_query_duration_seconds`
+- **Analysis**: Average, min, max response times
+
+**Usage**:
+
+```bash
+npm run generate-db-metrics
+```
+
+**Output**:
+
+```
+🚀 Starting Database Query Metrics Generation
+📊 Target: 20 requests to /api/users
+⚡ Concurrency: 3 requests per batch
+✅ Request 1: 0.85s, Users: 1000, DB Query: 0.68s
+📊 Database Query Metrics Results:
+📈 Success Rate: 20/20 (100.0%)
+⏱️  API Response Time:
+   - Average: 0.92s
+   - Min: 0.75s
+   - Max: 1.25s
+```
+
+### 3. API Performance Testing
+
+**Script**: `scripts/generate-api-metrics.js`
+
+**Purpose**: Test API endpoints performance
+
+**Features**:
+
+- **Endpoints**: `/api/users`, `/api/metrics`
+- **Load**: 20 requests per endpoint with 3 concurrent
+- **Metrics**:
+  - `api_response_duration_seconds`
+  - `api_requests_total`
+- **Multi-endpoint**: Tests multiple API endpoints
+
+**Usage**:
+
+```bash
+npm run generate-api-metrics
+```
+
+**Output**:
+
+```
+🚀 Starting API Metrics Generation for Prometheus/Grafana...
+📊 Metrics Generation Configuration:
+   - Total Requests: 20
+   - Concurrent Requests: 3
+   - Endpoints: 2
+🎯 Generating metrics for Users API (GET /api/users)
+✅ Request 1/20 - 0.245s (Status: 200)
+📊 Users API Metrics Generated:
+   - Successful Requests: 20/20
+   - Failed Requests: 0/20
+   - Metrics Sent: 40
+```
+
+### Performance Testing Comparison
+
+| Script Type    | Purpose                      | Load Level   | Concurrent   | Duration    |
+| -------------- | ---------------------------- | ------------ | ------------ | ----------- |
+| **React Data** | UI Performance Monitoring    | Very Light   | Sequential   | 30 minutes  |
+| **Database**   | Database Performance Testing | Light-Medium | 3 concurrent | ~5 minutes  |
+| **API**        | API Endpoint Testing         | Light-Medium | 3 concurrent | ~5 minutes  |
+| **E2E**        | Full System Testing          | Medium       | Sequential   | ~10 minutes |
 
 ### Performance Testing
 
@@ -459,6 +624,7 @@ The E2E performance test (`users-stability-performance.spec.ts`) is designed for
 - **Load Testing**: 20 iterations to validate stability
 - **Metrics to Prometheus**: Sends metrics to `/api/metrics/record`
 - **Grafana Dashboard Updates**: Real-time metrics in dashboard
+- **Authentication**: Includes login flow before testing
 - **Metrics Generated**:
   - `e2e_page_load_duration_seconds` - Page load time
   - `e2e_user_count` - Number of users loaded
@@ -469,17 +635,105 @@ The E2E performance test (`users-stability-performance.spec.ts`) is designed for
 **Expected Output**:
 
 ```
-🚀 Starting Performance Test - 20 iterations
-✅ Iterasi ke-10: Load time: 150000ms, Users: 1
-✅ Iterasi ke-20: Load time: 145000ms, Users: 1
+🚀 Starting Performance Test with Metrics - 20 iterations
+🔐 Logging in user...
+✅ Login successful, redirected to /users
+🔄 Iterasi ke-1: Loading halaman /users...
+✅ Iterasi ke-1: Load time: 115ms, Users: 1 - Metrics sent
 📊 Performance Test Results:
 📈 Success Rate: 20/20 (100.0%)
-⏱️  Load Time Statistics:
-   - Average: 148000ms
-   - Min: 120000ms
-   - Max: 200000ms
+⏱️  Page Load Time:
+   - Average: 125.50ms
+   - Min: 95.00ms
+   - Max: 180.00ms
 🎯 Performance Analysis:
-   - ❌ Poor performance (> 15s average) - requires refactoring
+   - ✅ Excellent performance (< 1s average)
+```
+
+## 🔑 Demo Credentials
+
+For testing and automation, use these credentials:
+
+### Default Test Users
+
+All seeded users have the same password: `User123@`
+
+**Note**: For automated testing, use the fixed test accounts below as they are guaranteed to work.
+
+**Example Users**:
+
+- `aku123@gmail.com` / `password123` ⭐ **Recommended for testing**
+- `kamu123@yopmail.com` / `password123`
+- `user123@test.com` / `password123`
+
+### Fixed Test Accounts
+
+These accounts are created during database seeding:
+
+- `aku123@gmail.com` / `password123` ⭐ **Recommended for automation testing**
+- `kamu123@yopmail.com` / `password123`
+- `user123@test.com` / `password123`
+
+## 🤖 Automation Testing Setup
+
+### Recommended Test Account
+
+For all automated testing (Playwright, performance scripts), use:
+
+- **Email**: `aku123@gmail.com`
+- **Password**: `password123`
+
+This account is guaranteed to work and is used in all test scripts.
+
+## 🚀 Quick Start Guide
+
+### 1. Setup and Run
+
+```bash
+# Install dependencies
+npm install
+
+# Setup database
+npm run db-create
+
+# Start development server
+npm run dev
+```
+
+### 2. Test the Application
+
+```bash
+# Run unit tests
+npm test
+
+# Run E2E tests with browser visible
+npx playwright test --headed
+
+# Run performance monitoring
+npm run generate-react-data
+```
+
+### 3. Monitor Performance
+
+```bash
+# Database performance testing
+npm run generate-db-metrics
+
+# API performance testing
+npm run generate-api-metrics
+
+# E2E performance testing
+npm run test:e2e:performance
+```
+
+### 4. Development with UI Testing
+
+```bash
+# Interactive Playwright UI (like Cypress)
+npx playwright test --ui
+
+# Debug specific test
+npx playwright test --debug
 ```
 
 For detailed testing documentation, see [API_STABILITY_TESTING.md](./API_STABILITY_TESTING.md).
