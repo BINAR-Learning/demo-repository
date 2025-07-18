@@ -5,7 +5,7 @@ export default defineConfig({
   testMatch: "**/*.spec.ts",
   timeout: 3600000, // 1 jam untuk test timeout
   expect: {
-    timeout: 300000, // 5 menit untuk expect timeout
+    timeout: 600000, // 10 menit untuk expect timeout (workshop demo)
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,

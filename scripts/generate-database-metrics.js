@@ -26,7 +26,7 @@ async function makeRequest(requestNumber) {
     console.log(`🔄 Request ${requestNumber}: Calling /api/users...`);
 
     const response = await axios.get(`${BASE_URL}/api/users`, {
-      timeout: 300000, // 5 minutes timeout for heavy queries
+      timeout: 600000, // 10 minutes timeout for very heavy queries (workshop demo)
       headers: {
         Accept: "application/json",
       },

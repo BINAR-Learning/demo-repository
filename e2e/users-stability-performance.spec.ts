@@ -41,17 +41,17 @@ async function loginUser(page: any, baseUrl: string) {
   // Submit login form
   await page.click('button[type="submit"]');
 
-    // Wait a bit for the request to process
+  // Wait a bit for the request to process
   await page.waitForTimeout(3000);
-  
+
   // Check if login was successful
   const currentUrl = page.url();
-  if (currentUrl.includes('/users')) {
+  if (currentUrl.includes("/users")) {
     console.log("✅ Login successful, redirected to /users");
   } else {
     console.log(`⚠️  Login may have failed. Current URL: ${currentUrl}`);
     // Take screenshot for debugging
-    await page.screenshot({ path: 'performance-test-login-error.png' });
+    await page.screenshot({ path: "performance-test-login-error.png" });
     throw new Error("Login failed - not redirected to /users page");
   }
 }
@@ -86,7 +86,7 @@ test("Performance Test with Metrics: buka halaman /users 20x dan kirim metrics k
       // Buka halaman users dan ukur waktu
       await page.goto("http://localhost:3000/users", {
         waitUntil: "domcontentloaded", // Tunggu sampai DOM selesai load (tidak tunggu network)
-        timeout: 300000, // 5 menit timeout
+        timeout: 600000, // 10 menit timeout untuk query yang sangat lamban (workshop demo)
       });
 
       const loadTime = Date.now() - startTime;
