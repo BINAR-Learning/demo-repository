@@ -12,13 +12,19 @@ const pool = new Pool({
   max: 100,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  ssl:
+    process.env.DB_HOST && process.env.DB_HOST !== "localhost"
+      ? {
+          rejectUnauthorized: false,
+        }
+      : false,
 });
 
 // Bad practice: raw SQL queries without proper error handling
 export async function executeQuery(query: string, params: any[] = []) {
   console.time("Database Query Execution");
-  const timer = databaseQueryDuration.startTimer({ query_type: 'general' });
-  
+  const timer = databaseQueryDuration.startTimer({ query_type: "general" });
+
   try {
     const client = await pool.connect();
     const result = await client.query(query, params);

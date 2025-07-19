@@ -1,0 +1,669 @@
+{
+  "summary": {
+    "startTime": "2025-07-18T19:50:14.467Z",
+    "endTime": "2025-07-18T19:50:16.411Z",
+    "duration": "1944ms",
+    "backupTables": [
+      "users_backup_2025_07_18T19_50_14",
+      "auth_backup_2025_07_18T19_50_14",
+      "todos_backup_2025_07_18T19_50_14",
+      "user_profile_updates_backup_2025_07_18T19_50_14",
+      "user_logs_backup_2025_07_18T19_50_14"
+    ],
+    "logCount": 23
+  },
+  "logs": [
+    {
+      "timestamp": "2025-07-18T19:50:14.467Z",
+      "level": "info",
+      "message": "Starting database cleanup pipeline...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.469Z",
+      "level": "info",
+      "message": "Creating database backup...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.619Z",
+      "level": "info",
+      "message": "Backup created: users_backup_2025_07_18T19_50_14",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.629Z",
+      "level": "info",
+      "message": "Backup created: auth_backup_2025_07_18T19_50_14",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.634Z",
+      "level": "info",
+      "message": "Backup created: todos_backup_2025_07_18T19_50_14",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.641Z",
+      "level": "info",
+      "message": "Backup created: user_profile_updates_backup_2025_07_18T19_50_14",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.662Z",
+      "level": "info",
+      "message": "Backup created: user_logs_backup_2025_07_18T19_50_14",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.662Z",
+      "level": "info",
+      "message": "Backup completed. Created 5 backup tables",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.662Z",
+      "level": "info",
+      "message": "Analyzing data quality...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.685Z",
+      "level": "info",
+      "message": "Data quality analysis completed",
+      "data": {
+        "users": {
+          "command": "SELECT",
+          "rowCount": 1,
+          "oid": null,
+          "rows": [
+            {
+              "total_users": "10004",
+              "null_full_names": "0",
+              "null_usernames": "0",
+              "null_bios": "0",
+              "null_addresses": "0",
+              "null_phones": "0",
+              "null_profile_pictures": "0",
+              "duplicate_usernames": "0",
+              "duplicate_auth_ids": "0",
+              "orphaned_users": "0"
+            }
+          ],
+          "fields": [
+            {
+              "name": "total_users",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_full_names",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_usernames",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_bios",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_addresses",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_phones",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_profile_pictures",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "duplicate_usernames",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "duplicate_auth_ids",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "orphaned_users",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            }
+          ],
+          "_parsers": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "_types": {
+            "_types": {
+              "arrayParser": {},
+              "builtins": {
+                "BOOL": 16,
+                "BYTEA": 17,
+                "CHAR": 18,
+                "INT8": 20,
+                "INT2": 21,
+                "INT4": 23,
+                "REGPROC": 24,
+                "TEXT": 25,
+                "OID": 26,
+                "TID": 27,
+                "XID": 28,
+                "CID": 29,
+                "JSON": 114,
+                "XML": 142,
+                "PG_NODE_TREE": 194,
+                "SMGR": 210,
+                "PATH": 602,
+                "POLYGON": 604,
+                "CIDR": 650,
+                "FLOAT4": 700,
+                "FLOAT8": 701,
+                "ABSTIME": 702,
+                "RELTIME": 703,
+                "TINTERVAL": 704,
+                "CIRCLE": 718,
+                "MACADDR8": 774,
+                "MONEY": 790,
+                "MACADDR": 829,
+                "INET": 869,
+                "ACLITEM": 1033,
+                "BPCHAR": 1042,
+                "VARCHAR": 1043,
+                "DATE": 1082,
+                "TIME": 1083,
+                "TIMESTAMP": 1114,
+                "TIMESTAMPTZ": 1184,
+                "INTERVAL": 1186,
+                "TIMETZ": 1266,
+                "BIT": 1560,
+                "VARBIT": 1562,
+                "NUMERIC": 1700,
+                "REFCURSOR": 1790,
+                "REGPROCEDURE": 2202,
+                "REGOPER": 2203,
+                "REGOPERATOR": 2204,
+                "REGCLASS": 2205,
+                "REGTYPE": 2206,
+                "UUID": 2950,
+                "TXID_SNAPSHOT": 2970,
+                "PG_LSN": 3220,
+                "PG_NDISTINCT": 3361,
+                "PG_DEPENDENCIES": 3402,
+                "TSVECTOR": 3614,
+                "TSQUERY": 3615,
+                "GTSVECTOR": 3642,
+                "REGCONFIG": 3734,
+                "REGDICTIONARY": 3769,
+                "JSONB": 3802,
+                "REGNAMESPACE": 4089,
+                "REGROLE": 4096
+              }
+            },
+            "text": {},
+            "binary": {}
+          },
+          "RowCtor": null,
+          "rowAsArray": false,
+          "_prebuiltEmptyResultObject": {
+            "total_users": null,
+            "null_full_names": null,
+            "null_usernames": null,
+            "null_bios": null,
+            "null_addresses": null,
+            "null_phones": null,
+            "null_profile_pictures": null,
+            "duplicate_usernames": null,
+            "duplicate_auth_ids": null,
+            "orphaned_users": null
+          }
+        },
+        "todos": {
+          "command": "SELECT",
+          "rowCount": 1,
+          "oid": null,
+          "rows": [
+            {
+              "total_todos": "1",
+              "null_titles": "0",
+              "null_user_ids": "0",
+              "null_priorities": "0",
+              "null_statuses": "0",
+              "orphaned_todos": "0",
+              "overdue_todos": "0"
+            }
+          ],
+          "fields": [
+            {
+              "name": "total_todos",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_titles",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_user_ids",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_priorities",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_statuses",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "orphaned_todos",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "overdue_todos",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            }
+          ],
+          "_parsers": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "_types": {
+            "_types": {
+              "arrayParser": {},
+              "builtins": {
+                "BOOL": 16,
+                "BYTEA": 17,
+                "CHAR": 18,
+                "INT8": 20,
+                "INT2": 21,
+                "INT4": 23,
+                "REGPROC": 24,
+                "TEXT": 25,
+                "OID": 26,
+                "TID": 27,
+                "XID": 28,
+                "CID": 29,
+                "JSON": 114,
+                "XML": 142,
+                "PG_NODE_TREE": 194,
+                "SMGR": 210,
+                "PATH": 602,
+                "POLYGON": 604,
+                "CIDR": 650,
+                "FLOAT4": 700,
+                "FLOAT8": 701,
+                "ABSTIME": 702,
+                "RELTIME": 703,
+                "TINTERVAL": 704,
+                "CIRCLE": 718,
+                "MACADDR8": 774,
+                "MONEY": 790,
+                "MACADDR": 829,
+                "INET": 869,
+                "ACLITEM": 1033,
+                "BPCHAR": 1042,
+                "VARCHAR": 1043,
+                "DATE": 1082,
+                "TIME": 1083,
+                "TIMESTAMP": 1114,
+                "TIMESTAMPTZ": 1184,
+                "INTERVAL": 1186,
+                "TIMETZ": 1266,
+                "BIT": 1560,
+                "VARBIT": 1562,
+                "NUMERIC": 1700,
+                "REFCURSOR": 1790,
+                "REGPROCEDURE": 2202,
+                "REGOPER": 2203,
+                "REGOPERATOR": 2204,
+                "REGCLASS": 2205,
+                "REGTYPE": 2206,
+                "UUID": 2950,
+                "TXID_SNAPSHOT": 2970,
+                "PG_LSN": 3220,
+                "PG_NDISTINCT": 3361,
+                "PG_DEPENDENCIES": 3402,
+                "TSVECTOR": 3614,
+                "TSQUERY": 3615,
+                "GTSVECTOR": 3642,
+                "REGCONFIG": 3734,
+                "REGDICTIONARY": 3769,
+                "JSONB": 3802,
+                "REGNAMESPACE": 4089,
+                "REGROLE": 4096
+              }
+            },
+            "text": {},
+            "binary": {}
+          },
+          "RowCtor": null,
+          "rowAsArray": false,
+          "_prebuiltEmptyResultObject": {
+            "total_todos": null,
+            "null_titles": null,
+            "null_user_ids": null,
+            "null_priorities": null,
+            "null_statuses": null,
+            "orphaned_todos": null,
+            "overdue_todos": null
+          }
+        },
+        "auth": {
+          "command": "SELECT",
+          "rowCount": 1,
+          "oid": null,
+          "rows": [
+            {
+              "total_auth": "10005",
+              "null_emails": "0",
+              "null_passwords": "0",
+              "duplicate_emails": "0"
+            }
+          ],
+          "fields": [
+            {
+              "name": "total_auth",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_emails",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "null_passwords",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            },
+            {
+              "name": "duplicate_emails",
+              "tableID": 0,
+              "columnID": 0,
+              "dataTypeID": 20,
+              "dataTypeSize": 8,
+              "dataTypeModifier": -1,
+              "format": "text"
+            }
+          ],
+          "_parsers": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "_types": {
+            "_types": {
+              "arrayParser": {},
+              "builtins": {
+                "BOOL": 16,
+                "BYTEA": 17,
+                "CHAR": 18,
+                "INT8": 20,
+                "INT2": 21,
+                "INT4": 23,
+                "REGPROC": 24,
+                "TEXT": 25,
+                "OID": 26,
+                "TID": 27,
+                "XID": 28,
+                "CID": 29,
+                "JSON": 114,
+                "XML": 142,
+                "PG_NODE_TREE": 194,
+                "SMGR": 210,
+                "PATH": 602,
+                "POLYGON": 604,
+                "CIDR": 650,
+                "FLOAT4": 700,
+                "FLOAT8": 701,
+                "ABSTIME": 702,
+                "RELTIME": 703,
+                "TINTERVAL": 704,
+                "CIRCLE": 718,
+                "MACADDR8": 774,
+                "MONEY": 790,
+                "MACADDR": 829,
+                "INET": 869,
+                "ACLITEM": 1033,
+                "BPCHAR": 1042,
+                "VARCHAR": 1043,
+                "DATE": 1082,
+                "TIME": 1083,
+                "TIMESTAMP": 1114,
+                "TIMESTAMPTZ": 1184,
+                "INTERVAL": 1186,
+                "TIMETZ": 1266,
+                "BIT": 1560,
+                "VARBIT": 1562,
+                "NUMERIC": 1700,
+                "REFCURSOR": 1790,
+                "REGPROCEDURE": 2202,
+                "REGOPER": 2203,
+                "REGOPERATOR": 2204,
+                "REGCLASS": 2205,
+                "REGTYPE": 2206,
+                "UUID": 2950,
+                "TXID_SNAPSHOT": 2970,
+                "PG_LSN": 3220,
+                "PG_NDISTINCT": 3361,
+                "PG_DEPENDENCIES": 3402,
+                "TSVECTOR": 3614,
+                "TSQUERY": 3615,
+                "GTSVECTOR": 3642,
+                "REGCONFIG": 3734,
+                "REGDICTIONARY": 3769,
+                "JSONB": 3802,
+                "REGNAMESPACE": 4089,
+                "REGROLE": 4096
+              }
+            },
+            "text": {},
+            "binary": {}
+          },
+          "RowCtor": null,
+          "rowAsArray": false,
+          "_prebuiltEmptyResultObject": {
+            "total_auth": null,
+            "null_emails": null,
+            "null_passwords": null,
+            "duplicate_emails": null
+          }
+        }
+      }
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.689Z",
+      "level": "info",
+      "message": "Cleaning NULL values...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.712Z",
+      "level": "info",
+      "message": "Updated 75 NULL profile_json values",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.719Z",
+      "level": "info",
+      "message": "NULL value cleaning completed",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.720Z",
+      "level": "info",
+      "message": "Handling duplicates...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.740Z",
+      "level": "info",
+      "message": "Duplicate handling completed",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.740Z",
+      "level": "info",
+      "message": "Cleaning orphaned records...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.752Z",
+      "level": "info",
+      "message": "Orphaned record cleaning completed",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.753Z",
+      "level": "info",
+      "message": "Optimizing database indexes...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.760Z",
+      "level": "info",
+      "message": "Index optimization completed",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:14.761Z",
+      "level": "info",
+      "message": "Running database vacuum...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:16.409Z",
+      "level": "info",
+      "message": "Database vacuum completed",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:16.409Z",
+      "level": "info",
+      "message": "Cleaning up old backups...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:16.411Z",
+      "level": "info",
+      "message": "Old backup cleanup completed",
+      "data": null
+    }
+  ],
+  "recommendations": [
+    "Monitor backup tables: users_backup_2025_07_18T19_50_14, auth_backup_2025_07_18T19_50_14, todos_backup_2025_07_18T19_50_14, user_profile_updates_backup_2025_07_18T19_50_14, user_logs_backup_2025_07_18T19_50_14"
+  ]
+}

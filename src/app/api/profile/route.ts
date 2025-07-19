@@ -1,27 +1,14 @@
 import { NextResponse } from "next/server";
 import { executeQuery } from "@/lib/database";
 import { authMiddleware } from "@/lib/jwt";
-
-export type ProfileData = {
-  username: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  birthDate: string;
-  bio?: string;
-  longBio?: string;
-  address?: string;
-  profileJson?: any;
-};
+import { ProfileData } from "@/lib/types";
 
 async function getProfile(request: Request) {
   console.time("Profile Get Execution");
 
   try {
-    // Bad practice: getting user from request without proper typing
     const user = (request as any).user;
 
-    // Bad practice: inefficient query with complex joins and subqueries
     const selectQuery = `
       SELECT 
         u.*,
@@ -62,11 +49,14 @@ async function getProfile(request: Request) {
         address: userData.address,
         phoneNumber: userData.phone_number,
         birthDate: userData.birth_date,
+        profilePictureUrl: userData.profile_picture_url,
         role: userData.role,
         division: userData.division_name,
         logCount: userData.log_count,
         roleCount: userData.role_count,
         divisionCount: userData.division_count,
+        createdAt: userData.created_at,
+        updatedAt: userData.updated_at,
       },
     });
   } catch (error) {
@@ -93,26 +83,39 @@ async function updateProfile(request: Request) {
       longBio,
       address,
       profileJson,
+      profilePictureUrl,
     }: ProfileData = await request.json();
 
     const errors: Partial<Record<keyof ProfileData, string>> = {};
 
-    if (!username || username.length < 6) {
-      errors.username = "Username must be at least 6 characters.";
+    // Username validation
+    if (!username || username.length < 3) {
+      errors.username = "Username must be at least 3 characters.";
+    } else if (username.length > 50) {
+      errors.username = "Username must be 50 characters or less.";
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+      errors.username =
+        "Username can only contain letters, numbers, hyphens, and underscores.";
     }
 
-    if (!fullName) {
+    // Full name validation
+    if (!fullName || fullName.trim().length === 0) {
       errors.fullName = "Full name is required.";
+    } else if (fullName.length > 100) {
+      errors.fullName = "Full name must be 100 characters or less.";
     }
 
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+    // Email validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = "Must be a valid email format.";
     }
 
-    if (!phone || !/^\d{10,15}$/.test(phone)) {
-      errors.phone = "Phone must be 10-15 digits.";
+    // Phone validation
+    if (phone && !/^[\+]?[1-9][\d]{0,15}$/.test(phone.replace(/\s/g, ""))) {
+      errors.phone = "Please enter a valid phone number.";
     }
 
+    // Birth date validation
     if (birthDate) {
       const date = new Date(birthDate);
       const today = new Date();
@@ -120,12 +123,18 @@ async function updateProfile(request: Request) {
       if (date > today) {
         errors.birthDate = "Birth date cannot be in the future.";
       }
+      const age = today.getFullYear() - date.getFullYear();
+      if (age > 120) {
+        errors.birthDate = "Please enter a valid birth date.";
+      }
     }
 
+    // Bio validation
     if (bio && bio.length > 160) {
       errors.bio = "Bio must be 160 characters or less.";
     }
 
+    // Long bio validation
     if (longBio && longBio.length > 2000) {
       errors.longBio = "Long bio must be 2000 characters or less.";
     }
@@ -138,15 +147,48 @@ async function updateProfile(request: Request) {
       );
     }
 
-    // Bad practice: getting user from request without proper typing
     const user = (request as any).user;
 
-    // Bad practice: inefficient update query with unnecessary operations
+    // Get current user data for audit trail
+    const currentUserQuery = `
+      SELECT username, full_name, bio, long_bio, address, phone_number, 
+             profile_json, profile_picture_url, birth_date
+      FROM users WHERE id = $1
+    `;
+    const currentUserResult = await executeQuery(currentUserQuery, [
+      user.userId,
+    ]);
+    const currentUser = currentUserResult.rows[0];
+
+    // Prepare updated fields for audit trail
+    const updatedFields: Record<string, any> = {};
+    if (username !== currentUser.username)
+      updatedFields.username = { old: currentUser.username, new: username };
+    if (fullName !== currentUser.full_name)
+      updatedFields.fullName = { old: currentUser.full_name, new: fullName };
+    if (bio !== currentUser.bio)
+      updatedFields.bio = { old: currentUser.bio, new: bio };
+    if (longBio !== currentUser.long_bio)
+      updatedFields.longBio = { old: currentUser.long_bio, new: longBio };
+    if (address !== currentUser.address)
+      updatedFields.address = { old: currentUser.address, new: address };
+    if (phone !== currentUser.phone_number)
+      updatedFields.phone = { old: currentUser.phone_number, new: phone };
+    if (profilePictureUrl !== currentUser.profile_picture_url)
+      updatedFields.profilePictureUrl = {
+        old: currentUser.profile_picture_url,
+        new: profilePictureUrl,
+      };
+    if (birthDate !== currentUser.birth_date)
+      updatedFields.birthDate = { old: currentUser.birth_date, new: birthDate };
+
+    // Update user profile
     const updateQuery = `
       UPDATE users 
       SET username = $1, full_name = $2, bio = $3, long_bio = $4, 
-          address = $5, phone_number = $6, profile_json = $7, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $8
+          address = $5, phone_number = $6, profile_json = $7, 
+          profile_picture_url = $8, birth_date = $9, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $10
     `;
 
     await executeQuery(updateQuery, [
@@ -157,10 +199,20 @@ async function updateProfile(request: Request) {
       address,
       phone,
       profileJson ? JSON.stringify(profileJson) : null,
+      profilePictureUrl,
+      birthDate,
       user.userId,
     ]);
 
-    // Bad practice: unnecessary select after update with complex joins
+    // Log profile update in audit trail if there are changes
+    if (Object.keys(updatedFields).length > 0) {
+      await executeQuery(
+        "INSERT INTO user_profile_updates (user_id, updated_fields) VALUES ($1, $2)",
+        [user.userId, JSON.stringify(updatedFields)]
+      );
+    }
+
+    // Get updated user data
     const selectQuery = `
       SELECT 
         u.*,
@@ -197,10 +249,13 @@ async function updateProfile(request: Request) {
         address: updatedUser.address,
         phoneNumber: updatedUser.phone_number,
         birthDate: updatedUser.birth_date,
+        profilePictureUrl: updatedUser.profile_picture_url,
         role: updatedUser.role,
         division: updatedUser.division_name,
         logCount: updatedUser.log_count,
         roleCount: updatedUser.role_count,
+        createdAt: updatedUser.created_at,
+        updatedAt: updatedUser.updated_at,
       },
     });
   } catch (error) {
@@ -213,6 +268,5 @@ async function updateProfile(request: Request) {
   }
 }
 
-// Bad practice: wrapping with auth middleware
 export const GET = authMiddleware(getProfile);
 export const PUT = authMiddleware(updateProfile);

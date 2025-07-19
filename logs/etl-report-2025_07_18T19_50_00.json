@@ -1,0 +1,294 @@
+{
+  "summary": {
+    "startTime": "2025-07-18T19:49:59.330Z",
+    "endTime": "2025-07-18T19:50:00.172Z",
+    "duration": "842ms",
+    "stats": {
+      "extracted": 2001,
+      "transformed": 1001,
+      "loaded": 1999,
+      "errors": 2,
+      "skipped": 0
+    }
+  },
+  "logs": [
+    {
+      "timestamp": "2025-07-18T19:49:59.330Z",
+      "level": "info",
+      "message": "Starting ETL pipeline...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.331Z",
+      "level": "info",
+      "message": "Starting full ETL pipeline...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.332Z",
+      "level": "info",
+      "message": "Creating ETL backup...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.617Z",
+      "level": "info",
+      "message": "ETL backup created: users_etl_backup_2025_07_18T19_49_59",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.629Z",
+      "level": "info",
+      "message": "ETL backup created: auth_etl_backup_2025_07_18T19_49_59",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.634Z",
+      "level": "info",
+      "message": "ETL backup created: todos_etl_backup_2025_07_18T19_49_59",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.637Z",
+      "level": "info",
+      "message": "ETL backup created: user_profile_updates_etl_backup_2025_07_18T19_49_59",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.670Z",
+      "level": "info",
+      "message": "ETL backup created: user_logs_etl_backup_2025_07_18T19_49_59",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.670Z",
+      "level": "info",
+      "message": "Starting ETL pipeline for users...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.671Z",
+      "level": "info",
+      "message": "Extracting data from users...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.687Z",
+      "level": "info",
+      "message": "Extracted 1000 records from users",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.688Z",
+      "level": "info",
+      "message": "Transforming users data...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.706Z",
+      "level": "info",
+      "message": "Transformed 1000 user records",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.707Z",
+      "level": "info",
+      "message": "Validating 1000 records for users...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.708Z",
+      "level": "warn",
+      "message": "Found 1 invalid records in users",
+      "data": {
+        "sampleErrors": [
+          {
+            "record": {
+              "id": 70033,
+              "auth_id": 70031,
+              "full_name": "Test User",
+              "username": "ab",
+              "birth_date": null,
+              "bio": "No bio available",
+              "long_bio": "No long bio available",
+              "profile_json": {},
+              "address": "Address not provided",
+              "phone_number": "",
+              "created_at": "2025-07-18T19:15:54.978Z",
+              "updated_at": "2025-07-18T19:49:44.186Z",
+              "email": null,
+              "profile_picture_url": "/default-profile.jpg",
+              "data_hash": "1866c80d1d400b8c11487ec44f6a5b02"
+            },
+            "errors": [
+              "Username must be at least 3 characters"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.708Z",
+      "level": "info",
+      "message": "Validation completed: 999 valid, 1 invalid",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.709Z",
+      "level": "info",
+      "message": "Loading 999 records into users...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.979Z",
+      "level": "info",
+      "message": "Loaded 999 records, skipped 0 duplicates",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.979Z",
+      "level": "info",
+      "message": "ETL pipeline completed for users",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.979Z",
+      "level": "info",
+      "message": "Starting ETL pipeline for todos...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.979Z",
+      "level": "info",
+      "message": "Extracting data from todos...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.980Z",
+      "level": "info",
+      "message": "Extracted 1 records from todos",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.980Z",
+      "level": "info",
+      "message": "Transforming todos data...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.980Z",
+      "level": "info",
+      "message": "Transformed 1 todo records",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.980Z",
+      "level": "info",
+      "message": "Validating 1 records for todos...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.981Z",
+      "level": "info",
+      "message": "Validation completed: 1 valid, 0 invalid",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.981Z",
+      "level": "info",
+      "message": "Loading 1 records into todos...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.983Z",
+      "level": "info",
+      "message": "Loaded 1 records, skipped 0 duplicates",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.983Z",
+      "level": "info",
+      "message": "ETL pipeline completed for todos",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.983Z",
+      "level": "info",
+      "message": "Starting ETL pipeline for auth...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.983Z",
+      "level": "info",
+      "message": "Extracting data from auth...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.987Z",
+      "level": "info",
+      "message": "Extracted 1000 records from auth",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.987Z",
+      "level": "info",
+      "message": "Validating 1000 records for auth...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.988Z",
+      "level": "warn",
+      "message": "Found 1 invalid records in auth",
+      "data": {
+        "sampleErrors": [
+          {
+            "record": {
+              "id": 70032,
+              "email": "invalid",
+              "password": "password",
+              "created_at": "2025-07-18T19:15:54.984Z",
+              "updated_at": "2025-07-18T19:15:54.984Z"
+            },
+            "errors": [
+              "Invalid email format"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.988Z",
+      "level": "info",
+      "message": "Validation completed: 999 valid, 1 invalid",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:49:59.988Z",
+      "level": "info",
+      "message": "Loading 999 records into auth...",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:00.171Z",
+      "level": "info",
+      "message": "Loaded 999 records, skipped 0 duplicates",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:00.171Z",
+      "level": "info",
+      "message": "ETL pipeline completed for auth",
+      "data": null
+    },
+    {
+      "timestamp": "2025-07-18T19:50:00.171Z",
+      "level": "info",
+      "message": "Full ETL pipeline completed successfully",
+      "data": null
+    }
+  ],
+  "recommendations": [
+    "Review 2 data validation errors",
+    "ETL success rate: 99.90%"
+  ]
+}
