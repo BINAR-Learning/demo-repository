@@ -21,6 +21,7 @@
     "generate-db-metrics": "node scripts/generate-database-metrics.js",
     "generate-api-metrics": "node scripts/generate-api-metrics.js",
     "db-create-indexes": "node scripts/run-indexes.js",
+    "db-optimize-user": "node scripts/optimize-user-by-id.js",
     "db-clean-users": "node scripts/clean-users.js",
     "db-cleanup": "node scripts/database-cleanup-pipeline.js",
     "db-etl": "node scripts/etl-pipeline.js",

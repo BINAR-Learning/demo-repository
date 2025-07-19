@@ -1,4 +1,32 @@
-const { executeQuery } = require("../src/lib/database");
+const { Pool } = require("pg");
+
+// Database configuration
+const pool = new Pool({
+  user: process.env.DB_USER || "postgres",
+  host: process.env.DB_HOST || "localhost",
+  database: process.env.DB_NAME || "workshop_db",
+  password: process.env.DB_PASSWORD || "admin123",
+  port: parseInt(process.env.DB_PORT || "5432"),
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+  ssl:
+    process.env.DB_HOST && process.env.DB_HOST !== "localhost"
+      ? {
+          rejectUnauthorized: false,
+        }
+      : false,
+});
+
+async function executeQuery(query, params = []) {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(query, params);
+    return result;
+  } finally {
+    client.release();
+  }
+}
 
 async function createIndexes() {
   console.log(
@@ -43,26 +71,62 @@ async function createIndexes() {
     const statsQuery = `
       SELECT 
         schemaname,
-        tablename,
-        indexname,
+        relname as tablename,
+        indexrelname as indexname,
         idx_scan as scans,
         idx_tup_read as tuples_read,
         idx_tup_fetch as tuples_fetched
       FROM pg_stat_user_indexes
       WHERE schemaname = 'public' 
-        AND tablename IN ('users', 'auth', 'user_roles', 'user_divisions')
-      ORDER BY tablename, idx_scan DESC
+        AND relname IN ('users', 'auth', 'user_roles', 'user_divisions')
+      ORDER BY relname, idx_scan DESC
     `;
 
     const stats = await executeQuery(statsQuery);
     console.log("📈 Index Usage Statistics:");
     console.table(stats.rows);
 
+    // Test the optimized query
+    console.log("\n🧪 Testing optimized user by ID query...\n");
+    const testQuery = `
+      EXPLAIN (ANALYZE, BUFFERS) 
+      SELECT 
+        u.id,
+        u.username,
+        u.full_name,
+        u.birth_date,
+        u.bio,
+        u.long_bio,
+        u.profile_json,
+        u.address,
+        u.phone_number,
+        u.created_at,
+        u.updated_at,
+        a.email,
+        ur.role,
+        ud.division_name
+      FROM users u
+      LEFT JOIN auth a ON u.auth_id = a.id
+      LEFT JOIN user_roles ur ON u.id = ur.user_id
+      LEFT JOIN user_divisions ud ON u.id = ud.user_id
+      WHERE u.id = 1
+      LIMIT 1
+    `;
+
+    const queryPlan = await executeQuery(testQuery);
+    console.log("📋 Query Execution Plan:");
+    queryPlan.rows.forEach((row) => {
+      console.log(row["QUERY PLAN"]);
+    });
+
     console.log("\n🎉 All indexes created successfully!");
     console.log("💡 Your queries should now be much faster.");
   } catch (error) {
     console.error("❌ Error creating indexes:", error.message);
+    console.error("Stack trace:", error.stack);
     process.exit(1);
+  } finally {
+    await pool.end();
   }
 }
 

@@ -481,6 +481,13 @@ class DatabaseCleanupPipeline {
         // Auth table indexes
         "CREATE INDEX IF NOT EXISTS idx_auth_email ON auth(email)",
         "CREATE INDEX IF NOT EXISTS idx_auth_created_at ON auth(created_at)",
+        "CREATE INDEX IF NOT EXISTS idx_auth_id ON auth(id)",
+
+        // User roles and divisions indexes (for user by ID optimization)
+        "CREATE INDEX IF NOT EXISTS idx_user_roles_user_id ON user_roles(user_id)",
+        "CREATE INDEX IF NOT EXISTS idx_user_roles_user_role ON user_roles(user_id, role)",
+        "CREATE INDEX IF NOT EXISTS idx_user_divisions_user_id ON user_divisions(user_id)",
+        "CREATE INDEX IF NOT EXISTS idx_user_divisions_user_division ON user_divisions(user_id, division_name)",
 
         // Profile updates indexes
         "CREATE INDEX IF NOT EXISTS idx_user_profile_updates_user_id ON user_profile_updates(user_id)",
@@ -493,7 +500,41 @@ class DatabaseCleanupPipeline {
       ];
 
       for (const indexQuery of indexes) {
-        await this.executeQuery(indexQuery);
+        try {
+          await this.executeQuery(indexQuery);
+          await this.log("debug", `Index created: ${indexQuery.split(" ")[4]}`);
+        } catch (error) {
+          await this.log(
+            "warn",
+            `Failed to create index: ${indexQuery.split(" ")[4]}`,
+            {
+              error: error.message,
+            }
+          );
+        }
+      }
+
+      // Analyze tables to update statistics
+      const tablesToAnalyze = [
+        "users",
+        "auth",
+        "todos",
+        "user_roles",
+        "user_divisions",
+        "user_profile_updates",
+        "user_logs",
+      ];
+      for (const table of tablesToAnalyze) {
+        try {
+          if (await this.tableExists(table)) {
+            await this.executeQuery(`ANALYZE ${table}`);
+            await this.log("debug", `Analyzed table: ${table}`);
+          }
+        } catch (error) {
+          await this.log("warn", `Failed to analyze table: ${table}`, {
+            error: error.message,
+          });
+        }
       }
 
       await this.log("info", "Index optimization completed");
