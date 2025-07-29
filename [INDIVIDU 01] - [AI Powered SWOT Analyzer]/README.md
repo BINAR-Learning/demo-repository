@@ -1,1 +1,0 @@
-# AI Powered SWOT Analyzer
