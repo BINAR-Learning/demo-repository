@@ -1,14 +1,12 @@
-# binar_practice
+# Final Project
 
-## Project Summary
-
-This repository contains two main sections:
-
-### 1. Practice Modules
-- Various TypeScript files (`code_smells.ts`, `hardcoded_secret.ts`, `sql_injection.ts`, `zombie_vs_refactored.ts`) designed to demonstrate common code quality and security issues for educational purposes.
-
-### 2. Weather Checker App Backend
-- A backend application built with TypeScript, Express, and SQLite.
-- Features endpoints for weather data, history, and analysis.
-- Intentionally includes insecure code and code smells to help users learn to identify and fix such issues.
-- Example vulnerabilities: hardcoded secrets, SQL injection, zombie code, and more.
+✅ **Ketentuan Pengumpulan Final Project:**
+1. Seluruh progress harus didokumentasikan secara rapi dan jelas dalam file README.md
+2. Project dikumpulkan dalam bentuk folder dengan format nama:
+    [KEL XX] - [Nama Project]
+3. Link GitHub project dikumpulkan melalui Google Classroom yang telah disediakan
+4. Semua assignment sebelumnya wajib sudah dikerjakan dan dikumpulkan
+5. Pembagian tugas secara jelas: 
+    - Bagi Folder Berdasarkan Nama / Tugas
+    - Gunakan Commit Message + GitHub Username
+    - Tambahkan di README.md — Kontribusi Tim
