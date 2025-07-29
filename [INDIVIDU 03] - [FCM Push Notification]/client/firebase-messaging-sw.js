@@ -7,13 +7,13 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-comp
 
 // Firebase configuration (must match your main app config)
 const firebaseConfig = {
-    apiKey: "AIzaSyCiaXUNxKWBmdWRk_IVSDe43Zy63aaoy3o",
-    authDomain: "even-trainer-464609-d1.firebaseapp.com",
-    projectId: "even-trainer-464609-d1",
-    storageBucket: "even-trainer-464609-d1.firebasestorage.app",
-    messagingSenderId: "1030502293200",
-    appId: "1:1030502293200:web:bf03918e94d1dd6f8348d5"
-    //measurementId: "your-measurement-id"
+    apiKey: "your-actual-api-key",
+    authDomain: "your-project-id.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project-id.appspot.com",
+    messagingSenderId: "your-sender-id",
+    appId: "your-app-id",
+    measurementId: "your-measurement-id"
 };
 
 // Initialize Firebase
