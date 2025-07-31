@@ -1,0 +1,77 @@
+name: CI Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - Assignment-14
+  push:
+    branches:
+      - main
+      - Assignment-14
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run ESLint
+        run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm test
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=600
