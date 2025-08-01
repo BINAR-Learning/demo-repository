@@ -1,0 +1,112 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\WorkingUnit;
+use Illuminate\Database\Seeder;
+
+class WorkingUnitSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $workingUnits = [
+            ["code" => "10000000", "name" => "PT TASPEN (Persero)", "company_id" => 1],
+            ["code" => "11000000", "name" => "Dewan Komisaris", "company_id" => 1],
+            ["code" => "20000000", "name" => "DEWAN DIREKSI", "company_id" => 1],
+            ["code" => "20010000", "name" => "DIREKTORAT UTAMA", "company_id" => 1],
+            ["code" => "20010100", "name" => "SEKRETARIS PERUSAHAAN", "company_id" => 1],
+            ["code" => "20010200", "name" => "SATUAN PENGAWASAN INTERN", "company_id" => 1],
+            ["code" => "20010500", "name" => "DIVISI HUKUM", "company_id" => 1],
+            ["code" => "20010600", "name" => "DIVISI ENTERPRISE MANAGEMENT SYSTEM", "company_id" => 1],
+            ["code" => "20012000", "name" => "KANTOR CABANG UTAMA JAKARTA", "company_id" => 1],
+            ["code" => "20012100", "name" => "KANTOR CABANG PALEMBANG", "company_id" => 1],
+            ["code" => "20012200", "name" => "KANTOR CABANG BANDAR LAMPUNG", "company_id" => 1],
+            ["code" => "20012300", "name" => "KANTOR CABANG SERANG", "company_id" => 1],
+            ["code" => "20012400", "name" => "KANTOR CABANG BANJARMASIN", "company_id" => 1],
+            ["code" => "20012500", "name" => "KANTOR CABANG BENGKULU", "company_id" => 1],
+            ["code" => "20012600", "name" => "KANTOR CABANG PALANGKARAYA", "company_id" => 1],
+            ["code" => "20012700", "name" => "KANTOR CABANG PONTIANAK", "company_id" => 1],
+            ["code" => "20012800", "name" => "KANTOR CABANG SAMARINDA", "company_id" => 1],
+            ["code" => "20012900", "name" => "KANTOR CABANG TANGERANG", "company_id" => 1],
+            ["code" => "20013000", "name" => "KANTOR CABANG JAKARTA SELATAN", "company_id" => 1],
+            ["code" => "20013100", "name" => "KANTOR CABANG PANGKAL PINANG", "company_id" => 1],
+            ["code" => "20013200", "name" => "KANTOR CABANG TARAKAN", "company_id" => 1],
+            ["code" => "20013300", "name" => "KANTOR CABANG LUBUK LINGGAU", "company_id" => 1],
+            ["code" => "20020000", "name" => "DIREKTORAT OPERASIONAL", "company_id" => 1],
+            ["code" => "20020100", "name" => "DIVISI LAYANAN & PEMASARAN", "company_id" => 1],
+            ["code" => "20020500", "name" => "DIVISI KEPESERTAAN", "company_id" => 1],
+            ["code" => "20022000", "name" => "KANTOR CABANG UTAMA MAKASSAR", "company_id" => 1],
+            ["code" => "20022100", "name" => "KANTOR CABANG MANADO", "company_id" => 1],
+            ["code" => "20022200", "name" => "KANTOR CABANG PALU", "company_id" => 1],
+            ["code" => "20022300", "name" => "KANTOR CABANG KENDARI", "company_id" => 1],
+            ["code" => "20022400", "name" => "KANTOR CABANG AMBON", "company_id" => 1],
+            ["code" => "20022500", "name" => "KANTOR CABANG JAYAPURA", "company_id" => 1],
+            ["code" => "20022600", "name" => "KANTOR CABANG MANOKWARI", "company_id" => 1],
+            ["code" => "20022700", "name" => "KANTOR CABANG PALOPO", "company_id" => 1],
+            ["code" => "20022800", "name" => "KANTOR CABANG GORONTALO", "company_id" => 1],
+            ["code" => "20022900", "name" => "KANTOR CABANG MAMUJU", "company_id" => 1],
+            ["code" => "20023000", "name" => "KANTOR CABANG TERNATE", "company_id" => 1],
+            ["code" => "20023100", "name" => "KANTOR CABANG BONE", "company_id" => 1],
+            ["code" => "20030000", "name" => "DIREKTORAT KEUANGAN", "company_id" => 1],
+            ["code" => "20030100", "name" => "DIVISI AKUNTANSI", "company_id" => 1],
+            ["code" => "20030200", "name" => "DIVISI PERBENDAHARAAN", "company_id" => 1],
+            ["code" => "20030300", "name" => "DESK ANGGARAN & ANALISIS KINERJA", "company_id" => 1],
+            ["code" => "20030400", "name" => "UNIT TANGGUNG JAWAB SOSIAL&LINGKUNGAN", "company_id" => 1],
+            ["code" => "20032000", "name" => "KANTOR CABANG UTAMA SEMARANG", "company_id" => 1],
+            ["code" => "20032100", "name" => "KANTOR CABANG PURWOKERTO", "company_id" => 1],
+            ["code" => "20032200", "name" => "KANTOR CABANG SURAKARTA", "company_id" => 1],
+            ["code" => "20032300", "name" => "KANTOR CABANG YOGYAKARTA", "company_id" => 1],
+            ["code" => "20032400", "name" => "KANTOR CABANG PEKALONGAN", "company_id" => 1],
+            ["code" => "20040000", "name" => "DIREKTORAT INVESTASI", "company_id" => 1],
+            ["code" => "20040100", "name" => "DIVISI ANALISIS INVESTASI", "company_id" => 1],
+            ["code" => "20040200", "name" => "DIVISI BISNIS STRATEGIS & INV. LANGSUNG", "company_id" => 1],
+            ["code" => "20040300", "name" => "DIVISI INVESTASI PSR MODAL & PSR UANG", "company_id" => 1],
+            ["code" => "20040400", "name" => "UNIT INVESTASI SYARIAH", "company_id" => 1],
+            ["code" => "20042000", "name" => "KANTOR CABANG UTAMA SURABAYA", "company_id" => 1],
+            ["code" => "20042100", "name" => "KANTOR CABANG MALANG", "company_id" => 1],
+            ["code" => "20042200", "name" => "KANTOR CABANG MADIUN", "company_id" => 1],
+            ["code" => "20042300", "name" => "KANTOR CABANG KEDIRI", "company_id" => 1],
+            ["code" => "20042400", "name" => "KANTOR CABANG DENPASAR", "company_id" => 1],
+            ["code" => "20042500", "name" => "KANTOR CABANG KUPANG", "company_id" => 1],
+            ["code" => "20042600", "name" => "KANTOR CABANG JEMBER", "company_id" => 1],
+            ["code" => "20042700", "name" => "KANTOR CABANG MATARAM", "company_id" => 1],
+            ["code" => "20042800", "name" => "KANTOR CABANG ENDE", "company_id" => 1],
+            ["code" => "20042900", "name" => "KANTOR CABANG PAMEKASAN", "company_id" => 1],
+            ["code" => "20050000", "name" => "DIREKTORAT SDM DAN TEKNOLOGI INFORMASI", "company_id" => 1],
+            ["code" => "20050100", "name" => "DIVISI SUMBER DAYA MANUSIA", "company_id" => 1],
+            ["code" => "20050200", "name" => "DIVISI TEKNOLOGI INFORMASI", "company_id" => 1],
+            ["code" => "20050500", "name" => "DESK CORPORATE UNIVERSITY", "company_id" => 1],
+            ["code" => "20052000", "name" => "KANTOR CABANG UTAMA MEDAN", "company_id" => 1],
+            ["code" => "20052100", "name" => "KANTOR CABANG BANDA ACEH", "company_id" => 1],
+            ["code" => "20052200", "name" => "KANTOR CABANG PEMATANG SIANTAR", "company_id" => 1],
+            ["code" => "20052300", "name" => "KANTOR CABANG PADANG", "company_id" => 1],
+            ["code" => "20052400", "name" => "KANTOR CABANG PEKANBARU", "company_id" => 1],
+            ["code" => "20052500", "name" => "KANTOR CABANG BUKITTINGGI", "company_id" => 1],
+            ["code" => "20052600", "name" => "KANTOR CABANG JAMBI", "company_id" => 1],
+            ["code" => "20052700", "name" => "KANTOR CABANG LHOKSEUMAWE", "company_id" => 1],
+            ["code" => "20052800", "name" => "KANTOR CABANG TANJUNG PINANG", "company_id" => 1],
+            ["code" => "20052900", "name" => "KANTOR CABANG KEPULAUAN NIAS", "company_id" => 1],
+            ["code" => "20060000", "name" => "DIREKTORAT PERENCANAAN & AKTUARIA", "company_id" => 1],
+            ["code" => "20060100", "name" => "DIVISI PERENCANAAN & PENGEMBANGAN BISNIS", "company_id" => 1],
+            ["code" => "20060200", "name" => "DIVISI AKTUARIA", "company_id" => 1],
+            ["code" => "20060300", "name" => "DIVISI PENGADAAN & PEMELIHARAAN", "company_id" => 1],
+            ["code" => "20062000", "name" => "KANTOR CABANG UTAMA BANDUNG", "company_id" => 1],
+            ["code" => "20062100", "name" => "KANTOR CABANG BOGOR", "company_id" => 1],
+            ["code" => "20062200", "name" => "KANTOR CABANG TASIKMALAYA", "company_id" => 1],
+            ["code" => "20062300", "name" => "KANTOR CABANG CIREBON", "company_id" => 1],
+            ["code" => "20062400", "name" => "KANTOR CABANG BEKASI", "company_id" => 1],
+            ["code" => "20062500", "name" => "KANTOR CABANG DEPOK", "company_id" => 1],
+            ["code" => "20070000", "name" => "DIREKTORAT KEPATUHAN & MANAJEMEN RISIKO", "company_id" => 1],
+            ["code" => "20070100", "name" => "DIVISI KEPATUHAN", "company_id" => 1],
+            ["code" => "20070200", "name" => "DIVISI MANAJEMEN RISIKO", "company_id" => 1],
+            ["code" => "20070300", "name" => "DIVISI HUKUM", "company_id" => 1],
+            ["code" => "20020600", "name" => "DIVISI OPERASIONAL DAN BISNIS WILAYAH", "company_id" => 1],
+        ];
+        foreach ($workingUnits as $workingUnit) {
+            WorkingUnit::create($workingUnit);
+        }
+    }
+}
