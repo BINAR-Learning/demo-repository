@@ -1,2 +1,0 @@
-**Client**: `https://even-trainer-464609-d1.web.app`
-**Server**: `https://even-trainer-464609-d1.et.r.appspot.com`

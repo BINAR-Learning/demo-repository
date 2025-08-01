@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCM Push Notification</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔔 FCM Push Notification</h1>
+            <p>Firebase Cloud Messaging Web Client</p>
+        </header>
+
+        <div class="card">
+            <h2>Notification Status</h2>
+            <div id="status" class="status">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span id="statusText">Initializing...</span>
+            </div>
+            <div id="permissionHelper" class="permission-helper" style="display: none;">
+                <h3>🔔 Enable Notifications</h3>
+                <p>To receive push notifications, please:</p>
+                <ol>
+                    <li>Click the 🔒 lock icon in your browser's address bar</li>
+                    <li>Set "Notifications" to "Allow"</li>
+                    <li>Or go to your browser settings and allow notifications for this site</li>
+                    <li>Reload the page after enabling notifications</li>
+                </ol>
+                <button id="retryPermission" class="btn-primary">Try Again</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>FCM Registration Token</h2>
+            <p class="info">This token is used by the server to send notifications to this specific browser instance.</p>
+            <div class="token-container">
+                <textarea id="fcmToken" readonly placeholder="Token will appear here..."></textarea>
+                <button id="copyToken" class="btn-secondary">Copy Token</button>
+                <button id="refreshToken" class="btn-secondary">Refresh Token</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Test Notification</h2>
+            <p class="info">Send a test notification to this device using the server endpoint.</p>
+            <div class="test-container">
+                <input type="text" id="serverUrl" placeholder="Server URL (e.g., https://your-project.appspot.com)" value="https://even-trainer-464609-d1.et.r.appspot.com">
+                <button id="sendTest" class="btn-primary">Send Test Notification</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Received Notifications</h2>
+            <div id="notifications" class="notifications-container">
+                <p class="placeholder">No notifications received yet...</p>
+            </div>
+            <button id="clearNotifications" class="btn-secondary">Clear All</button>
+        </div>
+
+        <div class="card">
+            <h2>Instructions</h2>
+            <ol>
+                <li>Allow notification permissions when prompted</li>
+                <li>Copy the FCM registration token above</li>
+                <li>Use the server endpoint <code>/send-notification</code> with the token</li>
+                <li>Notifications will appear here and as system notifications</li>
+                <li>Click on system notifications to open the target URL</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+    
+    <!-- Application Script -->
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
