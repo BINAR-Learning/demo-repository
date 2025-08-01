@@ -11,7 +11,7 @@ from services.db_service import SimpleDBService
 
 class TestSWOTModels:
     """Test cases for Pydantic models"""
-    
+
     def test_swot_request_valid(self):
         """Test valid SWOT request model"""
         request = SWOTRequest(
@@ -55,13 +55,13 @@ class TestSWOTModels:
 
 class TestAIService:
     """Test cases for the AI service"""
-    
+
     def test_ai_service_initialization_with_key(self):
         """Test AI service initialization with API key"""
         with patch.dict(os.environ, {'GOOGLE_API_KEY': 'test-key'}):
             service = SimpleAIService()
             assert service.api_key == 'test-key'
-    
+
     def test_ai_service_no_api_key(self):
         """Test AI service initialization without API key"""
         with patch.dict(os.environ, {}, clear=True):
@@ -71,16 +71,16 @@ class TestAIService:
     @patch('google.generativeai.GenerativeModel')
     def test_validate_swot_data(self, mock_model):
         """Test SWOT data validation"""
-        service = SimpleAIService(api_key="test-key")
-        
+        service = SimpleAIService(api_key='test-key')
+
         # Test with missing keys
         incomplete_data = {
             "strengths": ["test1", "test2"]
             # Missing other keys
         }
-        
+
         result = service.validate_swot_data(incomplete_data)
-        
+
         # Should have all required keys
         required_keys = ["strengths", "weaknesses", "opportunities", "threats"]
         for key in required_keys:
@@ -90,10 +90,10 @@ class TestAIService:
     @patch('google.generativeai.GenerativeModel')
     def test_fallback_response(self, mock_model):
         """Test fallback response generation"""
-        service = SimpleAIService(api_key="test-key")
-        
+        service = SimpleAIService(api_key='test-key')
+
         result = service.fallback_response("Test business", "Test Company")
-        
+
         # Should return valid SWOT structure
         required_keys = ["strengths", "weaknesses", "opportunities", "threats"]
         for key in required_keys:
@@ -104,13 +104,12 @@ class TestAIService:
 
 class TestDBService:
     """Test cases for the database service"""
-    
+
     def test_db_service_initialization(self):
-        """Test database service initialization"""
+        """Test DB service initialization"""
         with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as tmp:
-            service = SimpleDBService(db_file=tmp.name)
             assert os.path.exists(tmp.name)
-            
+
             # Clean up
             os.unlink(tmp.name)
 
@@ -118,10 +117,12 @@ class TestDBService:
         """Test saving and retrieving analysis"""
         with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as tmp:
             service = SimpleDBService(db_file=tmp.name)
-            
+
             # Create test data
             request = SWOTRequest(
-                business_description="Test business description for testing purposes and validation",
+                business_description=(
+                "Test business description for testing purposes and validation"
+            ),
                 company_name="Test Company"
             )
             response = SWOTResponse(
@@ -131,16 +132,16 @@ class TestDBService:
                 threats=["threat1", "threat2"],
                 company_name="Test Company"
             )
-            
+
             # Save analysis
             analysis_id = service.save_analysis(request, response)
             assert analysis_id is not None
-            
+
             # Retrieve analysis
             retrieved = service.get_analysis_by_id(analysis_id)
             assert retrieved is not None
             assert retrieved.request.company_name == "Test Company"
-            
+
             # Clean up
             os.unlink(tmp.name)
 
@@ -148,12 +149,12 @@ class TestDBService:
         """Test retrieving recent analyses"""
         with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as tmp:
             service = SimpleDBService(db_file=tmp.name)
-            
+
             # Get recent analyses (should be empty initially)
             recent = service.get_recent_analyses(limit=5)
             assert isinstance(recent, list)
             assert len(recent) == 0
-            
+
             # Clean up
             os.unlink(tmp.name)
 
@@ -161,12 +162,12 @@ class TestDBService:
         """Test getting database statistics"""
         with tempfile.NamedTemporaryFile(suffix='.json', delete=False) as tmp:
             service = SimpleDBService(db_file=tmp.name)
-            
+
             stats = service.get_statistics()
             assert isinstance(stats, dict)
             assert "total_analyses" in stats
             assert stats["total_analyses"] == 0
-            
+
             # Clean up
             os.unlink(tmp.name)
 
@@ -174,22 +175,22 @@ class TestDBService:
 # Simple application test without TestClient
 class TestApplication:
     """Test basic application functionality"""
-    
+
     def test_app_import(self):
         """Test that the application can be imported"""
         from main import app
         assert app is not None
         assert app.title == "Simple AI SWOT Analyzer"
-    
+
     def test_services_initialization(self):
         """Test that services can be initialized"""
         with patch.dict(os.environ, {'GOOGLE_API_KEY': 'test-key'}):
             ai_service = SimpleAIService()
-            db_service = SimpleDBService(db_file="test.json")
-            
+            db_service = SimpleDBService()
+
             assert ai_service is not None
             assert db_service is not None
-            
+
             # Clean up
             if os.path.exists("test.json"):
                 os.unlink("test.json")
