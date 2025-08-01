@@ -1,0 +1,2 @@
+# This file ensures the output directory is tracked in git
+# but not the CSV files within it
