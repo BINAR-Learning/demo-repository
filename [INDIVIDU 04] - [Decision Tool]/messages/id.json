@@ -1,0 +1,584 @@
+{
+  "common": {
+    "start": "Mulai",
+    "back": "Kembali",
+    "reset": "Reset",
+    "add": "Tambah",
+    "notes": "Catatan",
+    "context": "Konteks",
+    "title": "Judul",
+    "shareNote": "Note: URL ini menyimpan data saat ini",
+    "resetConfirmation": {
+      "title": "Yakin, nih?",
+      "description": "Semua data kamu sekarang bakal dihapus dan dikosongin. Aksi ini nggak bisa dikembalikan, lho.",
+      "cancel": "Batal",
+      "confirm": "Reset"
+    },
+    "exampleConfirmation": {
+      "title": "Lihat contoh?",
+      "description": "Semua data kamu sekarang bakal dihapus untuk nampilin contoh. Aksi ini nggak bisa dikembalikan ya.",
+      "cancel": "Batal",
+      "confirm": "Ya"
+    },
+    "seeResultButton": "LIHAT HASIL",
+    "generating": "Sedang memproses...",
+    "showSample": "Lihat Contohnya",
+    "or": "atau",
+    "aiError": "Coba lagi, atau coba isi inputnya sendiri yuk!",
+    "chatboxPlaceholder": "Mari temukan pilihan terbaik untukmu..."
+  },
+  "home": {
+    "title": "Bikin Keputusan Lebih Tepat, Lebih Cepat",
+    "subtitle": "Pilih dari berbagai metode buat nentuin pilihan yang pas.",
+    "aiPowered": "Didukung AI buat bantu kamu ambil keputusan",
+    "footer": "© 2025 Decision Maker Lab. Hak Cipta Dilindungi.",
+    "recommendedTools": "Rekomendasi Tool"
+  },
+  "tools": {
+    "decisionMatrix": {
+      "title": "Decision Matrix",
+      "description": "Bandingin opsi-opsi pake kriteria yang punya bobot, biar kamu nemuin pilihan paling oke."
+    },
+    "decisionTree": {
+      "title": "Decision Tree",
+      "description": "Bikin pohon keputusan yang nunjukin pilihan dan konsekuensinya."
+    },
+    "prosCons": {
+      "title": "Pro & Kontra",
+      "description": "Bikin daftar plus-minus buat liat kelebihan dan kekurangan, biar keputusan makin seimbang."
+    },
+    "randomDecision": {
+      "title": "Random Decision",
+      "description": "Pake keberuntungan buat milih opsi, pas banget buat yang lagi bingung atau buntu."
+    },
+    "swotAnalysis": {
+      "title": "SWOT Analysis",
+      "description": "Cek kekuatan, kelemahan, peluang, dan ancaman kamu secara simpel."
+    },
+    "weightedRandom": {
+      "title": "Weighted Random",
+      "description": "Pilih opsi secara acak dengan bobot sesuai preferensi kamu."
+    },
+    "eisenhowerMatrix": {
+      "title": "Eisenhower Matrix",
+      "description": "Atur tugas berdasarkan seberapa mendesak dan pentingnya."
+    },
+    "costBenefit": {
+      "title": "Cost-Benefit",
+      "description": "Hitung biaya dan manfaat buat tau mana yang paling menguntungkan."
+    },
+    "scenarioPlanning": {
+      "title": "Scenario Planning",
+      "description": "Rencanain beberapa skenario masa depan buat liat dampak keputusan kamu."
+    }
+  },
+  "decisionMatrix": {
+    "title": "Decision Matrix",
+    "generateAi": "Generate Opsi dan Kriteria",
+    "initialOptions": {
+      "option1": "iPhone 15",
+      "option2": "Samsung Galaxy S23",
+      "option3": "Google Pixel 8"
+    },
+    "initialCriteria": {
+      "criterion1": {
+        "name": "Kualitas Kamera",
+        "description": "Seberapa bagus hasil foto dan video"
+      },
+      "criterion2": {
+        "name": "Daya Tahan Baterai",
+        "description": "Berapa lama baterai bertahan dengan penggunaan normal"
+      },
+      "criterion3": {
+        "name": "Harga",
+        "description": "Biaya keseluruhan termasuk aksesoris"
+      }
+    },
+    "initialDecisionContext": "Memilih smartphone baru",
+    "context": {
+      "title": "Konteks Keputusan",
+      "description": "Ceritain apa yang pengen kamu putuskan",
+      "placeholder": "Misal: Milih HP baru, menentukan lokasi terbaik untuk kafe baru, destinasi liburan, dll."
+    },
+    "options": {
+      "title": "Opsi",
+      "description": "Masukin opsi-opsi yang kamu pertimbangin",
+      "placeholder": "Nama opsi baru"
+    },
+    "criteria": {
+      "title": "Kriteria",
+      "description": "Masukin faktor-faktor penting buat keputusan kamu",
+      "placeholder": "Nama kriteria baru",
+      "weight": "Bobot"
+    },
+    "evaluation": {
+      "title": "Matriks Evaluasi",
+      "description": "Beri nilai tiap opsi (1-10) berdasarkan setiap kriteria",
+      "totalScore": "Skor Total"
+    },
+    "recommendation": {
+      "title": "Keputusan yang Direkomendasikan",
+      "description": "Rekomendasi keputusan berdasarkan kriteria dan bobot yang udah dimasukin"
+    }
+  },
+  "decisionTree": {
+    "title": "Decision Tree",
+    "context": {
+      "title": "Konteks Keputusan",
+      "description": "Ceritain apa yang pengen kamu putuskan",
+      "placeholder": "Misal: Milih mobil baru atau destinasi liburan, dll."
+    },
+    "tree": {
+      "title": "Pohon Keputusan",
+      "description": "Bikin tree keputusan dengan nambahin opsi dan hasil. Klik node buat pilih, kalau butuh bantuan AI.",
+      "addOption": "Tambah Opsi",
+      "probability": "Probabilitas",
+      "value": "Nilai",
+      "expectedValue": "Nilai yang Diharapkan"
+    },
+    "analysis": {
+      "title": "Analisis",
+      "description": "Nih nilai harapan dan rekomendasi",
+      "expectedValue": "Nilai yang Diharapkan",
+      "recommendedDecision": "Keputusan yang Disarankan"
+    },
+    "notes": {
+      "title": "Catatan",
+      "placeholder": "Tambah catatan kamu tentang keputusan ini..."
+    },
+    "initial": {
+      "rootText": "Perencanaan Liburan",
+      "decisionContext": "Merencanakan liburan keluarga di musim panas",
+      "option1": {
+        "text": "Resor Pantai",
+        "outcome1": { "text": "Cuaca sempurna" },
+        "outcome2": { "text": "Musim hujan" }
+      },
+      "option2": {
+        "text": "Wisata Kota",
+        "outcome3": { "text": "Mendapatkan penawaran bagus" },
+        "outcome4": { "text": "Mahal dan ramai" }
+      },
+      "option3": {
+        "text": "Retret Pegunungan",
+        "outcome5": { "text": "Cuaca mendaki yang indah" },
+        "outcome6": { "text": "Terlalu dingin untuk aktivitas" }
+      },
+      "newNodeText": "Node Baru"
+    },
+    "node": {
+      "probabilityLabel": "Probabilitas",
+      "valueLabel": "Nilai"
+    }
+  },
+  "prosCons": {
+    "initial": {
+      "decisionContext": "Mau hapus Instagram demi kesehatan mental, tapi masih ragu",
+      "pros": {
+        "pro1": "Mengurangi paparan konten negatif",
+        "pro2": "Lebih fokus pada kehidupan nyata",
+        "pro3": "Mengurangi kecanduan media sosial",
+        "pro4": "Meningkatkan produktivitas",
+        "new": "Pro Baru"
+      },
+      "cons": {
+        "con1": "Kehilangan koneksi dengan teman",
+        "con2": "Tidak update dengan berita terbaru",
+        "con3": "Kehilangan platform ekspresi diri",
+        "con4": "Mungkin merasa terisolasi",
+        "new": "Kontra Baru"
+      }
+    },
+    "title": "Pro & Kontra",
+    "generateAi": "Generate Pro dan Kontra",
+    "decisionTitle": "Judul Keputusan",
+    "decisionContext": "Konteks Keputusan",
+    "contextPlaceholder": "Misal: Terima tawaran kerja atau nggak? Cerita ke orang tua atau enggak?",
+    "pros": {
+      "title": "Pro",
+      "description": "Daftar kelebihan",
+      "placeholder": "Isi kelebihan...",
+      "addPro": "Tambah Pro",
+      "weight": "Bobot",
+      "totalScore": "Berat Pro"
+    },
+    "cons": {
+      "title": "Kontra",
+      "description": "Daftar kekurangan",
+      "placeholder": "Isi kekurangan...",
+      "addCon": "Tambah Kontra",
+      "weight": "Bobot",
+      "totalScore": "Berat Kontra"
+    },
+    "analysis": {
+      "title": "Analisis",
+      "description": "Bandingin bobot pro dan kontra",
+      "recommendation": "Rekomendasi"
+    },
+    "notes": {
+      "title": "Catatan",
+      "description": "Catatan tambahan soal keputusan ini",
+      "placeholder": "Tambah catatan atau pikiran tambahan soal keputusan ini..."
+    },
+    "recommendations": {
+      "prosOutweigh": "Lakukan! Pro lebih unggul dari kontra.",
+      "consOutweigh": "Coba pikir alternatif lain. Kontra lebih berat.",
+      "tie": "Seri deh. Pikir lagi faktor mana yang paling penting buat kamu."
+    }
+  },
+  "swot": {
+    "initial": {
+      "title": "Memulai bisnis online baru",
+      "decisionContext": "Saya mempertimbangkan untuk meluncurkan toko e-commerce yang menjual kerajinan tangan.",
+      "strengths": {
+        "s1": "Penawaran produk yang unik",
+        "s2": "Keterampilan desain yang kuat",
+        "s3": "Pengikut media sosial yang sudah ada"
+      },
+      "weaknesses": {
+        "w1": "Modal awal yang terbatas",
+        "w2": "Tidak memiliki pengalaman di e-commerce",
+        "w3": "Keterbatasan waktu karena pekerjaan saat ini"
+      },
+      "opportunities": {
+        "o1": "Pasar untuk barang kerajinan yang terus tumbuh",
+        "o2": "Potensi kerjasama dengan influencer",
+        "o3": "Musim belanja liburan mendekat"
+      },
+      "threats": {
+        "t1": "Kompetitor mapan",
+        "t2": "Ketidakpastian ekonomi",
+        "t3": "Kenaikan biaya pengiriman"
+      }
+    },
+    "title": "SWOT Analysis",
+    "analysisTitle": "Judul Analisis",
+    "context": "Konteks Keputusan",
+    "contextPlaceholder": "Misal: Nge-launch produk baru atau gonta-ganti karir, dll.",
+    "generateAi": "Generate Item",
+    "strengths": {
+      "title": "Kekuatan",
+      "description": "Keunggulan internal",
+      "placeholder": "Tambah kekuatan...",
+      "addStrength": "Tambah Kekuatan"
+    },
+    "weaknesses": {
+      "title": "Kelemahan",
+      "description": "Kekurangan internal",
+      "placeholder": "Tambah kelemahan...",
+      "addWeakness": "Tambah Kelemahan"
+    },
+    "opportunities": {
+      "title": "Peluang",
+      "description": "Peluang eksternal",
+      "placeholder": "Tambah peluang...",
+      "addOpportunity": "Tambah Peluang"
+    },
+    "threats": {
+      "title": "Ancaman",
+      "description": "Ancaman eksternal",
+      "placeholder": "Tambah ancaman...",
+      "addThreat": "Tambah Ancaman"
+    },
+    "analysis": {
+      "title": "Analisis & Catatan",
+      "description": "Ringkas temuan dan langkah selanjutnya",
+      "placeholder": "Kesimpulan apa yang bisa kamu ambil? Langkah selanjutnya apa?"
+    },
+    "notes": {
+      "title": "Catatan",
+      "description": "Catatan tambahan soal keputusan ini",
+      "placeholder": "Tambah catatan atau pikiran lain soal keputusan ini..."
+    }
+  },
+  "randomDecision": {
+    "initial": {
+      "decisionContext": "Kita bingung mau makan di mana",
+      "options": {
+        "option1": "Restoran Italia",
+        "option2": "Bar Sushi",
+        "option3": "Grill Meksiko",
+        "option4": "Tempat Makanan Thailand",
+        "option5": "Burger Joint"
+      }
+    },
+    "title": "Random Decision",
+    "decisionTitle": "Judul Keputusan",
+    "decisionContext": "Konteks Keputusan",
+    "contextPlaceholder": "Misal: Bingung mau makan apa",
+    "generateAi": "Generate Opsi",
+    "options": {
+      "title": "Opsi",
+      "description": "Masukin semua opsi yang kamu pikirin",
+      "placeholder": "Opsi baru",
+      "add": "Tambah"
+    },
+    "decisionMethod": {
+      "title": "Bikin Keputusan Acak",
+      "description": "Pilih cara kamu mau bikin keputusan acak",
+      "simpleRandom": "Simple Random"
+    },
+    "result": {
+      "selectedOption": "Opsi yang Dipilih",
+      "eliminatedOption": "Opsi yang Dihapus",
+      "selectedDescription": "Hasil keputusan",
+      "eliminatedDescription": "Opsi ini udah dihapus dari pilihan"
+    }
+  },
+  "weightedRandom": {
+    "initial": {
+      "title": "Memilih destinasi liburan",
+      "decisionContext": "Kami memiliki beberapa tempat yang ingin dikunjungi, namun beberapa lebih menarik daripada yang lain.",
+      "options": {
+        "option1": "Resor Pantai",
+        "option2": "Kabina Pegunungan",
+        "option3": "Tur Kota Eropa",
+        "option4": "Kapal Pesiar",
+        "option5": "Taman Nasional"
+      }
+    },
+    "title": "Weighted Random",
+    "decisionTitle": "Judul Keputusan",
+    "decisionContext": "Konteks Keputusan",
+    "contextPlaceholder": "Misal: Milih di antara beberapa tawaran kerja dengan preferensi beda-beda",
+    "generateAi": "Generate Opsi",
+    "options": {
+      "title": "Opsi & Bobot",
+      "description": "Masukin opsi dan kasih bobotnya sesuai penting",
+      "placeholder": "Opsi baru",
+      "add": "Tambah",
+      "weightLabel": "Bobot",
+      "showProbabilities": "Lihat Probabilitas",
+      "hideProbabilities": "Sembunyiin Probabilitas"
+    },
+    "decisionMethod": {
+      "title": "Ambil Keputusan",
+      "description": "Semakin tinggi bobot, makin besar peluang opsi itu dipilih, tapi semua masih bisa keambil",
+      "pickWeighted": "Pick Weighted"
+    },
+    "result": {
+      "selectedOption": "Opsi yang Dipilih",
+      "selectedDescription": "Keputusan acak berbobot telah diambil",
+      "probability": "Opsi ini punya peluang {probability}% untuk terpilih."
+    },
+    "notes": {
+      "title": "Catatan",
+      "description": "Catatan tambahan soal keputusan kamu",
+      "placeholder": "Tambah catatan atau pikiran tambahan soal keputusan ini..."
+    }
+  },
+  "eisenhowerMatrix": {
+    "initial": {
+      "title": "Prioritas Tugas Mingguan",
+      "decisionContext": "Saya perlu memprioritaskan tugas untuk minggu depan agar produktivitas maksimal.",
+      "tasks": {
+        "task1": "Selesaikan laporan triwulanan",
+        "task2": "Balas email klien",
+        "task3": "Rencanakan strategi jangka panjang",
+        "task4": "Pengembangan keterampilan tim",
+        "task5": "Hadir dalam rapat rutin",
+        "task6": "Atur file digital"
+      }
+    },
+    "title": "Eisenhower Matrix",
+    "matrixTitle": "Judul Matriks",
+    "context": {
+      "title": "Konteks Keputusan",
+      "description": "Ceritain apa yang pengen kamu putuskan",
+      "placeholder": "Misal: Susun prioritas tugas mingguan, rencana proyek, dll."
+    },
+    "generateAi": "Generate Tugas",
+    "tasks": {
+      "title": "Tugas",
+      "description": "Masukin tugas dan kasih nilai urgensi & pentingnya (1-10)",
+      "placeholder": "Masukin tugas baru...",
+      "add": "Tambah",
+      "urgency": "Urgensi",
+      "importance": "Kepentingan",
+      "quadrant": "Kuadran"
+    },
+    "quadrants": {
+      "q1": {
+        "title": "Lakukan Dulu",
+        "description": "Mendesak & Penting",
+        "action": "Kerjain tugas ini secepatnya"
+      },
+      "q2": {
+        "title": "Jadwalkan",
+        "description": "Nggak mendesak tapi penting",
+        "action": "Tentukan waktu buat tugas ini"
+      },
+      "q3": {
+        "title": "Delegasikan",
+        "description": "Mendesak tapi nggak penting",
+        "action": "Siapa yang bisa bantuin tugas ini?"
+      },
+      "q4": {
+        "title": "Eliminasi",
+        "description": "Nggak mendesak dan nggak penting",
+        "action": "Bisa nggak tugas ini dihapus?"
+      },
+      "noTasks": "Nggak ada tugas di kuadran ini"
+    },
+    "notes": {
+      "title": "Catatan",
+      "description": "Catatan tambahan soal prioritas kamu",
+      "placeholder": "Tambah catatan atau pikiran tambahan soal prioritas tugas kamu..."
+    }
+  },
+  "costBenefit": {
+    "initialTitle": "Peluncuran Produk Baru",
+    "initialDecisionContext": "Mengevaluasi apakah akan meluncurkan lini produk baru berdasarkan biaya dan manfaat.",
+    "initialCosts": {
+      "cost1": { "description": "Biaya pengembangan awal" },
+      "cost2": { "description": "Kampanye pemasaran" },
+      "cost3": { "description": "Waktu pelatihan staf" },
+      "cost4": { "description": "Potensi kanibalisasi pasar" }
+    },
+    "initialBenefits": {
+      "benefit1": { "description": "Pendapatan tahun pertama" },
+      "benefit2": { "description": "Peningkatan merek" },
+      "benefit3": { "description": "Peningkatan pangsa pasar" },
+      "benefit4": { "description": "Peningkatan loyalitas pelanggan" }
+    },
+    "title": "Cost-Benefit Analysis",
+    "analysisTitle": "Judul Analisis",
+    "analysisContext": "Konteks Analisis",
+    "analysisContextPlaceholder": "Misal: Ngevaluasi proyek baru atau keputusan investasi, dll.",
+    "costs": {
+      "title": "Biaya",
+      "description": "Masukin semua biaya yang berhubungan sama keputusan ini",
+      "placeholder": "Deskripsi biaya...",
+      "monetaryCostLabel": "Biaya moneter (perkiraan nilai)",
+      "shortTerm": "Jangka pendek (< 1 tahun)",
+      "mediumTerm": "Jangka menengah (1-3 tahun)",
+      "longTerm": "Jangka panjang (> 3 tahun)",
+      "valueLabel": "Nilai (Rp)",
+      "timeframeLabel": "Jangka Waktu",
+      "monetary": "Moneter",
+      "nonMonetary": "Non-moneter",
+      "addCost": "Tambah Biaya"
+    },
+    "benefits": {
+      "title": "Manfaat",
+      "description": "Masukin semua manfaat yang berhubungan sama keputusan ini",
+      "placeholder": "Deskripsi manfaat...",
+      "monetaryBenefitLabel": "Manfaat moneter (perkiraan nilai)",
+      "addBenefit": "Tambah Manfaat"
+    },
+    "analysis": {
+      "title": "Analisis",
+      "description": "Rangkuman biaya dan manfaat",
+      "totalCosts": "Total Biaya:",
+      "totalBenefits": "Total Manfaat:",
+      "netBenefit": "Manfaat Bersih:",
+      "ratio": "Rasio Manfaat-Biaya:",
+      "recommendation": "Rekomendasi:"
+    },
+    "recommendations": {
+      "stronglyRecommended": "Sangat direkomendasikan, karena manfaat jauh lebih besar.",
+      "recommended": "Direkomendasikan, manfaat lebih besar.",
+      "marginallyRecommended": "Agak direkomendasikan, manfaat cuma sedikit lebih besar.",
+      "notRecommended": "Nggak direkomendasikan, biayanya lebih tinggi.",
+      "neutral": "Netral, biaya dan manfaat seimbang."
+    },
+    "notesAndParams": {
+      "title": "Catatan & Parameter",
+      "description": "Catatan tambahan buat analisis ini",
+      "discountRate": "Tingkat Diskonto (%)",
+      "discountRateHelper": "Buat hitung nilai di masa depan",
+      "notes": "Catatan",
+      "notesPlaceholder": "Tambah catatan atau pertimbangan lain buat analisis ini..."
+    }
+  },
+  "scenarioPlanning": {
+    "initial": {
+      "title": "Strategi Ekspansi Bisnis",
+      "decisionContext": "Merencanakan strategi ekspansi perusahaan dengan mempertimbangkan berbagai skenario masa depan.",
+      "scenarios": {
+        "s1": {
+          "name": "Pertumbuhan Ekonomi",
+          "description": "Pertumbuhan ekonomi yang kuat dengan peningkatan belanja konsumen dan investasi bisnis."
+        },
+        "s2": {
+          "name": "Stagnasi Ekonomi",
+          "description": "Pertumbuhan ekonomi yang datar dengan belanja konsumen yang hati-hati dan investasi bisnis yang terbatas."
+        },
+        "s3": {
+          "name": "Penurunan Ekonomi",
+          "description": "Resesi ekonomi dengan penurunan belanja konsumen dan kontraksi bisnis."
+        }
+      },
+      "options": {
+        "o1": {
+          "name": "Ekspansi Agresif",
+          "description": "Buka beberapa lokasi baru dan tingkatkan anggaran pemasaran secara signifikan."
+        },
+        "o2": {
+          "name": "Pertumbuhan Moderat",
+          "description": "Buka satu lokasi baru dan tingkatkan pemasaran secara moderat."
+        },
+        "o3": {
+          "name": "Konsolidasi",
+          "description": "Fokus pada peningkatan operasi yang ada dan membangun cadangan kas."
+        }
+      }
+    },
+    "title": "Scenario Planning",
+    "analysisTitle": "Judul Analisis",
+    "analysisContext": "Konteks",
+    "analysisContextPlaceholder": "Misal: Strategi bisnis, keputusan investasi, dll.",
+    "futureScenarios": {
+      "title": "Skenario Masa Depan",
+      "description": "Tentukan skenario masa depan yang mungkin beserta probabilitasnya",
+      "namePlaceholder": "Nama skenario...",
+      "descriptionPlaceholder": "Deskripsi skenario...",
+      "probabilityLabel": "Probabilitas:",
+      "probabilityWarning": "Catatan: Total probabilitas harus 100%. Sekarang: {total}%",
+      "addScenario": "Tambah Skenario"
+    },
+    "strategicOptions": {
+      "title": "Opsi Strategis",
+      "description": "Tentukan langkah yang mungkin diambil",
+      "namePlaceholder": "Nama opsi...",
+      "descriptionPlaceholder": "Deskripsi opsi...",
+      "expectedValue": "Nilai yang Diharapkan:",
+      "addOption": "Tambah Opsi"
+    },
+    "scenarioAnalysisMatrix": {
+      "title": "Matriks Analisis Skenario",
+      "description": "Beri nilai tiap opsi untuk tiap skenario (1-10)",
+      "options": "Opsi",
+      "expectedValue": "Nilai yang Diharapkan"
+    },
+    "analysis": {
+      "title": "Analisis",
+      "description": "Rekomendasi berdasarkan analisis skenario",
+      "bestValueTitle": "Nilai yang Diharapkan Terbaik:",
+      "bestValueDescription": "Opsi ini punya skenario dengan nilai harapan tertinggi.",
+      "mostRobustTitle": "Opsi Paling Tangguh:",
+      "mostRobustDescription": "Opsi ini tampil oke di semua skenario, mengurangi resiko kerugian."
+    },
+    "notes": {
+      "title": "Catatan",
+      "description": "Catatan tambahan soal perencanaan skenario kamu",
+      "placeholder": "Tambah catatan atau pikiran lain soal analisis ini..."
+    }
+  },
+  "aiAssistant": {
+    "title": "Asisten AI",
+    "description": "Biarkan AI bantu kamu ambil keputusan",
+    "input": "Input",
+    "analysis": "Analisis",
+    "placeholder": "Ceritain konteks keputusan kamu di sini... (misal: 'Saya bingung milih antara tiga tawaran kerja' atau 'Saya nggak tahu rumah mana yang harus dibeli')",
+    "analyze": "Analisis",
+    "generateCriteria": "Bikin Kriteria",
+    "generateOutcomes": "Bikin Hasil",
+    "generateProsAndCons": "Bikin Pro & Kontra",
+    "explainChoice": "Jelaskan Pilihan",
+    "thinking": "Berpikir...",
+    "decisionAnalysis": "Analisis Keputusan",
+    "decisionExplanation": "Penjelasan Keputusan",
+    "disclaimer": "Saran dari AI cuma buat panduan. Tetap pake penilaian kamu buat keputusan akhir."
+  }
+}

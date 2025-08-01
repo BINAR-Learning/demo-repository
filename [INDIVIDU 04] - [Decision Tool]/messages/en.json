@@ -1,0 +1,568 @@
+{
+  "common": {
+    "start": "Start",
+    "back": "Back",
+    "reset": "Reset",
+    "add": "Add",
+    "notes": "Notes",
+    "context": "Context",
+    "title": "Title",
+    "shareNote": "Note: The URL will contain all your current data",
+    "resetConfirmation": {
+      "title": "Are you sure?",
+      "description": "This will delete all your current data and reset to a completely blank slate. This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Reset"
+    },
+    "exampleConfirmation": {
+      "title": "Show example?",
+      "description": "This will delete all your current data and display the example data. This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Yes"
+    },
+    "seeResultButton": "SEE RESULT",
+    "generating": "Generating...",
+    "showSample": "Show Example",
+    "or": "or",
+    "aiError": "If it keeps happening, you can fill the inputs yourself",
+    "chatboxPlaceholder": "Let's find the best option for you..."
+  },
+  "home": {
+    "title": "Make Better Decisions, Faster",
+    "subtitle": "Choose from multiple decision-making frameworks to help you make the right choice.",
+    "aiPowered": "Powered by AI to enhance your decision-making",
+    "footer": "© 2025 Decision Maker Lab. All rights reserved.",
+    "recommendedTools": "Recommended Tools"
+  },
+  "tools": {
+    "decisionMatrix": {
+      "title": "Decision Matrix",
+      "description": "Compare options against weighted criteria to find the best choice."
+    },
+    "decisionTree": {
+      "title": "Decision Tree",
+      "description": "Map out possible decisions and their consequences in a tree structure."
+    },
+    "prosCons": {
+      "title": "Pros & Cons",
+      "description": "List the advantages and disadvantages to make a balanced decision."
+    },
+    "randomDecision": {
+      "title": "Random Decision",
+      "description": "Let chance decide or break a deadlock with a randomized choice."
+    },
+    "swotAnalysis": {
+      "title": "SWOT Analysis",
+      "description": "Analyze Strengths, Weaknesses, Opportunities, and Threats."
+    },
+    "weightedRandom": {
+      "title": "Weighted Random",
+      "description": "Randomize with weighted probabilities based on your preferences."
+    },
+    "eisenhowerMatrix": {
+      "title": "Eisenhower Matrix",
+      "description": "Prioritize tasks based on urgency and importance."
+    },
+    "costBenefit": {
+      "title": "Cost-Benefit",
+      "description": "Evaluate decisions based on costs versus benefits."
+    },
+    "scenarioPlanning": {
+      "title": "Scenario Planning",
+      "description": "Evaluate decisions across different possible future scenarios."
+    }
+  },
+  "decisionMatrix": {
+    "title": "Decision Matrix",
+    "generateAi": "Generate Options and Criteria",
+    "initialOptions": {
+      "option1": "iPhone 15",
+      "option2": "Samsung Galaxy S23",
+      "option3": "Google Pixel 8"
+    },
+    "initialCriteria": {
+      "criterion1": {
+        "name": "Camera Quality",
+        "description": "How good are the photos and videos"
+      },
+      "criterion2": {
+        "name": "Battery Life",
+        "description": "How long the battery lasts with normal use"
+      },
+      "criterion3": {
+        "name": "Price",
+        "description": "Overall cost including any accessories"
+      }
+    },
+    "initialDecisionContext": "Choosing a new smartphone",
+    "context": {
+      "title": "Decision Context",
+      "description": "Describe what you're trying to decide",
+      "placeholder": "E.g., Choosing a new car, selecting a vacation destination, etc."
+    },
+    "options": {
+      "title": "Options",
+      "description": "Add the alternatives you're considering",
+      "placeholder": "New option name"
+    },
+    "criteria": {
+      "title": "Criteria",
+      "description": "Add factors that matter in your decision",
+      "placeholder": "New criterion name",
+      "weight": "Weight"
+    },
+    "evaluation": {
+      "title": "Evaluation Matrix",
+      "description": "Score each option against each criterion (1-10)",
+      "totalScore": "Total Score"
+    },
+    "recommendation": {
+      "title": "Recommended Decision",
+      "description": "Based on your criteria and weights"
+    }
+  },
+  "decisionTree": {
+    "title": "Decision Tree",
+    "context": {
+      "title": "Decision Context",
+      "description": "Describe what you're trying to decide",
+      "placeholder": "E.g., Choosing a new car, selecting a vacation destination, etc."
+    },
+    "tree": {
+      "title": "Decision Tree",
+      "description": "Build your decision tree by adding options and outcomes. Click on a node to select it for AI assistance.",
+      "addOption": "Add Option",
+      "probability": "Probability",
+      "value": "Value",
+      "expectedValue": "Expected Value"
+    },
+    "analysis": {
+      "title": "Analysis",
+      "description": "Expected values and recommendations",
+      "expectedValue": "Expected Values",
+      "recommendedDecision": "Recommended Decision"
+    },
+    "notes": {
+      "title": "Notes",
+      "placeholder": "Add your notes about this decision..."
+    },
+    "initial": {
+      "rootText": "Vacation Planning",
+      "decisionContext": "Planning a family vacation for summer",
+      "option1": {
+        "text": "Beach Resort",
+        "outcome1": { "text": "Perfect weather" },
+        "outcome2": { "text": "Rainy season" }
+      },
+      "option2": {
+        "text": "City Trip",
+        "outcome3": { "text": "Found great deals" },
+        "outcome4": { "text": "Expensive and crowded" }
+      },
+      "option3": {
+        "text": "Mountain Retreat",
+        "outcome5": { "text": "Beautiful hiking weather" },
+        "outcome6": { "text": "Too cold for activities" }
+      },
+      "newNodeText": "New Node"
+    },
+    "node": {
+      "probabilityLabel": "Probability",
+      "valueLabel": "Value"
+    }
+  },
+  "prosCons": {
+    "initial": {
+      "decisionContext": "Should I delete Instagram for my mental health?",
+      "pros": {
+        "pro1": "Reduced exposure to negative comparisons",
+        "pro2": "More time for offline activities",
+        "pro3": "Less anxiety from social media pressure",
+        "pro4": "Improved focus and productivity",
+        "new": "New Pro"
+      },
+      "cons": {
+        "con1": "Losing connection with friends and family",
+        "con2": "Missing out on important updates or events",
+        "con3": "Potential FOMO (fear of missing out)",
+        "con4": "Difficulty staying in touch with certain groups",
+        "new": "New Con"
+      }
+    },
+    "title": "Pros & Cons Analysis",
+    "generateAi": "Generate Pros and Cons",
+    "decisionTitle": "Decision Title",
+    "decisionContext": "Decision Context",
+    "contextPlaceholder": "E.g., Should I accept this job offer? Should I tell the truth to my parents?",
+    "pros": {
+      "title": "Pros",
+      "description": "List the advantages",
+      "placeholder": "Enter a pro...",
+      "addPro": "Add Pro",
+      "weight": "Weight",
+      "totalScore": "Pro Weight"
+    },
+    "cons": {
+      "title": "Cons",
+      "description": "List the disadvantages",
+      "placeholder": "Enter a con...",
+      "addCon": "Add Con",
+      "weight": "Weight",
+      "totalScore": "Con Weight"
+    },
+    "analysis": {
+      "title": "Analysis",
+      "description": "Weighted comparison of pros and cons",
+      "recommendation": "Recommendation"
+    },
+    "recommendations": {
+      "prosOutweigh": "Go for it! The pros outweigh the cons.",
+      "consOutweigh": "Consider alternatives. The cons outweigh the pros.",
+      "tie": "It's a tie. Consider what factors might be most important to you."
+    }
+  },
+  "swot": {
+    "initial": {
+      "title": "Starting a new online business",
+      "decisionContext": "I'm considering launching an e-commerce store selling handmade crafts.",
+      "strengths": {
+        "s1": "Unique product offerings",
+        "s2": "Strong design skills",
+        "s3": "Existing social media following"
+      },
+      "weaknesses": {
+        "w1": "Limited startup capital",
+        "w2": "No experience in e-commerce",
+        "w3": "Time constraints with current job"
+      },
+      "opportunities": {
+        "o1": "Growing market for handmade items",
+        "o2": "Potential for partnerships with influencers",
+        "o3": "Holiday shopping season approaching"
+      },
+      "threats": {
+        "t1": "Established competitors",
+        "t2": "Economic uncertainty",
+        "t3": "Rising shipping costs"
+      }
+    },
+    "title": "SWOT Analysis",
+    "analysisTitle": "Analysis Title",
+    "context": "Decision Context",
+    "contextPlaceholder": "E.g., Launching a new product, career change, etc.",
+    "generateAi": "Generate Items",
+    "strengths": {
+      "title": "Strengths",
+      "description": "Internal positive factors",
+      "placeholder": "Add a strength...",
+      "addStrength": "Add Strength"
+    },
+    "weaknesses": {
+      "title": "Weaknesses",
+      "description": "Internal negative factors",
+      "placeholder": "Add a weakness...",
+      "addWeakness": "Add Weakness"
+    },
+    "opportunities": {
+      "title": "Opportunities",
+      "description": "External positive factors",
+      "placeholder": "Add an opportunity...",
+      "addOpportunity": "Add Opportunity"
+    },
+    "threats": {
+      "title": "Threats",
+      "description": "External negative factors",
+      "placeholder": "Add a threat...",
+      "addThreat": "Add Threat"
+    },
+    "analysis": {
+      "title": "Analysis & Notes",
+      "description": "Summarize your findings and next steps",
+      "placeholder": "What conclusions can you draw from this SWOT analysis? What actions should you take?"
+    }
+  },
+  "randomDecision": {
+    "initial": {
+      "decisionContext": "We can't decide where to eat",
+      "options": {
+        "option1": "Italian Restaurant",
+        "option2": "Sushi Bar",
+        "option3": "Mexican Grill",
+        "option4": "Thai Place",
+        "option5": "Burger Joint"
+      }
+    },
+    "title": "Random Decision Maker",
+    "decisionTitle": "Decision Title",
+    "decisionContext": "Decision Context",
+    "generateAi": "Generate Options",
+    "contextPlaceholder": "E.g., Can't decide where to eat dinner",
+    "options": {
+      "title": "Options",
+      "description": "Add all the options you're considering",
+      "placeholder": "New option",
+      "add": "Add"
+    },
+    "decisionMethod": {
+      "title": "Decision Method",
+      "description": "Choose how you want to make your random decision",
+      "simpleRandom": "Simple Random Pick"
+    },
+    "result": {
+      "selectedOption": "Selected Option",
+      "eliminatedOption": "Eliminated Option",
+      "selectedDescription": "The random decision has been made",
+      "eliminatedDescription": "This option has been removed from consideration"
+    }
+  },
+  "weightedRandom": {
+    "initial": {
+      "decisionContext": "We have several places we'd like to visit, but some are more appealing than others.",
+      "options": {
+        "option1": "Beach Resort",
+        "option2": "Mountain Cabin",
+        "option3": "European City Tour",
+        "option4": "Cruise",
+        "option5": "National Park"
+      }
+    },
+    "title": "Weighted Random Decision",
+    "decisionTitle": "Decision Title",
+    "decisionContext": "Decision Context",
+    "contextPlaceholder": "E.g., Choosing between job offers with different preferences",
+    "generateAi": "Generate Options",
+    "options": {
+      "title": "Options & Weights",
+      "description": "Add options and set their relative importance",
+      "placeholder": "New option",
+      "add": "Add",
+      "weightLabel": "Weight",
+      "showProbabilities": "Show Probabilities",
+      "hideProbabilities": "Hide Probabilities"
+    },
+    "decisionMethod": {
+      "title": "Make a Decision",
+      "description": "Higher weights increase the chance of selection, but any option could be chosen",
+      "pickWeighted": "Pick Weighted Random Option"
+    },
+    "result": {
+      "selectedOption": "Selected Option",
+      "selectedDescription": "The weighted random selection has been made",
+      "probability": "This option had a {probability}% chance of being selected."
+    }
+  },
+  "eisenhowerMatrix": {
+    "initial": {
+      "title": "Weekly Task Prioritization",
+      "decisionContext": "I need to prioritize my tasks for the upcoming week to maximize productivity.",
+      "tasks": {
+        "task1": "Finish quarterly report",
+        "task2": "Respond to client emails",
+        "task3": "Plan long-term strategy",
+        "task4": "Team skill development",
+        "task5": "Attend routine meeting",
+        "task6": "Organize digital files"
+      }
+    },
+    "title": "Eisenhower Matrix",
+    "matrixTitle": "Matrix Title",
+    "context": {
+      "title": "Decision Context",
+      "description": "Describe what you're trying to decide",
+      "placeholder": "E.g., Weekly task prioritization, project planning, etc."
+    },  
+    "generateAi": "Generate Tasks",
+    "tasks": {
+      "title": "Tasks",
+      "description": "Add tasks and rate their urgency and importance (1-10)",
+      "placeholder": "Add a new task...",
+      "add": "Add",
+      "urgency": "Urgency",
+      "importance": "Importance",
+      "quadrant": "Quadrant"
+    },
+    "quadrants": {
+      "q1": {
+        "title": "Do First",
+        "description": "Urgent & Important",
+        "action": "Do these tasks immediately"
+      },
+      "q2": {
+        "title": "Schedule",
+        "description": "Not Urgent & Important",
+        "action": "Decide when to do these tasks"
+      },
+      "q3": {
+        "title": "Delegate",
+        "description": "Urgent & Not Important",
+        "action": "Who can do these tasks for you?"
+      },
+      "q4": {
+        "title": "Eliminate",
+        "description": "Not Urgent & Not Important",
+        "action": "Can these tasks be eliminated?"
+      },
+      "noTasks": "No tasks in this quadrant"
+    },
+    "notes": {
+      "title": "Notes",
+      "description": "Additional thoughts about your prioritization",
+      "placeholder": "Add any additional notes or thoughts about your task prioritization..."
+    }
+  },
+  "costBenefit": {
+    "initialTitle": "New Product Launch",
+    "initialDecisionContext": "Evaluating whether to launch a new product line based on costs and benefits.",
+    "initialCosts": {
+      "cost1": { "description": "Initial development costs" },
+      "cost2": { "description": "Marketing campaign" },
+      "cost3": { "description": "Staff training time" },
+      "cost4": { "description": "Potential market cannibalization" }
+    },
+    "initialBenefits": {
+      "benefit1": { "description": "First year revenue" },
+      "benefit2": { "description": "Brand enhancement" },
+      "benefit3": { "description": "Market share increase" },
+      "benefit4": { "description": "Customer loyalty improvement" }
+    },
+    "title": "Cost-Benefit Analysis",
+    "analysisTitle": "Analysis Title",
+    "analysisContext": "Context",
+    "analysisContextPlaceholder": "E.g., Evaluating a new project, investment decision, etc.",
+    "costs": {
+      "title": "Costs",
+      "description": "List all costs associated with this decision",
+      "placeholder": "Cost description...",
+      "monetaryCostLabel": "Monetary cost (vs. estimated value)",
+      "shortTerm": "Short-term (< 1 year)",
+      "mediumTerm": "Medium-term (1-3 years)",
+      "longTerm": "Long-term (> 3 years)",
+      "valueLabel": "Value ($)",
+      "timeframeLabel": "Timeframe",
+      "monetary": "Monetary",
+      "nonMonetary": "Non-monetary",
+      "addCost": "Add Cost"
+    },
+    "benefits": {
+      "title": "Benefits",
+      "description": "List all benefits associated with this decision",
+      "placeholder": "Benefit description...",
+      "monetaryBenefitLabel": "Monetary benefit (vs. estimated value)",
+      "addBenefit": "Add Benefit"
+    },
+    "analysis": {
+      "title": "Analysis",
+      "description": "Summary of costs and benefits",
+      "totalCosts": "Total Costs:",
+      "totalBenefits": "Total Benefits:",
+      "netBenefit": "Net Benefit:",
+      "ratio": "Benefit-Cost Ratio:",
+      "recommendation": "Recommendation:"
+    },
+    "recommendations": {
+      "stronglyRecommended": "Strongly recommended. The benefits significantly outweigh the costs.",
+      "recommended": "Recommended. The benefits outweigh the costs.",
+      "marginallyRecommended": "Marginally recommended. The benefits slightly outweigh the costs.",
+      "notRecommended": "Not recommended. The costs outweigh the benefits.",
+      "neutral": "Neutral. The costs and benefits are approximately equal."
+    },
+    "notesAndParams": {
+      "title": "Notes & Parameters",
+      "description": "Additional considerations for your analysis",
+      "discountRate": "Discount Rate (%)",
+      "discountRateHelper": "For future value calculations",
+      "notes": "Notes",
+      "notesPlaceholder": "Add any additional notes or considerations about this analysis..."
+    }
+  },
+  "scenarioPlanning": {
+    "initial": {
+      "title": "Business Expansion Strategy",
+      "decisionContext": "Planning our company's expansion strategy considering different possible future scenarios.",
+      "scenarios": {
+        "s1": {
+          "name": "Economic Growth",
+          "description": "Strong economic growth with increased consumer spending and business investment."
+        },
+        "s2": {
+          "name": "Economic Stagnation",
+          "description": "Flat economic growth with cautious consumer spending and limited business investment."
+        },
+        "s3": {
+          "name": "Economic Downturn",
+          "description": "Economic recession with reduced consumer spending and business contraction."
+        }
+      },
+      "options": {
+        "o1": {
+          "name": "Aggressive Expansion",
+          "description": "Open multiple new locations and significantly increase marketing budget."
+        },
+        "o2": {
+          "name": "Moderate Growth",
+          "description": "Open one new location and moderately increase marketing efforts."
+        },
+        "o3": {
+          "name": "Consolidation",
+          "description": "Focus on improving existing operations and building cash reserves."
+        }
+      }
+    },
+    "title": "Scenario Planning",
+    "analysisTitle": "Analysis Title",
+    "analysisContext": "Context",
+    "analysisContextPlaceholder": "E.g., Business strategy, investment decision, etc.",
+    "futureScenarios": {
+      "title": "Future Scenarios",
+      "description": "Define possible future scenarios and their probabilities",
+      "namePlaceholder": "Scenario name...",
+      "descriptionPlaceholder": "Scenario description...",
+      "probabilityLabel": "Probability:",
+      "probabilityWarning": "Note: Scenario probabilities should sum to 100%. Current total: {total}%",
+      "addScenario": "Add Scenario"
+    },
+    "strategicOptions": {
+      "title": "Strategic Options",
+      "description": "Define your possible courses of action",
+      "namePlaceholder": "Option name...",
+      "descriptionPlaceholder": "Option description...",
+      "expectedValue": "Expected Value:",
+      "addOption": "Add Option"
+    },
+    "scenarioAnalysisMatrix": {
+      "title": "Scenario Analysis Matrix",
+      "description": "Score each option against each scenario (1-10)",
+      "options": "Options",
+      "expectedValue": "Expected Value"
+    },
+    "analysis": {
+      "title": "Analysis",
+      "description": "Recommendations based on scenario analysis",
+      "bestValueTitle": "Best Expected Value:",
+      "bestValueDescription": "This option has the highest probability-weighted score across all scenarios.",
+      "mostRobustTitle": "Most Robust Option:",
+      "mostRobustDescription": "This option performs reasonably well across all scenarios, minimizing potential downside."
+    },
+    "notes": {
+      "title": "Notes",
+      "description": "Additional thoughts about your scenario planning",
+      "placeholder": "Add any additional notes or thoughts about this analysis..."
+    }
+  },
+  "aiAssistant": {
+    "title": "AI Assistant",
+    "description": "Let AI help with your decision-making process",
+    "input": "Input",
+    "analysis": "Analysis",
+    "placeholder": "Describe your decision context here... (e.g., 'I'm trying to choose between three job offers' or 'I need to decide which house to buy')",
+    "analyze": "Analyze",
+    "generateCriteria": "Generate Criteria",
+    "generateOutcomes": "Generate Outcomes",
+    "generateProsAndCons": "Generate Pros & Cons",
+    "explainChoice": "Explain Choice",
+    "thinking": "Thinking...",
+    "decisionAnalysis": "Decision Analysis",
+    "decisionExplanation": "Decision Explanation",
+    "disclaimer": "AI suggestions are for guidance only. Use your judgment for final decisions."
+  }
+}
