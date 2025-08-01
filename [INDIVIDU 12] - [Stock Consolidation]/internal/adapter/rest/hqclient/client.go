@@ -1,3 +1,4 @@
+// Package hqclient provides HTTP client functionality for communicating with HQ endpoints
 package hqclient
 
 import (
@@ -9,22 +10,28 @@ import (
 	"stock-consolidation/internal/core/domain"
 	"stock-consolidation/pkg/config"
 	"stock-consolidation/pkg/logger"
+	"time"
 )
 
+// HQClient handles communication with the HQ endpoint
 type HQClient struct {
 	endpoint   string
 	authHeader string
 	httpClient *http.Client
 }
 
+// NewHQClient creates a new HQClient instance
 func NewHQClient(cfg *config.Config) *HQClient {
 	return &HQClient{
 		endpoint:   cfg.HQEndPoint,
 		authHeader: cfg.HQBasicAuthorization,
-		httpClient: &http.Client{},
+		httpClient: &http.Client{
+			Timeout: 5 * time.Second, // Add timeout to prevent long delays
+		},
 	}
 }
 
+// SendStockChange sends a stock change notification to the HQ endpoint
 func (c *HQClient) SendStockChange(ctx context.Context, stock domain.Stock) error {
 	payload, err := json.Marshal(stock)
 	if err != nil {
@@ -45,7 +52,11 @@ func (c *HQClient) SendStockChange(ctx context.Context, stock domain.Stock) erro
 	if err != nil {
 		return fmt.Errorf("failed to send request: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			logger.Error("Failed to close response body: %v", err)
+		}
+	}()
 
 	if resp.StatusCode >= 400 {
 		return fmt.Errorf("HQ endpoint returned error status: %d", resp.StatusCode)

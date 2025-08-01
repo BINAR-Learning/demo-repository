@@ -1,3 +1,4 @@
+// Package postgres provides PostgreSQL database adapter functionality
 package postgres
 
 import (
@@ -12,11 +13,29 @@ import (
 	"github.com/lib/pq"
 )
 
+// PGListener defines the interface for PostgreSQL listener operations
+type PGListener interface {
+	Listen(channel string) error
+	Ping() error
+	Close() error
+	NotificationChannel() <-chan *pq.Notification
+}
+
+// StockListener handles PostgreSQL notifications for stock changes
 type StockListener struct {
-	listener *pq.Listener
+	listener PGListener
 	channel  string
 }
 
+// NewListenerWithPG creates a new StockListener with a custom PGListener
+func NewListenerWithPG(listener PGListener) *StockListener {
+	return &StockListener{
+		listener: listener,
+		channel:  "stock_changes",
+	}
+}
+
+// NewListener creates a new StockListener with PostgreSQL connection
 func NewListener(cfg *config.Config) (*StockListener, error) {
 	connStr := fmt.Sprintf(
 		"host=%s port=%s dbname=%s user=%s password=%s sslmode=disable",
@@ -27,7 +46,7 @@ func NewListener(cfg *config.Config) (*StockListener, error) {
 		cfg.DBPassword,
 	)
 
-	reportProblem := func(ev pq.ListenerEventType, err error) {
+	reportProblem := func(_ pq.ListenerEventType, err error) {
 		if err != nil {
 			logger.Error("Postgres listener error: %v", err)
 		}
@@ -51,6 +70,7 @@ func NewListener(cfg *config.Config) (*StockListener, error) {
 	}, nil
 }
 
+// ListenForChanges starts listening for stock change notifications
 func (l *StockListener) ListenForChanges(ctx context.Context) (<-chan domain.Stock, error) {
 	stockChan := make(chan domain.Stock)
 
@@ -60,7 +80,7 @@ func (l *StockListener) ListenForChanges(ctx context.Context) (<-chan domain.Sto
 
 		for {
 			select {
-			case n := <-l.listener.Notify:
+			case n := <-l.listener.NotificationChannel():
 				logger.Info("Received notification: %+v", n)
 				if n == nil {
 					logger.Info("Received empty notification")
@@ -89,6 +109,7 @@ func (l *StockListener) ListenForChanges(ctx context.Context) (<-chan domain.Sto
 	return stockChan, nil
 }
 
+// Close closes the PostgreSQL listener
 func (l *StockListener) Close() error {
 	return l.listener.Close()
 }

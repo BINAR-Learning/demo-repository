@@ -2,6 +2,8 @@ package service_test
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"testing"
 	"time"
 
@@ -13,7 +15,7 @@ type mockStockRepository struct {
 	stockChan chan domain.Stock
 }
 
-func (m *mockStockRepository) ListenForChanges(ctx context.Context) (<-chan domain.Stock, error) {
+func (m *mockStockRepository) ListenForChanges(_ context.Context) (<-chan domain.Stock, error) {
 	return m.stockChan, nil
 }
 
@@ -22,7 +24,73 @@ func (m *mockStockRepository) Close() error {
 	return nil
 }
 
+// setupTestEnv sets up environment variables for testing
+func setupTestEnv() func() {
+	// Save original environment variables
+	envVars := []string{
+		"DB_HOST",
+		"DB_PORT",
+		"DB_USER",
+		"DB_PASSWORD",
+		"DB_NAME",
+		"SERVICE_PORT",
+		"HQ_END_POINT",
+		"HQ_BASIC_AUTHORIZATION",
+	}
+
+	originalEnvVars := make(map[string]string)
+	for _, env := range envVars {
+		originalEnvVars[env] = os.Getenv(env)
+	}
+
+	// Set test environment variables
+	if err := os.Setenv("DB_HOST", "localhost"); err != nil {
+		panic(fmt.Sprintf("Failed to set DB_HOST: %v", err))
+	}
+	if err := os.Setenv("DB_PORT", "5432"); err != nil {
+		panic(fmt.Sprintf("Failed to set DB_PORT: %v", err))
+	}
+	if err := os.Setenv("DB_USER", "admin"); err != nil {
+		panic(fmt.Sprintf("Failed to set DB_USER: %v", err))
+	}
+	if err := os.Setenv("DB_PASSWORD", "admin123"); err != nil {
+		panic(fmt.Sprintf("Failed to set DB_PASSWORD: %v", err))
+	}
+	if err := os.Setenv("DB_NAME", "stockdb"); err != nil {
+		panic(fmt.Sprintf("Failed to set DB_NAME: %v", err))
+	}
+	if err := os.Setenv("SERVICE_PORT", "3000"); err != nil {
+		panic(fmt.Sprintf("Failed to set SERVICE_PORT: %v", err))
+	}
+	if err := os.Setenv("HQ_END_POINT", "http://localhost:8085/stock"); err != nil {
+		panic(fmt.Sprintf("Failed to set HQ_END_POINT: %v", err))
+	}
+	if err := os.Setenv("HQ_BASIC_AUTHORIZATION", "Basic dXNlcjpwYXNz"); err != nil {
+		panic(fmt.Sprintf("Failed to set HQ_BASIC_AUTHORIZATION: %v", err))
+	}
+
+	// Return cleanup function
+	return func() {
+		for env, value := range originalEnvVars {
+			if value != "" {
+				if err := os.Setenv(env, value); err != nil {
+					// Log error but don't fail test
+					fmt.Printf("Warning: Failed to restore environment variable %s: %v\n", env, err)
+				}
+			} else {
+				if err := os.Unsetenv(env); err != nil {
+					// Log error but don't fail test
+					fmt.Printf("Warning: Failed to unset environment variable %s: %v\n", env, err)
+				}
+			}
+		}
+	}
+}
+
 func TestStockService(t *testing.T) {
+	cleanup := setupTestEnv()
+	defer cleanup()
+
 	t.Run("successful stock change notification", func(t *testing.T) {
 		mockRepo := &mockStockRepository{
 			stockChan: make(chan domain.Stock),
@@ -66,7 +134,7 @@ func TestStockService(t *testing.T) {
 		for _, tc := range testCases {
 			mockRepo.stockChan <- tc
 			// Allow some time for processing
-			time.Sleep(50 * time.Millisecond)
+			time.Sleep(10 * time.Millisecond) // Reduced from 50ms
 		}
 	})
 
@@ -90,7 +158,7 @@ func TestStockService(t *testing.T) {
 
 		// Cancel context after a short delay
 		go func() {
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(20 * time.Millisecond) // Reduced from 100ms
 			cancel()
 		}()
 
@@ -106,9 +174,15 @@ func TestStockService(t *testing.T) {
 		}
 
 		mockRepo.stockChan <- testStock
+		time.Sleep(10 * time.Millisecond) // Reduced from 50ms
+
+		err := mockRepo.Close()
+		if err != nil {
+			t.Errorf("Failed to close repository: %v", err)
+		}
 
 		// Allow time for cleanup
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(20 * time.Millisecond) // Reduced from 100ms
 	})
 
 	t.Run("repository close", func(t *testing.T) {
@@ -138,7 +212,7 @@ func TestStockService(t *testing.T) {
 		}
 
 		mockRepo.stockChan <- testStock
-		time.Sleep(50 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond) // Reduced from 50ms
 
 		err := mockRepo.Close()
 		if err != nil {
@@ -146,6 +220,6 @@ func TestStockService(t *testing.T) {
 		}
 
 		// Allow time for cleanup
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(20 * time.Millisecond) // Reduced from 100ms
 	})
 }

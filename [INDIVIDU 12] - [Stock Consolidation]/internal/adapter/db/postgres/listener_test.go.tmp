@@ -1,0 +1,175 @@
+package postgres_test
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"testing"
+	"time"
+
+	"stock-consolidation/internal/adapter/db/postgres"
+	"stock-consolidation/internal/core/domain"
+	"stock-consolidation/pkg/config"
+
+	"github.com/lib/pq"
+)
+
+type mockPGListener struct {
+	notifications  chan *pq.Notification
+	listenError   error
+	pingError     error
+	closeError    error
+	listenCalled  bool
+	pingCalled    bool
+	closeCalled   bool
+}
+
+func (m *mockPGListener) Listen(channel string) error {
+	m.listenCalled = true
+	return m.listenError
+}
+
+func (m *mockPGListener) Ping() error {
+	m.pingCalled = true
+	return m.pingError
+}
+
+func (m *mockPGListener) Close() error {
+	m.closeCalled = true
+	return m.closeError
+}
+
+func (m *mockPGListener) NotificationChannel() <-chan *pq.Notification {
+	return m.notifications
+}
+
+func TestPostgresListener(t *testing.T) {
+	testTime := time.Date(2025, 7, 29, 0, 0, 0, 0, time.UTC)
+
+	t.Run("success connection with stock changes", func(t *testing.T) {
+		mock := &mockPGListener{
+			notifications: make(chan *pq.Notification),
+		}
+
+		// Create test stock
+		stock := domain.Stock{
+			ProductID: 1,
+			BranchID:  1,
+			Quantity:  10,
+			CreatedAt: testTime,
+			UpdatedAt: testTime,
+		}
+
+		stockData, err := json.Marshal(stock)
+		if err != nil {
+			t.Fatalf("Failed to marshal stock data: %v", err)
+		}
+
+		// Send test notification in background
+		go func() {
+			mock.notifications <- &pq.Notification{
+				Channel: "stock_changes",
+				Extra:   string(stockData),
+			}
+			close(mock.notifications)
+		}()
+
+		// Create listener with mock
+		listener := postgres.NewListenerWithPG(mock)
+		defer listener.Close()
+
+		// Start listening
+		stockChan, err := listener.ListenForChanges(context.Background())
+		if err != nil {
+			t.Fatalf("Failed to start listening: %v", err)
+		}
+
+		// Verify received stock change
+		received := <-stockChan
+		if received.ProductID != stock.ProductID ||
+			received.BranchID != stock.BranchID ||
+			received.Quantity != stock.Quantity ||
+			!received.CreatedAt.Equal(stock.CreatedAt) ||
+			!received.UpdatedAt.Equal(stock.UpdatedAt) {
+			t.Error("Received stock data does not match sent data")
+		}
+	})
+
+	t.Run("invalid notification data", func(t *testing.T) {
+		mock := &mockPGListener{
+			notifications: make(chan *pq.Notification),
+		}
+
+		// Send invalid JSON data
+		go func() {
+			mock.notifications <- &pq.Notification{
+				Channel: "stock_changes",
+				Extra:   "invalid json",
+			}
+			close(mock.notifications)
+		}()
+
+		// Create listener with mock
+		listener := postgres.NewListenerWithPG(mock)
+		defer listener.Close()
+
+		// Start listening
+		stockChan, err := listener.ListenForChanges(context.Background())
+		if err != nil {
+			t.Fatalf("Failed to start listening: %v", err)
+		}
+
+		// Should not receive anything due to invalid data
+		select {
+		case <-stockChan:
+			t.Error("Should not receive stock for invalid data")
+		case <-time.After(100 * time.Millisecond):
+			// This is expected
+		}
+	})
+
+	t.Run("listener error", func(t *testing.T) {
+		mock := &mockPGListener{
+			listenError: fmt.Errorf("mock listen error"),
+		}
+
+		// Create listener with mock
+		listener := postgres.NewListenerWithPG(mock)
+		defer listener.Close()
+
+		// Start listening - should get error
+		_, err := listener.ListenForChanges(context.Background())
+		if err == nil {
+			t.Error("Expected error from ListenForChanges, got nil")
+		}
+	})
+
+	// Test successful real connection
+	t.Run("real connection", func(t *testing.T) {
+		cfg := &config.Config{
+			DBHost:               "localhost",
+			DBPort:               "5432",
+			DBUser:               "admin",
+			DBPassword:           "admin123",
+			DBName:              "stockdb",
+		}
+
+		listener, err := postgres.NewListener(cfg)
+		if err == nil {
+			defer listener.Close()
+			stockChan, err := listener.ListenForChanges(context.Background())
+			if err != nil {
+				t.Fatalf("Failed to start listening: %v", err)
+			}
+
+			// Just test that the channel is created
+			select {
+			case <-stockChan:
+				// Should not receive anything
+				t.Error("Unexpected stock change received")
+			case <-time.After(100 * time.Millisecond):
+				// This is expected
+			}
+		}
+	})
+}
