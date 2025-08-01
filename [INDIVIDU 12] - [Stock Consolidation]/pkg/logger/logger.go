@@ -1,3 +1,4 @@
+// Package logger provides logging functionality for the application
 package logger
 
 import (
@@ -9,12 +10,20 @@ import (
 )
 
 var (
+	// LogFile is the file handle for logging
 	LogFile *os.File
-	Logger  *log.Logger
+	// Logger is the logger instance
+	Logger *log.Logger
 )
 
+// Init initializes the logger with file output
 func Init() error {
-	logDir := "/app/logs"
+	// Use relative path for tests, absolute path for production
+	logDir := "logs"
+	if os.Getenv("TESTING") == "" {
+		logDir = "/app/logs"
+	}
+
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return fmt.Errorf("failed to create log directory: %v", err)
 	}
@@ -33,12 +42,16 @@ func Init() error {
 	return nil
 }
 
+// Close closes the log file
 func Close() {
 	if LogFile != nil {
-		LogFile.Close()
+		if err := LogFile.Close(); err != nil {
+			log.Printf("Warning: Failed to close log file: %v", err)
+		}
 	}
 }
 
+// Info logs an informational message
 func Info(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
 	log.Print(msg) // Console output
@@ -50,20 +63,32 @@ func Info(format string, v ...interface{}) {
 	}
 }
 
+// Error logs an error message
 func Error(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
 	log.Print("ERROR: " + msg) // Console output
 	if Logger != nil {
-		Logger.Print("ERROR: " + msg) // File output
-		LogFile.Sync()                // Force write to disk
+		Logger.Print("ERROR: " + msg)          // File output
+		if err := LogFile.Sync(); err != nil { // Force write to disk
+			log.Printf("Warning: Failed to sync log file: %v", err)
+		}
 	}
 }
 
+// Fatal logs a fatal message and exits the application
 func Fatal(format string, v ...interface{}) {
 	msg := fmt.Sprintf(format, v...)
 	if Logger != nil {
-		Logger.Print("FATAL: " + msg) // File output
-		LogFile.Sync()                // Force write to disk
+		Logger.Print("FATAL: " + msg)          // File output
+		if err := LogFile.Sync(); err != nil { // Force write to disk
+			log.Printf("Warning: Failed to sync log file: %v", err)
+		}
 	}
-	log.Fatal("FATAL: " + msg) // Console output and exit
+
+	// Don't exit during tests
+	if os.Getenv("TESTING") != "" {
+		log.Print("FATAL: " + msg) // Console output without exit
+	} else {
+		log.Fatal("FATAL: " + msg) // Console output and exit
+	}
 }

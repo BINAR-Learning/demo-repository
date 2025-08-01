@@ -74,6 +74,141 @@ docker compose ps
 
 docker logs cdc-stock-consolidation-app-1
 
-docker exec -i cdc-stock-consolidation-db-1 psql -U admin -d stockdb -c "INSERT INTO stock (product_id, branch_id, quantity, reserved) VALUES (6, 3, 200, 25);"
+
+docker exec -i cdc-stock-consolidation-db-1 psql -U admin -d stockdb -c "INSERT INTO stock (product_id, branch_id, quantity, reserved) VALUES (4, 1, 300, 30);"
+
+
 
 docker logs cdc-stock-consolidation-app-1 --tail 10
+
+git status
+
+git add .; git commit -m "Update checking.md with testing steps and fix database connection"
+
+git add .; git commit -m "Refactoring for linter : change go.mod"
+
+git add .; git commit -m "Revamp for workflow Test for Set up job"
+
+git add .; git commit -m "change internal adapter db for lister test"
+
+git add .; git commit -m "change pkg,test,adapter"
+
+
+
+git push origin master
+
+--
+go test ./... -cover
+
+https://github.com/BINAR-Learning/demo-repository/tree/Module-8
+
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest; golangci-lint run
+
+
+---CI/CD
+
+# Pastikan semua perubahan sudah di-commit
+git add .github/workflows/ci.yml
+git add .github/workflows/go.yml
+
+git commit -m "feat: revamp GitHub Actions workflow for lint and test"
+
+git commit -m "feat: ci.yml add codecov"
+
+# Push ke GitHub
+git push origin master
+
+Di Browser GitHub:
+
+Di Browser GitHub:
+
+Buka repository Anda di https://github.com/talahoo/stock-consolidation
+Klik tab "Actions" di bagian atas repository
+Anda akan melihat workflow "Go CI/CD" yang baru saja di-push
+Workflow akan otomatis berjalan untuk setiap push ke master
+Memonitor Workflow:
+
+Di tab Actions, klik pada workflow run yang sedang berjalan
+Anda bisa melihat 2 jobs: "Lint" dan "Test"
+Klik pada masing-masing job untuk melihat detail prosesnya
+Jika ada error, log lengkap akan tersedia di sini
+Mengecek Coverage Report:
+
+Setelah workflow selesai, klik pada workflow run yang sukses
+Di bagian "Artifacts", Anda akan melihat "coverage-report"
+Download dan buka file coverage.out untuk melihat detail coverage
+Troubleshooting (jika diperlukan):
+
+Jika lint fail:
+
+Lihat error message di log
+Perbaiki masalah formatting atau linting
+Commit dan push lagi
+Jika test fail:
+
+Cek log untuk error detail
+Pastikan environment variables sudah benar
+Cek koneksi ke PostgreSQL container
+Best Practices:
+
+Selalu test perubahan locally sebelum push
+Gunakan golangci-lint run di local untuk cek masalah
+Jalankan test dengan go test ./... -cover di local
+Mengecek Badge Status (opsional):
+
+Di GitHub, pergi ke tab Actions
+Klik "..." di samping workflow
+Pilih "Create status badge"
+Copy markdown dan tambahkan ke README.md
+
+golangci-lint run
+
+go test ./... -v -short
+
+go test ./pkg/logger -v
+
+go test ./pkg/logger -v -count=1
+
+go test ./... -coverprofile=coverage.out
+
+ - name: Run tests
+      run: go test -v -coverprofile=coverage.out ./...
+
+go test ./... -v -short
+
+go test ./... -cover -short
+
+
+https://app.codecov.io/gh/talahoo/stock-consolidation/config/badge
+https://codecov.io/gh/talahoo/stock-consolidation/graph/badge.svg?token=WUJRM8JBFT
+
+sonar_cloud
+talahoo_stock-consolidation
+0a7c62b514fbe76ad4b65c998984825a9b3c0633
+
+# Buat branch baru dan pindah ke sana
+git checkout -b refactor-code
+
+# Stage file yang berubah
+git add checking.md
+
+# Commit perubahan
+git commit -m "refactor: update checking.md"
+
+# Push branch baru ke GitHub
+git push origin refactor-code
+
+Pull Request: dan Merge:
+
+Setelah merge:
+(Opsional) Hapus branch refactor-code
+# Local:
+git branch -d refactor-code
+
+# Remote:
+git push origin --delete refactor-code
+
+git stash push -m "simpan sementara sebelum checkout"
+
+ git checkout "stash@{0}" -- checking.md     
+git stash drop stash@{0}
