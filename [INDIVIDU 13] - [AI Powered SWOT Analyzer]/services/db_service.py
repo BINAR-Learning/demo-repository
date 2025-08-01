@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 class SimpleDBService:
     """Simple JSON file-based database service for storing SWOT analysis history"""
-    
+
     def __init__(self, db_file: str = "swot_history.json"):
         """Initialize the database service with JSON file storage"""
         self.db_file = db_file
         self.ensure_db_exists()
-    
+
     def ensure_db_exists(self) -> None:
         """Ensure the database file exists with proper structure"""
         if not os.path.exists(self.db_file):
@@ -31,7 +31,7 @@ class SimpleDBService:
             }
             self.save_data(initial_data)
             logger.info(f"Created new database file: {self.db_file}")
-    
+
     def load_data(self) -> Dict[str, Any]:
         """Load data from JSON file"""
         try:
@@ -47,7 +47,7 @@ class SimpleDBService:
                     "total_analyses": 0
                 }
             }
-    
+
     def save_data(self, data: Dict[str, Any]) -> None:
         """Save data to JSON file"""
         try:
@@ -56,14 +56,14 @@ class SimpleDBService:
         except Exception as e:
             logger.error(f"Error saving database: {e}")
             raise
-    
+
     def save_analysis(self, request: SWOTRequest, response: SWOTResponse) -> str:
         """Save a new SWOT analysis to the database"""
         try:
             # Generate unique ID
             analysis_id = str(uuid.uuid4())
             timestamp = datetime.now().isoformat()
-            
+
             # Create analysis record
             analysis = AnalysisHistory(
                 id=analysis_id,
@@ -71,25 +71,25 @@ class SimpleDBService:
                 request=request,
                 response=response
             )
-            
+
             # Load existing data
             data = self.load_data()
-            
+
             # Add new analysis
             data["analyses"].append(analysis.model_dump())
             data["metadata"]["total_analyses"] = len(data["analyses"])
             data["metadata"]["last_updated"] = timestamp
-            
+
             # Save updated data
             self.save_data(data)
-            
+
             logger.info(f"Saved analysis with ID: {analysis_id}")
             return analysis_id
-            
+
         except Exception as e:
             logger.error(f"Error saving analysis: {e}")
             raise
-    
+
     def get_analysis_by_id(self, analysis_id: str) -> Optional[AnalysisHistory]:
         """Retrieve a specific analysis by ID"""
         try:
@@ -101,34 +101,34 @@ class SimpleDBService:
         except Exception as e:
             logger.error(f"Error retrieving analysis {analysis_id}: {e}")
             return None
-    
+
     def get_recent_analyses(self, limit: int = 10) -> List[AnalysisHistory]:
         """Get the most recent analyses"""
         try:
             data = self.load_data()
             analyses = data["analyses"]
-            
+
             # Sort by timestamp (most recent first)
             sorted_analyses = sorted(
-                analyses, 
-                key=lambda x: x["timestamp"], 
+                analyses,
+                key=lambda x: x["timestamp"],
                 reverse=True
             )
-            
+
             # Return limited results
             recent = sorted_analyses[:limit]
             return [AnalysisHistory(**analysis) for analysis in recent]
-            
+
         except Exception as e:
             logger.error(f"Error retrieving recent analyses: {e}")
             return []
-    
+
     def get_statistics(self) -> Dict[str, Any]:
         """Get database statistics"""
         try:
             data = self.load_data()
             total_analyses = len(data["analyses"])
-            
+
             if total_analyses == 0:
                 return {
                     "total_analyses": 0,
@@ -137,23 +137,23 @@ class SimpleDBService:
                     "most_common_strengths": [],
                     "most_common_weaknesses": []
                 }
-            
+
             # Calculate some basic statistics
             analyses = data["analyses"]
             first_analysis = min(analyses, key=lambda x: x["timestamp"])
             last_analysis = max(analyses, key=lambda x: x["timestamp"])
-            
+
             return {
                 "total_analyses": total_analyses,
                 "first_analysis": first_analysis["timestamp"],
                 "last_analysis": last_analysis["timestamp"],
                 "database_size_kb": round(os.path.getsize(self.db_file) / 1024, 2) if os.path.exists(self.db_file) else 0
             }
-            
+
         except Exception as e:
             logger.error(f"Error getting statistics: {e}")
             return {"error": str(e)}
-    
+
     def clear_database(self) -> bool:
         """Clear all data from the database (use with caution)"""
         try:

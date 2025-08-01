@@ -2,9 +2,9 @@ name: CI/CD Pipeline with AI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, Module-8 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, Module-8 ]
 
 env:
   PYTHON_VERSION: '3.11'
