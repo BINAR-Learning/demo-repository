@@ -1,0 +1,24 @@
+# Web scraping dependencies
+requests==2.31.0
+beautifulsoup4==4.12.2
+
+# Data handling
+pandas==2.0.3
+
+# NLP and AI
+transformers==4.33.2
+torch==2.0.1
+
+# Alternative NLP option (uncomment if using spaCy instead of transformers)
+# spacy==3.6.1
+
+# Web framework
+streamlit>=1.18.0
+
+# Alternative web framework (uncomment if using Gradio instead of Streamlit)
+# gradio==3.44.4
+
+# Additional utilities
+python-dateutil==2.8.2
+lxml==4.9.3
+tabulate==0.9.0

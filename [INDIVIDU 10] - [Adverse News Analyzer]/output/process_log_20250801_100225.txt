@@ -1,0 +1,30 @@
+[2025-08-01 10:02:25] === AML News Analysis Session Started ===
+[2025-08-01 10:02:25] Session DateTime: 20250801_100225
+[2025-08-01 10:02:25] Output CSV: articles_20250801_100225.csv
+[2025-08-01 10:02:25] Process Log: process_log_20250801_100225.txt
+[2025-08-01 10:02:25] AI Categorizer initialized
+[2025-08-01 10:02:25] Output directory ensured: output
+[2025-08-01 10:02:25] 🔍 Starting scrape session...
+[2025-08-01 10:02:25] 📊 Current database: 3 articles
+[2025-08-01 10:02:25] 📰 Scraping from cnnindonesia.com...
+[2025-08-01 10:02:37]    Found 0 relevant articles from https://www.cnnindonesia.com/nasional/hukum-kriminal
+[2025-08-01 10:02:51]    Found 0 relevant articles from https://www.cnnindonesia.com/ekonomi
+[2025-08-01 10:02:54] 📰 Scraping from tempo.co...
+[2025-08-01 10:03:01]    Found 0 relevant articles from https://www.tempo.co/tag/korupsi
+[2025-08-01 10:03:09]    Found 0 relevant articles from https://www.tempo.co/tag/hukum
+[2025-08-01 10:03:12] 📰 Scraping from detik.com...
+[2025-08-01 10:03:25]    Found 1 relevant articles from https://news.detik.com/berita
+[2025-08-01 10:03:42]    Found 0 relevant articles from https://finance.detik.com
+[2025-08-01 10:03:45] 📰 Scraping from cnbcindonesia.com...
+[2025-08-01 10:03:57]    Found 0 relevant articles from https://www.cnbcindonesia.com/news
+[2025-08-01 10:04:12]    Found 0 relevant articles from https://www.cnbcindonesia.com/market
+[2025-08-01 10:04:15] 📰 Scraping from antaranews.com...
+[2025-08-01 10:04:15]    Found 0 relevant articles from https://www.antaranews.com/berita/hukum
+[2025-08-01 10:04:18]    Found 0 relevant articles from https://www.antaranews.com/berita/ekonomi
+[2025-08-01 10:04:21] 📰 Scraping from kumparan.com...
+[2025-08-01 10:04:22]    Found 0 relevant articles from https://kumparan.com/topic/hukum
+[2025-08-01 10:04:26]    Found 0 relevant articles from https://kumparan.com/topic/ekonomi
+[2025-08-01 10:04:29] 💾 Saving articles to database...
+[2025-08-01 10:04:29] 📦 Starting batch save of 1 articles
+[2025-08-01 10:04:29] 🔄 Duplicate found, skipping: PPATK Buka Lagi Lebih dari 28 Juta Rekening Ngangg...
+[2025-08-01 10:04:29] 📊 Batch save complete: 0 new, 1 duplicates

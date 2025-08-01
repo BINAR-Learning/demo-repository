@@ -1,0 +1,34 @@
+[2025-08-01 09:46:00] === AML News Analysis Session Started ===
+[2025-08-01 09:46:00] Session DateTime: 20250801_094600
+[2025-08-01 09:46:00] Output CSV: articles_20250801_094600.csv
+[2025-08-01 09:46:00] Process Log: process_log_20250801_094600.txt
+[2025-08-01 09:46:00] AI Categorizer initialized
+[2025-08-01 09:46:00] Output directory ensured: output
+[2025-08-01 09:46:01] 🔍 Starting scrape session...
+[2025-08-01 09:46:01] 📊 Current database: 2 articles
+[2025-08-01 09:46:01] 📰 Scraping from cnnindonesia.com...
+[2025-08-01 09:46:13]    Found 0 relevant articles from https://www.cnnindonesia.com/nasional/hukum-kriminal
+[2025-08-01 09:46:27]    Found 0 relevant articles from https://www.cnnindonesia.com/ekonomi
+[2025-08-01 09:46:30] 📰 Scraping from tempo.co...
+[2025-08-01 09:46:37]    Found 0 relevant articles from https://www.tempo.co/tag/korupsi
+[2025-08-01 09:46:45]    Found 0 relevant articles from https://www.tempo.co/tag/hukum
+[2025-08-01 09:46:48] 📰 Scraping from detik.com...
+[2025-08-01 09:47:01]    Found 1 relevant articles from https://news.detik.com/berita
+[2025-08-01 09:47:17]    Found 0 relevant articles from https://finance.detik.com
+[2025-08-01 09:47:20] 📰 Scraping from cnbcindonesia.com...
+[2025-08-01 09:47:32]    Found 0 relevant articles from https://www.cnbcindonesia.com/news
+[2025-08-01 09:47:47]    Found 0 relevant articles from https://www.cnbcindonesia.com/market
+[2025-08-01 09:47:50] 📰 Scraping from rri.co.id...
+[2025-08-01 09:48:07]    Found 0 relevant articles from https://rri.co.id/nasional
+[2025-08-01 09:48:24]    Found 0 relevant articles from https://rri.co.id/ekonomi
+[2025-08-01 09:48:27] 📰 Scraping from antaranews.com...
+[2025-08-01 09:48:28]    Found 0 relevant articles from https://www.antaranews.com/berita/hukum
+[2025-08-01 09:48:31]    Found 0 relevant articles from https://www.antaranews.com/berita/ekonomi
+[2025-08-01 09:48:34] 📰 Scraping from kumparan.com...
+[2025-08-01 09:48:35]    Found 0 relevant articles from https://kumparan.com/topic/hukum
+[2025-08-01 09:48:38]    Found 0 relevant articles from https://kumparan.com/topic/ekonomi
+[2025-08-01 09:48:41] 💾 Saving articles to database...
+[2025-08-01 09:48:41] 📦 Starting batch save of 1 articles
+[2025-08-01 09:48:41] 🏷️  Auto-categorized as: Gambling
+[2025-08-01 09:48:41] ✅ Saved: PPATK Buka Lagi Lebih dari 28 Juta Rekening Ngangg...
+[2025-08-01 09:48:41] 📊 Batch save complete: 1 new, 0 duplicates
