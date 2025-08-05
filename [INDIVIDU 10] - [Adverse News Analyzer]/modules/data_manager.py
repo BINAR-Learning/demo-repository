@@ -122,13 +122,13 @@ class DataManager:
                 article_data['category'] = self.categorizer.categorize_article(article_text, article_title)
                 self._log(f"🏷️  Auto-categorized as: {article_data['category']}")
             
-            # Create DataFrame with single article
-            df_new = pd.DataFrame([article_data])
-            
-            # Ensure all required columns are present
+            # Ensure all required fields are present with default empty strings
+            complete_article_data = {}
             for col in self.csv_schema:
-                if col not in df_new.columns:
-                    df_new[col] = ''
+                complete_article_data[col] = article_data.get(col, '')
+            
+            # Create DataFrame with single article
+            df_new = pd.DataFrame([complete_article_data])
             
             # Reorder columns to match schema
             df_new = df_new[self.csv_schema]
