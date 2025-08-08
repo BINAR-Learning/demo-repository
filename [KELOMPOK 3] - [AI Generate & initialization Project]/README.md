@@ -61,6 +61,8 @@ c. create API endpoint : create a BE typescript project using NestJS, that have 
 a. create fe generate script : create a script that will generate and initiate a base frontend project with project name from user input. after success generate & intitate the fe project, also run the project so the user can start to develop, use the port except 3000 & 3001. create the script in js file. >> then change to ts file
 b. update fe generate script : the project name is from argument terminal. so the trigger will be like this, node setup_frontend_projects.js project-name
 c. create UI for input : create a FE typescript project, that have an UI that will receive an input from user, and will be name as a project name. when user submit the input, it will hit api that BE create, and will display the response. this project will be running on port 3001
+d. add template for some project : i want to update generate fe script. so, you know the input is a project name, and for now, when fe project generated, its only have a basic initialize project. now i want to upgrade it.
+so, you have to analyze the project name. if the project name indicating a company profile, you have to initialize a company profile fe project, also provide some feature that usually a company profile fe project have. its occure to another type of fe project web, like landing page or e-commerce. just provide tha basic feature.
 
 #### **AI Integration dengan Google GenAI**
 
