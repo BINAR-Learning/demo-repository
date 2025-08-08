@@ -1,0 +1,24 @@
+# Testing Requirements for AML News Analysis System
+# Additional dependencies needed for running unit tests
+
+# Core testing framework (usually included with Python)
+# unittest - built-in, no installation needed
+
+# For enhanced testing capabilities (optional)
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+
+# For test data generation and mocking (if needed)
+factory-boy>=3.2.0
+faker>=18.0.0
+
+# For performance testing
+pytest-benchmark>=4.0.0
+
+# For parallel test execution
+pytest-xdist>=3.0.0
+
+# Note: The unit tests are designed to work with Python's built-in unittest module
+# and don't strictly require pytest, but pytest provides additional features
+# like better output formatting and parallel execution.
